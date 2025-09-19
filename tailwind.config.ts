@@ -13,9 +13,6 @@ export default {
       },
     },
     extend: {
-      fontFamily: {
-        'inter': ['Inter', 'sans-serif'],
-      },
       scale: {
         '101': '1.01',
         '102': '1.02',
@@ -73,11 +70,9 @@ export default {
           ring: "hsl(var(--sidebar-ring))",
         },
         orange: {
-          light: "hsl(22, 100%, 70%)",
-        },
-        trend: {
-          up: "hsl(var(--trend-up))",
-          down: "hsl(var(--trend-down))",
+          light: "hsl(var(--orange-light))",
+          lighter: "hsl(var(--orange-lighter))",
+          "light-hover": "hsl(var(--orange-light-hover))",
         },
       },
       borderRadius: {

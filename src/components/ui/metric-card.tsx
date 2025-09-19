@@ -15,8 +15,8 @@ interface MetricCardProps {
 const MetricCard = React.forwardRef<HTMLDivElement, MetricCardProps>(
   ({ value, label, trend, variant = "default", className, ...props }, ref) => {
     const baseStyles = variant === "glassmorphism" 
-      ? "relative bg-gradient-to-r from-primary to-orange-light rounded-xl p-4 border border-white/20 backdrop-blur-lg overflow-hidden h-32 flex flex-col justify-between"
-      : "p-6 bg-gradient-to-br from-card to-card/95 rounded-2xl border border-border transition-all duration-200 h-32 flex flex-col justify-between";
+      ? "relative bg-gradient-to-r from-primary to-orange-light rounded-xl p-6 border border-white/20 shadow-2xl backdrop-blur-lg overflow-hidden"
+      : "p-6 bg-gradient-to-br from-card to-card/95 shadow-lg rounded-2xl border border-border/30";
 
     return (
       <div
@@ -33,16 +33,16 @@ const MetricCard = React.forwardRef<HTMLDivElement, MetricCardProps>(
           </>
         )}
         {/* Content Container */}
-        <dl className={cn("font-inter flex flex-col justify-between h-full", variant === "glassmorphism" && "relative z-10")}>
+        <dl className={cn("space-y-2", variant === "glassmorphism" && "relative z-10")}>
           <dt className={cn(
-            "text-xs font-medium mb-2",
+            "text-xs font-medium uppercase tracking-wide",
             variant === "glassmorphism" ? "text-white/90" : "text-muted-foreground"
           )}>
             {label}
           </dt>
           
           <dd className={cn(
-            "text-2xl font-semibold sm:text-3xl leading-none flex-grow flex items-center",
+            "text-2xl font-bold md:text-3xl leading-none",
             variant === "glassmorphism" ? "text-white" : "text-foreground"
           )}>
             {value}
@@ -50,8 +50,10 @@ const MetricCard = React.forwardRef<HTMLDivElement, MetricCardProps>(
           
           {trend && (
             <dd className={cn(
-              "flex items-center space-x-1 text-sm font-medium mt-2",
-              variant === "glassmorphism" ? "text-white" : (trend.isPositive ? "text-trend-up" : "text-trend-down")
+              "flex items-center space-x-1 text-sm font-medium",
+              variant === "glassmorphism" 
+                ? "text-white/90 drop-shadow-sm" 
+                : trend.isPositive ? "text-trend-up" : "text-trend-down"
             )}>
               <span>{trend.value}</span>
               {trend.isPositive ? (
