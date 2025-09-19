@@ -74,6 +74,10 @@ export default {
           lighter: "hsl(var(--orange-lighter))",
           "light-hover": "hsl(var(--orange-light-hover))",
         },
+        trend: {
+          up: "hsl(var(--trend-up))",
+          down: "hsl(var(--trend-down))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
