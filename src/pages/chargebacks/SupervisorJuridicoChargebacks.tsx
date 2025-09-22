@@ -4,11 +4,14 @@ import { useToast } from '@/hooks/use-toast';
 import PageHeader from '@/components/PageHeader';
 import { MetricCard } from "@/components/ui/metric-card";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import { Area, AreaChart, Line, LineChart, XAxis, YAxis } from "recharts";
 import { ChargebackService } from '@/api/services/chargebackService';
 import { ChargebackMetrics, Chargeback } from '@/types';
 import { formatCurrency, formatPercentage } from '@/utils/formatters';
 import ChargebackList from '@/components/ui/chargeback-list';
-import { TrendingDown, TrendingUp, AlertTriangle, BarChart3 } from "lucide-react";
+import { TrendingDown, TrendingUp, AlertTriangle, BarChart3, DollarSign } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
 
 export default function SupervisorJuridicoChargebacks() {
   const { user } = useAuth();
@@ -22,6 +25,41 @@ export default function SupervisorJuridicoChargebacks() {
     totalPerdido: 45600,
     totalRecuperado: 28300,
     prejuizoLiquido: 17300
+  };
+
+  // Mock data for charts
+  const prejudicoRevertidosData = [
+    { name: 'Jan', prejuizo: 120000, revertidos: 45000 },
+    { name: 'Fev', prejuizo: 150000, revertidos: 67000 },
+    { name: 'Mar', prejuizo: 98000, revertidos: 52000 },
+    { name: 'Abr', prejuizo: 180000, revertidos: 89000 },
+    { name: 'Mai', prejuizo: 135000, revertidos: 76000 },
+    { name: 'Jun', prejuizo: 167000, revertidos: 94000 },
+  ];
+
+  const tendenciaSemanalData = [
+    { semana: 'S1', chargebacks: 12 },
+    { semana: 'S2', chargebacks: 18 },
+    { semana: 'S3', chargebacks: 8 },
+    { semana: 'S4', chargebacks: 25 },
+    { semana: 'S5', chargebacks: 15 },
+    { semana: 'S6', chargebacks: 32 },
+    { semana: 'S7', chargebacks: 19 },
+  ];
+
+  const chartConfig = {
+    prejuizo: {
+      label: "Prejuízo",
+      color: "#FFCC33",
+    },
+    revertidos: {
+      label: "Revertidos", 
+      color: "#FE5F2F",
+    },
+    chargebacks: {
+      label: "Chargebacks",
+      color: "#FE5F2F",
+    },
   };
 
   useEffect(() => {
@@ -173,6 +211,119 @@ export default function SupervisorJuridicoChargebacks() {
               </div>
             </div>
           </div>
+        </CardContent>
+      </Card>
+
+      {/* Gráfico de Área - Prejuízo x Revertidos */}
+      <Card className="bg-gradient-to-br from-card to-card/95 border border-gray-200 w-full">
+        <CardHeader>
+          <CardTitle className="text-foreground font-inter flex items-center gap-2">
+            <DollarSign className="w-5 h-5 text-orange-500" />
+            Prejuízo x Revertidos
+          </CardTitle>
+          <Separator className="mt-3" />
+        </CardHeader>
+        <CardContent>
+          <ChartContainer config={chartConfig} className="h-80">
+            <AreaChart data={prejudicoRevertidosData}>
+              <defs>
+                <linearGradient id="fillPrejuizo" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#FFCC33" stopOpacity={0.8}/>
+                  <stop offset="95%" stopColor="#FFCC33" stopOpacity={0.1}/>
+                </linearGradient>
+                <linearGradient id="fillRevertidos" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#FE5F2F" stopOpacity={0.8}/>
+                  <stop offset="95%" stopColor="#FE5F2F" stopOpacity={0.1}/>
+                </linearGradient>
+              </defs>
+              <XAxis 
+                dataKey="name" 
+                axisLine={false}
+                tickLine={false}
+                tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
+              />
+              <YAxis 
+                axisLine={false}
+                tickLine={false}
+                tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
+                tickFormatter={(value) => `R$ ${(value / 1000).toFixed(0)}k`}
+              />
+              <ChartTooltip 
+                content={<ChartTooltipContent 
+                  formatter={(value, name) => [
+                    formatCurrency(Number(value)), 
+                    name === 'prejuizo' ? 'Prejuízo' : 'Revertidos'
+                  ]}
+                />} 
+              />
+              <Area
+                type="monotone"
+                dataKey="prejuizo"
+                stackId="1"
+                stroke="#FFCC33"
+                fill="url(#fillPrejuizo)"
+                strokeWidth={2}
+              />
+              <Area
+                type="monotone"
+                dataKey="revertidos"
+                stackId="2"
+                stroke="#FE5F2F"
+                fill="url(#fillRevertidos)"
+                strokeWidth={2}
+              />
+            </AreaChart>
+          </ChartContainer>
+        </CardContent>
+      </Card>
+
+      {/* Gráfico de Linha - Tendência Semanal */}
+      <Card className="bg-gradient-to-br from-card to-card/95 border border-gray-200">
+        <CardHeader>
+          <CardTitle className="text-foreground font-inter flex items-center gap-2">
+            <TrendingUp className="w-5 h-5 text-orange-500" />
+            Tendência Semanal
+          </CardTitle>
+          <Separator className="mt-3" />
+        </CardHeader>
+        <CardContent>
+          <ChartContainer config={chartConfig} className="h-80">
+            <LineChart data={tendenciaSemanalData}>
+              <XAxis 
+                dataKey="semana" 
+                axisLine={false}
+                tickLine={false}
+                tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
+              />
+              <YAxis 
+                axisLine={false}
+                tickLine={false}
+                tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
+              />
+              <ChartTooltip 
+                content={<ChartTooltipContent 
+                  formatter={(value) => [value, 'Chargebacks']}
+                />} 
+              />
+              <Line
+                type="monotone"
+                dataKey="chargebacks"
+                stroke="#FE5F2F"
+                strokeWidth={3}
+                dot={{ 
+                  fill: "#FE5F2F", 
+                  strokeWidth: 2, 
+                  r: 4 
+                }}
+                activeDot={{ 
+                  r: 6, 
+                  stroke: "#FE5F2F",
+                  strokeWidth: 2,
+                  fill: "hsl(var(--background))"
+                }}
+              />
+            </LineChart>
+          </ChartContainer>
         </CardContent>
       </Card>
     </div>
