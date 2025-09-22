@@ -4,30 +4,39 @@ import { useToast } from '@/hooks/use-toast';
 import PageHeader from '@/components/PageHeader';
 import { MetricCard } from "@/components/ui/metric-card";
 import { ChargebackService } from '@/api/services/chargebackService';
-import { ChargebackMetrics } from '@/types';
+import { ChargebackMetrics, Chargeback } from '@/types';
 import { formatCurrency, formatPercentage } from '@/utils/formatters';
+import ChargebackList from '@/components/ui/chargeback-list';
 
 export default function SupervisorJuridicoChargebacks() {
   const { user } = useAuth();
   const { toast } = useToast();
   const [metrics, setMetrics] = useState<ChargebackMetrics | null>(null);
+  const [chargebacks, setChargebacks] = useState<Chargeback[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchMetrics = async () => {
+    const fetchData = async () => {
       try {
-        const response = await ChargebackService.getChargebackMetrics(user?.id, user?.role);
-        if (response.success && response.data) {
-          setMetrics(response.data);
+        // Fetch metrics
+        const metricsResponse = await ChargebackService.getChargebackMetrics(user?.id, user?.role);
+        if (metricsResponse.success && metricsResponse.data) {
+          setMetrics(metricsResponse.data);
+        }
+
+        // Fetch chargebacks list
+        const chargebacksResponse = await ChargebackService.getChargebacks(user?.id || '', user?.role || '');
+        if (chargebacksResponse.success && chargebacksResponse.data) {
+          setChargebacks(chargebacksResponse.data.data);
         }
       } catch (error) {
-        console.error('Erro ao carregar métricas de chargeback:', error);
+        console.error('Erro ao carregar dados de chargeback:', error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchMetrics();
+    fetchData();
   }, [user?.id, user?.role]);
 
   if (loading) {
@@ -93,6 +102,12 @@ export default function SupervisorJuridicoChargebacks() {
           }}
         />
       </div>
+
+      <ChargebackList 
+        chargebacks={chargebacks}
+        loading={loading}
+        title="Lista de Chargebacks"
+      />
     </div>
   );
 }
