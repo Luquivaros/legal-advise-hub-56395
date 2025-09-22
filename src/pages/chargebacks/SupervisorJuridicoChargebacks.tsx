@@ -181,24 +181,29 @@ export default function SupervisorJuridicoChargebacks() {
               </div>
             </div>
 
-            {/* CARD COLORIDO ESPECIAL - Total Recuperado */}
-            <div className="group relative overflow-hidden rounded-lg p-6 hover-scale transition-all duration-300" style={{background: 'linear-gradient(to bottom right, #FE8330, #FFA832)'}}>
+            {/* CARD BRANCO PADRÃO - Total Recuperado */}
+            <div className="group relative overflow-hidden rounded-lg bg-card border border-border p-6 hover-scale transition-all duration-300">
               <div className="flex items-center justify-between mb-3">
-                <div className="text-xs font-medium uppercase tracking-wide text-white/90">
+                <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
                   Total Recuperado
                 </div>
-                <div className="p-2 rounded-lg bg-white/20">
-                  <TrendingUp className="h-5 w-5 text-white" />
+                <div className="p-2 rounded-lg bg-green-50 dark:bg-green-950/20">
+                  <TrendingUp className="h-5 w-5 text-green-600 dark:text-green-400" />
                 </div>
               </div>
-              <div className="text-2xl font-bold text-white">
+              <div className="text-2xl font-bold text-foreground">
                 {formatCurrency(monthSummary.totalRecuperado)}
               </div>
             </div>
 
-            {/* CARD COLORIDO ESPECIAL - Prejuízo Líquido */}
-            <div className="group relative overflow-hidden rounded-lg p-6 hover-scale transition-all duration-300" style={{background: 'linear-gradient(to bottom right, #FE8330, #FFA832)'}}>
-              <div className="flex items-center justify-between mb-3">
+            {/* CARD GLASSMORPHISM - Prejuízo Líquido */}
+            <div className="group relative overflow-hidden rounded-lg p-6 hover-scale transition-all duration-300 bg-gradient-to-r from-primary to-orange-light border border-white/20 backdrop-blur-lg">
+              {/* Glassmorphism texture overlay */}
+              <div className="absolute inset-0 bg-white/10 backdrop-blur-sm"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-transparent"></div>
+              <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-white/20 via-transparent to-transparent"></div>
+              
+              <div className="relative z-10 flex items-center justify-between mb-3">
                 <div className="text-xs font-medium uppercase tracking-wide text-white/90">
                   Prejuízo Líquido
                 </div>
@@ -206,7 +211,7 @@ export default function SupervisorJuridicoChargebacks() {
                   <AlertTriangle className="h-5 w-5 text-white" />
                 </div>
               </div>
-              <div className="text-2xl font-bold text-white">
+              <div className="relative z-10 text-2xl font-bold text-white">
                 {formatCurrency(monthSummary.prejuizoLiquido)}
               </div>
             </div>
