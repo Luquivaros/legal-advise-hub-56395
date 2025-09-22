@@ -140,7 +140,7 @@ export default function SupervisorJuridicoNegotiations() {
           trend={{ value: "8%", isPositive: true }}
         />
         <MetricCard
-          label="Percentual alcançado da meta do dia"
+          label="percentual meta do dia"
           value={`${percentualMeta.toFixed(1)}%`}
           trend={{ value: "12%", isPositive: true }}
         />
@@ -152,13 +152,8 @@ export default function SupervisorJuridicoNegotiations() {
           
           {/* Content Container */}
           <div className="relative z-10">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="p-2 bg-white/25 rounded-lg backdrop-blur-md border border-white/30 shadow-lg">
-                <DollarSign className="w-5 h-5 text-white" />
-              </div>
-              <div className="flex-1">
-                <p className="text-xs font-medium text-white/90 uppercase tracking-wide drop-shadow-sm">Valor obtido no dia</p>
-              </div>
+            <div className="mb-3">
+              <p className="text-xs font-medium text-white/90 uppercase tracking-wide drop-shadow-sm">Valor obtido no dia</p>
             </div>
             <div className="space-y-1">
               <p className="text-2xl font-bold text-white drop-shadow-lg">R$ {valorRealizadoDia.toLocaleString()}</p>
