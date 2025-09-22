@@ -35,14 +35,14 @@ const MetricCard = React.forwardRef<HTMLDivElement, MetricCardProps>(
         {/* Content Container */}
         <dl className={cn("flex flex-col justify-between h-full", variant === "glassmorphism" && "relative z-10")}>
           <dt className={cn(
-            "text-xs font-medium mb-2",
+            "text-xs font-medium uppercase tracking-wide mb-2",
             variant === "glassmorphism" ? "text-white/90" : "text-muted-foreground"
           )}>
             {label}
           </dt>
           
           <dd className={cn(
-            "text-2xl font-semibold sm:text-3xl leading-none flex-grow flex items-center",
+            "text-2xl font-bold sm:text-3xl leading-none flex-grow flex items-center",
             variant === "glassmorphism" ? "text-white" : "text-foreground"
           )}>
             {value}

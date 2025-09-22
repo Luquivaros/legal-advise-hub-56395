@@ -73,7 +73,7 @@ export default function ChargebackList({ chargebacks, loading = false, title = "
   };
 
   return (
-    <Card className="bg-gradient-to-br from-card to-card/95 shadow-lg border border-border/30">
+    <Card className="bg-gradient-to-br from-card to-card/95 border border-gray-200">
       <CardHeader>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
