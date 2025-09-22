@@ -181,17 +181,17 @@ export default function SupervisorJuridicoChargebacks() {
               </div>
             </div>
 
-            {/* CARD BRANCO PADRÃO - Total Recuperado */}
-            <div className="group relative overflow-hidden rounded-lg bg-card border border-border p-6 hover-scale transition-all duration-300">
+            {/* CARD COLORIDO ESPECIAL - Total Recuperado */}
+            <div className="group relative overflow-hidden rounded-lg p-6 hover-scale transition-all duration-300" style={{background: 'linear-gradient(to bottom right, #FE8330, #FFA832)'}}>
               <div className="flex items-center justify-between mb-3">
-                <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                <div className="text-xs font-medium uppercase tracking-wide text-white/90">
                   Total Recuperado
                 </div>
-                <div className="p-2 rounded-lg bg-green-50 dark:bg-green-950/20">
-                  <TrendingUp className="h-5 w-5 text-green-600 dark:text-green-400" />
+                <div className="p-2 rounded-lg bg-white/20">
+                  <TrendingUp className="h-5 w-5 text-white" />
                 </div>
               </div>
-              <div className="text-2xl font-bold text-foreground">
+              <div className="text-2xl font-bold text-white">
                 {formatCurrency(monthSummary.totalRecuperado)}
               </div>
             </div>

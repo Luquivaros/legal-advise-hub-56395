@@ -77,7 +77,7 @@ export default function ChargebackList({ chargebacks, loading = false, title = "
       <CardHeader>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Filter className="h-5 w-5 text-muted-foreground" />
+            <Filter className="h-5 w-5 text-orange-500" />
             <CardTitle className="text-xl font-semibold text-foreground">
               {title}
             </CardTitle>
@@ -87,7 +87,7 @@ export default function ChargebackList({ chargebacks, loading = false, title = "
               variant={filterStatus === 'all' ? 'default' : 'outline'}
               size="sm"
               onClick={() => setFilterStatus('all')}
-              className={filterStatus === 'all' ? 'bg-orange-500 hover:bg-orange-600 text-white border-none' : 'hover:bg-orange-50'}
+              className={filterStatus === 'all' ? 'bg-gradient-to-r from-primary to-primary/80 text-primary-foreground hover:from-primary/90 hover:to-primary/70' : 'hover:bg-accent hover:text-accent-foreground'}
             >
               Todos
             </Button>
@@ -95,7 +95,7 @@ export default function ChargebackList({ chargebacks, loading = false, title = "
               variant={filterStatus === 'lost' ? 'default' : 'outline'}
               size="sm"
               onClick={() => setFilterStatus('lost')}
-              className={filterStatus === 'lost' ? 'bg-orange-500 hover:bg-orange-600 text-white border-none' : 'hover:bg-orange-50'}
+              className={filterStatus === 'lost' ? 'bg-gradient-to-r from-primary to-primary/80 text-primary-foreground hover:from-primary/90 hover:to-primary/70' : 'hover:bg-accent hover:text-accent-foreground'}
             >
               Cancelados
             </Button>
@@ -103,7 +103,7 @@ export default function ChargebackList({ chargebacks, loading = false, title = "
               variant={filterStatus === 'resolved' ? 'default' : 'outline'}
               size="sm"
               onClick={() => setFilterStatus('resolved')}
-              className={filterStatus === 'resolved' ? 'bg-orange-500 hover:bg-orange-600 text-white border-none' : 'hover:bg-orange-50'}
+              className={filterStatus === 'resolved' ? 'bg-gradient-to-r from-primary to-primary/80 text-primary-foreground hover:from-primary/90 hover:to-primary/70' : 'hover:bg-accent hover:text-accent-foreground'}
             >
               Revertidos
             </Button>
@@ -140,7 +140,7 @@ export default function ChargebackList({ chargebacks, loading = false, title = "
                       <TableCell className="font-medium text-foreground py-4">
                         {chargeback.client.name}
                       </TableCell>
-                      <TableCell className="text-blue-600 font-medium py-4">
+                      <TableCell className="text-foreground font-medium py-4">
                         {getConsultorName(chargeback.client.assignedConsultant)}
                       </TableCell>
                       <TableCell className={`font-semibold py-4 ${
