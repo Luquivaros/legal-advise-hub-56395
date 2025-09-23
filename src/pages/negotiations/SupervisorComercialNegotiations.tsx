@@ -117,7 +117,7 @@ export default function SupervisorComercialNegotiations() {
           trend={{ value: "15%", isPositive: true }}
         />
         <MetricCard
-          label="Percentual alcançado da meta do dia"
+          label="Percentual meta do dia"
           value={`${percentualMeta.toFixed(1)}%`}
           trend={{ value: "12%", isPositive: true }}
         />
@@ -130,9 +130,6 @@ export default function SupervisorComercialNegotiations() {
           {/* Content Container */}
           <div className="relative z-10">
             <div className="flex items-center gap-3 mb-3">
-              <div className="p-2 bg-white/25 rounded-lg backdrop-blur-md border border-white/30 shadow-lg">
-                <DollarSign className="w-5 h-5 text-white" />
-              </div>
               <div className="flex-1">
                 <p className="text-xs font-medium text-white/90 uppercase tracking-wide drop-shadow-sm">Valor obtido no dia</p>
               </div>
@@ -149,7 +146,7 @@ export default function SupervisorComercialNegotiations() {
       </div>
 
       {/* Projeção do Dia */}
-      <Card className="bg-gradient-to-br from-card to-card/95 shadow-lg border border-border/30">
+      <Card className="bg-gradient-to-br from-card to-card/50 border border-gray-200">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <TrendingUp className="w-5 h-5 text-primary" />
@@ -202,7 +199,7 @@ export default function SupervisorComercialNegotiations() {
       </Card>
 
       {/* Ranking Mensal */}
-      <Card className="bg-gradient-to-br from-card to-card/95 shadow-lg border border-border/30">
+      <Card className="bg-gradient-to-br from-card to-card/50 border border-gray-200">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <TrendingUp className="w-5 h-5 text-primary" />
@@ -278,10 +275,10 @@ export default function SupervisorComercialNegotiations() {
       </Card>
 
       {/* Lista de Negociações */}
-      <Card className="bg-gradient-to-br from-card to-card/95 shadow-lg border border-border/30">
+      <Card className="bg-gradient-to-br from-card to-card/50 border border-gray-200">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Users className="w-5 h-5" />
+            <Users className="w-5 h-5 text-orange-500" />
             Lista de Negociações
           </CardTitle>
         </CardHeader>
