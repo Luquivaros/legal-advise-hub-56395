@@ -130,8 +130,7 @@ export default function SupervisorComercialClients() {
       toast.error("Selecione pelo menos um cliente");
       return;
     }
-    setRepiqueClients(prev => prev.filter(c => !c.selected));
-    toast.success(`${selectedClients.length} cliente(s) movido(s) para negociações`);
+    setShowConsultorModal(true);
   };
 
   // Função de busca
@@ -171,9 +170,18 @@ export default function SupervisorComercialClients() {
       toast.error("Selecione um consultor");
       return;
     }
-    const selectedClients = newClients.filter(c => c.selected);
-    setNewClients(prev => prev.filter(c => !c.selected));
-    toast.success(`${selectedClients.length} cliente(s) enviado(s) para ${selectedConsultor}`);
+    const selectedRepiqueClients = repiqueClients.filter(c => c.selected);
+    const selectedNewClients = newClients.filter(c => c.selected);
+    
+    if (selectedRepiqueClients.length > 0) {
+      setRepiqueClients(prev => prev.filter(c => !c.selected));
+    }
+    if (selectedNewClients.length > 0) {
+      setNewClients(prev => prev.filter(c => !c.selected));
+    }
+    
+    const totalClients = selectedRepiqueClients.length + selectedNewClients.length;
+    toast.success(`${totalClients} cliente(s) enviado(s) para ${selectedConsultor}`);
     setShowConsultorModal(false);
     setSelectedConsultor('');
   };
@@ -189,7 +197,7 @@ export default function SupervisorComercialClients() {
         subtitle="Gerencie repiques e acompanhe clientes em prospecção" 
       />
 
-      <Card className="bg-gradient-to-br from-card to-card/50 shadow-lg hover:shadow-xl transition-shadow duration-300">
+      <Card className="bg-gradient-to-br from-card to-card/50 border border-gray-200">
         <CardHeader>
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <CardTitle className="flex items-center gap-2">
@@ -209,7 +217,7 @@ export default function SupervisorComercialClients() {
                 />
                 <Button
                   onClick={handleRepiqueSearch}
-                  className="w-full md:w-auto px-6 py-3"
+                  className="w-full md:w-auto px-6 py-3 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground hover:from-primary/90 hover:to-primary/70 active:scale-95 duration-100 will-change-transform overflow-hidden relative rounded-xl transition-all shadow-lg hover:shadow-xl"
                 >
                   <div className="relative">
                     <div className="flex items-center">
@@ -223,9 +231,12 @@ export default function SupervisorComercialClients() {
               </div>
 
               {repiqueSelectedCount > 0 && (
-                <Button onClick={handleMoveToNegotiations}>
+                <Button 
+                  onClick={handleMoveToNegotiations}
+                  className="w-full md:w-auto px-6 py-3 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground hover:from-primary/90 hover:to-primary/70 active:scale-95 duration-100 will-change-transform overflow-hidden relative rounded-xl transition-all shadow-lg hover:shadow-xl"
+                >
                   <ArrowRight className="mr-2 h-4 w-4" />
-                  Mover {repiqueSelectedCount} para Negociações
+                  Enviar {repiqueSelectedCount} para...
                 </Button>
               )}
             </div>
