@@ -1,6 +1,7 @@
 import { useAuth } from "@/contexts/AuthContext";
 import ConsultorJuridicoClients from "./clients/ConsultorJuridicoClients";
 import SupervisorJuridicoClients from "./clients/SupervisorJuridicoClients";
+import SupervisorComercialClients from "./clients/SupervisorComercialClients";
 import PageHeader from "@/components/PageHeader";
 
 export default function Clientes() {
@@ -12,6 +13,8 @@ export default function Clientes() {
       return <ConsultorJuridicoClients />;
     case 'supervisor-juridico':
       return <SupervisorJuridicoClients />;
+    case 'supervisor-comercial':
+      return <SupervisorComercialClients />;
     default:
       return (
         <div className="space-y-6">
