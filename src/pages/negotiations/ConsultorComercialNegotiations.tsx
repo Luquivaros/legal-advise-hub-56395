@@ -116,7 +116,7 @@ export default function ConsultorComercialNegotiations() {
       />
 
       {/* Card com Título e Search Bar */}
-      <Card className="bg-gradient-to-br from-card to-card/95 shadow-lg border border-border/30">
+      <Card className="bg-gradient-to-br from-card to-card/95 border border-border">
         <CardHeader>
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <CardTitle className="flex items-center gap-2">

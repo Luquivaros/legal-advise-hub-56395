@@ -65,7 +65,7 @@ export default function RankingCardTemplate({
 }: RankingCardProps) {
 
   return (
-    <Card className="border border-gray-300">
+    <Card className="border border-border">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <TrendingUp className="w-5 h-5 text-primary" />
