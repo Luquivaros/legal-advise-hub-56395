@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import ProjectionCardTemplate from '@/components/templates/ProjectionCardTemplate';
+import RankingCardTemplate from '@/components/templates/RankingCardTemplate';
 
 const statusColors = {
   'pending': 'bg-yellow-100 text-yellow-800',
@@ -176,6 +177,9 @@ export default function ConsultorComercialNegotiations() {
 
       {/* Projeção do Dia */}
       <ProjectionCardTemplate />
+
+      {/* Ranking do Setor Comercial */}
+      <RankingCardTemplate />
 
       {/* Loading State */}
       {loading && (
