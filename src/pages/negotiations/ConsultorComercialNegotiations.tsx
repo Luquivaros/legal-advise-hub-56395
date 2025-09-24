@@ -22,6 +22,7 @@ import {
   DollarSign
 } from 'lucide-react';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+import ProjectionCardTemplate from '@/components/templates/ProjectionCardTemplate';
 
 const statusColors = {
   'pending': 'bg-yellow-100 text-yellow-800',
@@ -172,6 +173,9 @@ export default function ConsultorComercialNegotiations() {
           <CarouselNext className="absolute right-0 top-1/2 -translate-y-1/2 bg-background/80 backdrop-blur-sm border-border/50 hover:bg-background w-8 h-8 opacity-60 hover:opacity-100 transition-opacity" />
         </Carousel>
       </div>
+
+      {/* Projeção do Dia */}
+      <ProjectionCardTemplate />
 
       {/* Loading State */}
       {loading && (
