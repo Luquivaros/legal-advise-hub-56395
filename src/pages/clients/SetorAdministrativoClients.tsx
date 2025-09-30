@@ -2,7 +2,7 @@ import { useState } from "react";
 import PageHeader from "@/components/PageHeader";
 import { ClientFilterMenu, ClientFilter } from "@/components/ClientFilterMenu";
 import { UniversalCard, DocumentList, DataGrid, NotesList } from "@/components/reusable/UniversalCard";
-import { FileText, User, History, Scale, Package, Paperclip, CreditCard, Search, UserPlus, Users, ClipboardCheck, Tag } from "lucide-react";
+import { FileText, User, History, Scale, Package, Paperclip, CreditCard, Search, UserPlus, Users, ClipboardCheck, Tag, Phone } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
@@ -1926,7 +1926,7 @@ export default function SetorAdministrativoClients() {
               {
                 id: "phone",
                 title: "Telefone",
-                icon: User,
+                icon: Phone,
                 content: <DataGrid data={[
                   { label: "Telefone", value: editedPhoneRepiques }
                 ]} />,
@@ -1957,7 +1957,7 @@ export default function SetorAdministrativoClients() {
               },
               {
                 id: "type",
-                title: "Tipo",
+                title: "Origem",
                 icon: Tag,
                 content: <DataGrid data={[
                   { 
@@ -2025,7 +2025,7 @@ export default function SetorAdministrativoClients() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="client-type-repiques">Tipo</Label>
+                  <Label htmlFor="client-type-repiques">Origem</Label>
                   <Select value={newClientTypeRepiques} onValueChange={setNewClientTypeRepiques}>
                     <SelectTrigger id="client-type-repiques">
                       <SelectValue placeholder="Selecione o tipo" />
