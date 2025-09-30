@@ -5,10 +5,78 @@ import { UniversalCard, DocumentList, DataGrid, NotesList } from "@/components/r
 import { FileText, User, History, Scale, Package, Paperclip, CreditCard, Search, UserPlus, Users } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
 
 export default function SetorAdministrativoClients() {
   const [activeFilter, setActiveFilter] = useState<ClientFilter>("protocolados");
   const [searchTerm, setSearchTerm] = useState("");
+  const [isAttachDocsOpen, setIsAttachDocsOpen] = useState(false);
+  const [isGenerateDocsOpen, setIsGenerateDocsOpen] = useState(false);
+  const [isChargebackOpen, setIsChargebackOpen] = useState(false);
+  const [selectedDocType, setSelectedDocType] = useState("");
+  const [selectedGenDocType, setSelectedGenDocType] = useState("");
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [paymentMethod, setPaymentMethod] = useState("");
+  const [orderDate, setOrderDate] = useState("");
+  const [chargebackValue, setChargebackValue] = useState("");
+  const [consultant, setConsultant] = useState("");
+  const [allegation, setAllegation] = useState("");
+
+  const documentTypes = [
+    "RG/CNH",
+    "Procuração judicial",
+    "Comprovante de residência",
+    "Declaração de hipossuficiência",
+    "Carteira de trabalho",
+    "Holerites / Declaração de Rendimento",
+    "Declaração de IR",
+    "Extratos 90 dias",
+    "Reclamação GOV",
+    "Contrato do financiamento",
+    "Documento do veículo",
+    "Cálculo Revisional",
+    "Laudo Financiamento",
+    "Comprovante do pagamento da parcela do financiamento",
+    "Procuração Inicial",
+    "Comprovante de seguro",
+    "Outros gastos fixos",
+    "Questionario para o Titular"
+  ];
+
+  const generateDocTypes = [
+    "Procuração e Hipo",
+    "Citação",
+    "Termo de Ciência",
+    "Homologação",
+    "Termo GOV",
+    "Solicitação de Laudo (Ata)",
+    "Ata de Negociação"
+  ];
+
+  const handleAttachDocument = () => {
+    console.log("Anexar documento:", selectedDocType, selectedFile);
+    setIsAttachDocsOpen(false);
+    setSelectedDocType("");
+    setSelectedFile(null);
+  };
+
+  const handleGenerateDocuments = () => {
+    console.log("Gerar documento:", selectedGenDocType);
+    setIsGenerateDocsOpen(false);
+    setSelectedGenDocType("");
+  };
+
+  const handleChargebackSubmit = () => {
+    console.log("Chargeback:", { paymentMethod, orderDate, chargebackValue, consultant, allegation });
+    setIsChargebackOpen(false);
+    setPaymentMethod("");
+    setOrderDate("");
+    setChargebackValue("");
+    setConsultant("");
+    setAllegation("");
+  };
 
   return (
     <div className="space-y-6">
@@ -78,19 +146,19 @@ export default function SetorAdministrativoClients() {
             actions={[
               {
                 label: "Anexar docs",
-                onClick: () => console.log("Anexar documentos"),
+                onClick: () => setIsAttachDocsOpen(true),
                 variant: "outline" as const,
                 icon: Paperclip
               },
               {
                 label: "Gerar docs",
-                onClick: () => console.log("Gerar documentos"),
+                onClick: () => setIsGenerateDocsOpen(true),
                 variant: "outline" as const,
                 icon: FileText
               },
               {
                 label: "ChargeBack",
-                onClick: () => console.log("ChargeBack"),
+                onClick: () => setIsChargebackOpen(true),
                 variant: "outline" as const,
                 icon: CreditCard
               }
@@ -149,6 +217,170 @@ export default function SetorAdministrativoClients() {
             ]}
             variant="default"
           />
+
+          {/* Modal Anexar Documentos */}
+          <Dialog open={isAttachDocsOpen} onOpenChange={setIsAttachDocsOpen}>
+            <DialogContent className="sm:max-w-[500px]">
+              <DialogHeader>
+                <DialogTitle>Anexar Documento</DialogTitle>
+                <DialogDescription>
+                  Selecione o tipo de documento e faça o upload do arquivo.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 py-4">
+                <div className="space-y-2">
+                  <Label htmlFor="doc-type">Tipo de Documento</Label>
+                  <Select value={selectedDocType} onValueChange={setSelectedDocType}>
+                    <SelectTrigger id="doc-type">
+                      <SelectValue placeholder="Selecione o tipo de documento" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {documentTypes.map((type) => (
+                        <SelectItem key={type} value={type}>
+                          {type}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                {selectedDocType && (
+                  <div className="space-y-2">
+                    <Label htmlFor="file-upload">Arquivo</Label>
+                    <Input
+                      id="file-upload"
+                      type="file"
+                      onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
+                      className="cursor-pointer"
+                    />
+                  </div>
+                )}
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setIsAttachDocsOpen(false)}>
+                  Cancelar
+                </Button>
+                <Button onClick={handleAttachDocument} disabled={!selectedDocType || !selectedFile}>
+                  Anexar Documento
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
+          {/* Modal Gerar Documentos */}
+          <Dialog open={isGenerateDocsOpen} onOpenChange={setIsGenerateDocsOpen}>
+            <DialogContent className="sm:max-w-[500px]">
+              <DialogHeader>
+                <DialogTitle>Gerar Documento</DialogTitle>
+                <DialogDescription>
+                  Selecione o tipo de documento que deseja gerar.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 py-4">
+                <div className="space-y-2">
+                  <Label htmlFor="gen-doc-type">Tipo de Documento</Label>
+                  <Select value={selectedGenDocType} onValueChange={setSelectedGenDocType}>
+                    <SelectTrigger id="gen-doc-type">
+                      <SelectValue placeholder="Selecione o tipo de documento" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {generateDocTypes.map((type) => (
+                        <SelectItem key={type} value={type}>
+                          {type}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setIsGenerateDocsOpen(false)}>
+                  Cancelar
+                </Button>
+                <Button onClick={handleGenerateDocuments} disabled={!selectedGenDocType}>
+                  Gerar Documentos
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
+          {/* Modal Chargeback */}
+          <Dialog open={isChargebackOpen} onOpenChange={setIsChargebackOpen}>
+            <DialogContent className="sm:max-w-[500px]">
+              <DialogHeader>
+                <DialogTitle>Chargeback - Roberto da Silva</DialogTitle>
+                <DialogDescription>
+                  Preencha as informações do chargeback.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 py-4">
+                <div className="space-y-2">
+                  <Label htmlFor="payment-method">Método de Pagamento</Label>
+                  <Select value={paymentMethod} onValueChange={setPaymentMethod}>
+                    <SelectTrigger id="payment-method">
+                      <SelectValue placeholder="Selecione o método" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="FICTORPAY">FICTORPAY</SelectItem>
+                      <SelectItem value="Mercado Pago">Mercado Pago</SelectItem>
+                      <SelectItem value="Pix">Pix</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="order-date">Data do Pedido</Label>
+                  <Input
+                    id="order-date"
+                    type="date"
+                    value={orderDate}
+                    onChange={(e) => setOrderDate(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="chargeback-value">Valor do Chargeback</Label>
+                  <Input
+                    id="chargeback-value"
+                    type="text"
+                    placeholder="R$ 0,00"
+                    value={chargebackValue}
+                    onChange={(e) => setChargebackValue(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="consultant">Nome do Consultor</Label>
+                  <Select value={consultant} onValueChange={setConsultant}>
+                    <SelectTrigger id="consultant">
+                      <SelectValue placeholder="Selecione o consultor" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Jean - COM">Jean - COM</SelectItem>
+                      <SelectItem value="Maria - COM">Maria - COM</SelectItem>
+                      <SelectItem value="Pedro - JUR">Pedro - JUR</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="allegation">Alegação</Label>
+                  <Select value={allegation} onValueChange={setAllegation}>
+                    <SelectTrigger id="allegation">
+                      <SelectValue placeholder="Selecione a alegação" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Desacordo Comercial">Desacordo Comercial</SelectItem>
+                      <SelectItem value="Suspeita de fraude">Suspeita de fraude</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setIsChargebackOpen(false)}>
+                  Cancelar
+                </Button>
+                <Button onClick={handleChargebackSubmit}>
+                  Enviar Chargeback
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
       )}
       
