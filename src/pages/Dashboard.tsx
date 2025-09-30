@@ -3,7 +3,6 @@ import ConsultorJuridicoDashboard from './dashboards/ConsultorJuridicoDashboard'
 import ConsultorComercialDashboard from './dashboards/ConsultorComercialDashboard';
 import SupervisorJuridicoDashboard from './dashboards/SupervisorJuridicoDashboard';
 import SupervisorComercialDashboard from './dashboards/SupervisorComercialDashboard';
-import SetorAdministrativoDashboard from './dashboards/SetorAdministrativoDashboard';
 import GerenciaDashboard from './dashboards/GerenciaDashboard';
 
 export default function Dashboard() {
@@ -26,9 +25,6 @@ export default function Dashboard() {
     
     case 'supervisor-comercial':
       return <SupervisorComercialDashboard />;
-    
-    case 'setor-administrativo':
-      return <SetorAdministrativoDashboard />;
     
     case 'gerencia':
       return <GerenciaDashboard />;

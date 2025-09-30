@@ -26,7 +26,7 @@ const menuItems: MenuItem[] = [
     icon: BarChart3,
     label: "Dashboard",
     path: "/app/dashboard",
-    roles: ['consultor-comercial', 'consultor-juridico', 'supervisor-comercial', 'supervisor-juridico', 'setor-administrativo', 'gerencia']
+    roles: ['consultor-comercial', 'consultor-juridico', 'supervisor-comercial', 'supervisor-juridico', 'gerencia']
   },
   {
     icon: Briefcase,
