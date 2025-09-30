@@ -79,6 +79,35 @@ export default function SetorAdministrativoClients() {
   ]);
   const [editedHistoryPreProcessual, setEditedHistoryPreProcessual] = useState("Cliente em fase de análise inicial.");
 
+  // Novos states
+  const [searchTermNovos, setSearchTermNovos] = useState("");
+  const [isAddClientNovosOpen, setIsAddClientNovosOpen] = useState(false);
+  const [newClientNameNovos, setNewClientNameNovos] = useState("");
+  const [newClientPhoneNovos, setNewClientPhoneNovos] = useState("");
+  const [newClientCPFNovos, setNewClientCPFNovos] = useState("");
+  const [isAttachDocsNovosOpen, setIsAttachDocsNovosOpen] = useState(false);
+  const [isGenerateDocsNovosOpen, setIsGenerateDocsNovosOpen] = useState(false);
+  const [isChargebackNovosOpen, setIsChargebackNovosOpen] = useState(false);
+  const [selectedDocTypeNovos, setSelectedDocTypeNovos] = useState("");
+  const [selectedGenDocTypeNovos, setSelectedGenDocTypeNovos] = useState("");
+  const [selectedFileNovos, setSelectedFileNovos] = useState<File | null>(null);
+  const [paymentMethodNovos, setPaymentMethodNovos] = useState("");
+  const [orderDateNovos, setOrderDateNovos] = useState("");
+  const [chargebackValueNovos, setChargebackValueNovos] = useState("");
+  const [consultantNovos, setConsultantNovos] = useState("");
+  const [allegationNovos, setAllegationNovos] = useState("");
+  const [isEditDocumentsNovosOpen, setIsEditDocumentsNovosOpen] = useState(false);
+  const [isEditClientDataNovosOpen, setIsEditClientDataNovosOpen] = useState(false);
+  const [isEditHistoryNovosOpen, setIsEditHistoryNovosOpen] = useState(false);
+  const [editedEmailNovos, setEditedEmailNovos] = useState("joao.pereira@email.com");
+  const [editedPhoneNovos, setEditedPhoneNovos] = useState("(11) 97777-7777");
+  const [editedCPFNovos, setEditedCPFNovos] = useState("456.789.123-00");
+  const [editedAddressNovos, setEditedAddressNovos] = useState("Rua das Palmeiras, 789 - SP");
+  const [editedDocumentsNovos, setEditedDocumentsNovos] = useState([
+    { id: "1", name: "CPF.pdf", uploadedAt: "2024-01-25T10:30:00Z" },
+  ]);
+  const [editedHistoryNovos, setEditedHistoryNovos] = useState("Novo cliente cadastrado no sistema.");
+
   const documentTypes = [
     "RG/CNH",
     "Procuração judicial",
@@ -233,6 +262,68 @@ export default function SetorAdministrativoClients() {
   const handleSaveHistoryPreProcessual = () => {
     console.log("Salvar histórico pré-processual:", editedHistoryPreProcessual);
     setIsEditHistoryPreProcessualOpen(false);
+  };
+
+  // Novos handlers
+  const handleAddClientNovos = () => {
+    console.log("Adicionar cliente novos:", { 
+      newClientNameNovos, 
+      newClientPhoneNovos, 
+      newClientCPFNovos 
+    });
+    setIsAddClientNovosOpen(false);
+    setNewClientNameNovos("");
+    setNewClientPhoneNovos("");
+    setNewClientCPFNovos("");
+  };
+
+  const handleAttachDocumentNovos = () => {
+    console.log("Anexar documento novos:", selectedDocTypeNovos, selectedFileNovos);
+    setIsAttachDocsNovosOpen(false);
+    setSelectedDocTypeNovos("");
+    setSelectedFileNovos(null);
+  };
+
+  const handleGenerateDocumentsNovos = () => {
+    console.log("Gerar documento novos:", selectedGenDocTypeNovos);
+    setIsGenerateDocsNovosOpen(false);
+    setSelectedGenDocTypeNovos("");
+  };
+
+  const handleChargebackSubmitNovos = () => {
+    console.log("Chargeback novos:", { 
+      paymentMethodNovos, 
+      orderDateNovos, 
+      chargebackValueNovos, 
+      consultantNovos, 
+      allegationNovos 
+    });
+    setIsChargebackNovosOpen(false);
+    setPaymentMethodNovos("");
+    setOrderDateNovos("");
+    setChargebackValueNovos("");
+    setConsultantNovos("");
+    setAllegationNovos("");
+  };
+
+  const handleSaveDocumentsNovos = () => {
+    console.log("Salvar documentos novos:", editedDocumentsNovos);
+    setIsEditDocumentsNovosOpen(false);
+  };
+
+  const handleSaveClientDataNovos = () => {
+    console.log("Salvar dados novos:", { 
+      editedEmailNovos, 
+      editedPhoneNovos, 
+      editedCPFNovos, 
+      editedAddressNovos 
+    });
+    setIsEditClientDataNovosOpen(false);
+  };
+
+  const handleSaveHistoryNovos = () => {
+    console.log("Salvar histórico novos:", editedHistoryNovos);
+    setIsEditHistoryNovosOpen(false);
   };
 
   return (
@@ -1277,11 +1368,453 @@ export default function SetorAdministrativoClients() {
       )}
 
       {activeFilter === "novos" && (
-        <div className="bg-white rounded-2xl border border-gray-200 p-6">
-          <div>
-            <h3 className="text-lg font-semibold mb-4">Clientes Novos</h3>
-            <p className="text-muted-foreground">Conteúdo de clientes novos em desenvolvimento...</p>
+        <div className="space-y-6">
+          {/* Card de Busca com Search Bar e Adicionar Cliente */}
+          <div className="bg-gradient-to-br from-card to-card/95 border border-gray-200 rounded-2xl p-6">
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+              <div className="flex items-center gap-2">
+                <Users className="w-6 h-6 text-primary" />
+                <h3 className="text-2xl font-semibold">Novos Clientes</h3>
+              </div>
+              
+              <div className="flex items-center gap-4 w-full md:w-auto">
+                {/* Search Bar */}
+                <div className="relative bg-background w-full md:w-auto md:min-w-sm md:max-w-md flex flex-col md:flex-row items-center justify-center border border-border py-2 px-2 rounded-2xl gap-2 focus-within:border-primary/50 transition-colors">
+                  <Input 
+                    placeholder="Buscar por CPF ou nome do cliente..."
+                    className="px-6 py-2 w-full rounded-md flex-1 outline-none bg-background border-0 focus-visible:ring-0"
+                    value={searchTermNovos}
+                    onChange={(e) => setSearchTermNovos(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && console.log("Buscar:", searchTermNovos)}
+                  />
+                  <Button
+                    onClick={() => console.log("Buscar:", searchTermNovos)}
+                    className="w-full md:w-auto px-6 py-3 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground hover:from-primary/90 hover:to-primary/70 active:scale-95 duration-100 will-change-transform overflow-hidden relative rounded-xl transition-all shadow-lg hover:shadow-xl"
+                  >
+                    <div className="relative">
+                      <div className="flex items-center">
+                        <Search className="w-4 h-4 mr-2" />
+                        <span className="text-sm font-semibold whitespace-nowrap truncate">
+                          Buscar
+                        </span>
+                      </div>
+                    </div>
+                  </Button>
+                </div>
+
+                {/* Botão Adicionar Cliente */}
+                <Button
+                  onClick={() => setIsAddClientNovosOpen(true)}
+                  className="w-full md:w-auto px-6 py-3 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground hover:from-primary/90 hover:to-primary/70 active:scale-95 duration-100 will-change-transform overflow-hidden relative rounded-xl transition-all shadow-lg hover:shadow-xl"
+                >
+                  <UserPlus className="w-4 h-4 mr-2" />
+                  Adicionar Cliente
+                </Button>
+              </div>
+            </div>
           </div>
+
+          {/* Card de Detalhes do Cliente */}
+          <UniversalCard
+            title="João Pereira"
+            subtitle="Cliente Novo"
+            actions={[
+              {
+                label: "Anexar docs",
+                onClick: () => setIsAttachDocsNovosOpen(true),
+                variant: "outline" as const,
+                icon: Paperclip
+              },
+              {
+                label: "Gerar docs",
+                onClick: () => setIsGenerateDocsNovosOpen(true),
+                variant: "outline" as const,
+                icon: FileText
+              },
+              {
+                label: "ChargeBack",
+                onClick: () => setIsChargebackNovosOpen(true),
+                variant: "outline" as const,
+                icon: CreditCard
+              }
+            ]}
+            sections={[
+              {
+                id: "documents",
+                title: "Documentos anexados",
+                icon: FileText,
+                content: <DocumentList documents={editedDocumentsNovos} />,
+                onEdit: () => setIsEditDocumentsNovosOpen(true)
+              },
+              {
+                id: "client-data",
+                title: "Dados do cliente",
+                icon: User,
+                content: <DataGrid data={[
+                  { label: "Email", value: editedEmailNovos },
+                  { label: "Telefone", value: editedPhoneNovos },
+                  { label: "CPF", value: editedCPFNovos },
+                  { label: "Endereço", value: editedAddressNovos }
+                ]} />,
+                onEdit: () => setIsEditClientDataNovosOpen(true)
+              },
+              {
+                id: "history",
+                title: "Histórico do Cliente",
+                icon: History,
+                content: <NotesList notes={[
+                  { 
+                    id: "1", 
+                    content: editedHistoryNovos, 
+                    createdBy: "Pedro Santos", 
+                    createdAt: "2024-01-25T10:30:00Z" 
+                  }
+                ]} />,
+                onEdit: () => setIsEditHistoryNovosOpen(true)
+              }
+            ]}
+            variant="default"
+          />
+
+          {/* Modal Adicionar Cliente Novos */}
+          <Dialog open={isAddClientNovosOpen} onOpenChange={setIsAddClientNovosOpen}>
+            <DialogContent className="sm:max-w-[500px]">
+              <DialogHeader>
+                <DialogTitle>Adicionar Novo Cliente</DialogTitle>
+                <DialogDescription>
+                  Preencha as informações do novo cliente.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 py-4">
+                <div className="space-y-2">
+                  <Label htmlFor="client-name-novos">Nome</Label>
+                  <Input
+                    id="client-name-novos"
+                    type="text"
+                    placeholder="Nome completo do cliente"
+                    value={newClientNameNovos}
+                    onChange={(e) => setNewClientNameNovos(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="client-phone-novos">Telefone</Label>
+                  <Input
+                    id="client-phone-novos"
+                    type="text"
+                    placeholder="(00) 00000-0000"
+                    value={newClientPhoneNovos}
+                    onChange={(e) => setNewClientPhoneNovos(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="client-cpf-novos">CPF</Label>
+                  <Input
+                    id="client-cpf-novos"
+                    type="text"
+                    placeholder="000.000.000-00"
+                    value={newClientCPFNovos}
+                    onChange={(e) => setNewClientCPFNovos(e.target.value)}
+                  />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setIsAddClientNovosOpen(false)}>
+                  Cancelar
+                </Button>
+                <Button onClick={handleAddClientNovos} disabled={!newClientNameNovos || !newClientPhoneNovos || !newClientCPFNovos}>
+                  Adicionar
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
+          {/* Modal Anexar Documentos Novos */}
+          <Dialog open={isAttachDocsNovosOpen} onOpenChange={setIsAttachDocsNovosOpen}>
+            <DialogContent className="sm:max-w-[500px]">
+              <DialogHeader>
+                <DialogTitle>Anexar Documento</DialogTitle>
+                <DialogDescription>
+                  Selecione o tipo de documento e faça o upload do arquivo.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 py-4">
+                <div className="space-y-2">
+                  <Label htmlFor="doc-type-novos">Tipo de Documento</Label>
+                  <Select value={selectedDocTypeNovos} onValueChange={setSelectedDocTypeNovos}>
+                    <SelectTrigger id="doc-type-novos">
+                      <SelectValue placeholder="Selecione o tipo de documento" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {documentTypes.map((type) => (
+                        <SelectItem key={type} value={type}>
+                          {type}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                {selectedDocTypeNovos && (
+                  <div className="space-y-2">
+                    <Label htmlFor="file-upload-novos">Arquivo</Label>
+                    <Input
+                      id="file-upload-novos"
+                      type="file"
+                      onChange={(e) => setSelectedFileNovos(e.target.files?.[0] || null)}
+                      className="cursor-pointer"
+                    />
+                  </div>
+                )}
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setIsAttachDocsNovosOpen(false)}>
+                  Cancelar
+                </Button>
+                <Button onClick={handleAttachDocumentNovos} disabled={!selectedDocTypeNovos || !selectedFileNovos}>
+                  Anexar
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
+          {/* Modal Gerar Documentos Novos */}
+          <Dialog open={isGenerateDocsNovosOpen} onOpenChange={setIsGenerateDocsNovosOpen}>
+            <DialogContent className="sm:max-w-[500px]">
+              <DialogHeader>
+                <DialogTitle>Gerar Documento</DialogTitle>
+                <DialogDescription>
+                  Selecione o tipo de documento que deseja gerar.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 py-4">
+                <div className="space-y-2">
+                  <Label htmlFor="gen-doc-type-novos">Tipo de Documento</Label>
+                  <Select value={selectedGenDocTypeNovos} onValueChange={setSelectedGenDocTypeNovos}>
+                    <SelectTrigger id="gen-doc-type-novos">
+                      <SelectValue placeholder="Selecione o tipo de documento" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {generateDocTypes.map((type) => (
+                        <SelectItem key={type} value={type}>
+                          {type}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setIsGenerateDocsNovosOpen(false)}>
+                  Cancelar
+                </Button>
+                <Button onClick={handleGenerateDocumentsNovos} disabled={!selectedGenDocTypeNovos}>
+                  Gerar
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
+          {/* Modal ChargeBack Novos */}
+          <Dialog open={isChargebackNovosOpen} onOpenChange={setIsChargebackNovosOpen}>
+            <DialogContent className="sm:max-w-[500px]">
+              <DialogHeader>
+                <DialogTitle>ChargeBack</DialogTitle>
+                <DialogDescription>
+                  Preencha as informações para processar o chargeback.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 py-4">
+                <div className="space-y-2">
+                  <Label htmlFor="payment-method-novos">Forma de Pagamento</Label>
+                  <Select value={paymentMethodNovos} onValueChange={setPaymentMethodNovos}>
+                    <SelectTrigger id="payment-method-novos">
+                      <SelectValue placeholder="Selecione a forma de pagamento" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="credito">Cartão de Crédito</SelectItem>
+                      <SelectItem value="debito">Cartão de Débito</SelectItem>
+                      <SelectItem value="pix">PIX</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="order-date-novos">Data do Pedido</Label>
+                  <Input
+                    id="order-date-novos"
+                    type="date"
+                    value={orderDateNovos}
+                    onChange={(e) => setOrderDateNovos(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="chargeback-value-novos">Valor do Chargeback</Label>
+                  <Input
+                    id="chargeback-value-novos"
+                    type="text"
+                    placeholder="R$ 0,00"
+                    value={chargebackValueNovos}
+                    onChange={(e) => setChargebackValueNovos(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="consultant-novos">Nome do Consultor</Label>
+                  <Select value={consultantNovos} onValueChange={setConsultantNovos}>
+                    <SelectTrigger id="consultant-novos">
+                      <SelectValue placeholder="Selecione o consultor" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="ana">Ana Silva</SelectItem>
+                      <SelectItem value="carlos">Carlos Oliveira</SelectItem>
+                      <SelectItem value="patricia">Patrícia Costa</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="allegation-novos">Alegação</Label>
+                  <Select value={allegationNovos} onValueChange={setAllegationNovos}>
+                    <SelectTrigger id="allegation-novos">
+                      <SelectValue placeholder="Selecione a alegação" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="desacordo">Desacordo Comercial</SelectItem>
+                      <SelectItem value="fraude">Suspeita de fraude</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setIsChargebackNovosOpen(false)}>
+                  Cancelar
+                </Button>
+                <Button onClick={handleChargebackSubmitNovos} disabled={!paymentMethodNovos || !orderDateNovos || !chargebackValueNovos || !consultantNovos || !allegationNovos}>
+                  Enviar
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
+          {/* Modal Editar Documentos Novos */}
+          <Dialog open={isEditDocumentsNovosOpen} onOpenChange={setIsEditDocumentsNovosOpen}>
+            <DialogContent className="sm:max-w-[500px]">
+              <DialogHeader>
+                <DialogTitle>Editar Documentos Anexados</DialogTitle>
+                <DialogDescription>
+                  Gerencie os documentos anexados ao cliente.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 py-4">
+                <div className="space-y-2">
+                  <Label>Documentos</Label>
+                  <div className="text-sm text-muted-foreground">
+                    {editedDocumentsNovos.map((doc) => (
+                      <div key={doc.id} className="flex items-center justify-between p-2 rounded-md bg-muted/50 mb-2">
+                        <span>{doc.name}</span>
+                        <span className="text-xs">
+                          {new Date(doc.uploadedAt).toLocaleDateString('pt-BR')}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setIsEditDocumentsNovosOpen(false)}>
+                  Cancelar
+                </Button>
+                <Button onClick={handleSaveDocumentsNovos}>
+                  Salvar
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
+          {/* Modal Editar Dados do Cliente Novos */}
+          <Dialog open={isEditClientDataNovosOpen} onOpenChange={setIsEditClientDataNovosOpen}>
+            <DialogContent className="sm:max-w-[500px]">
+              <DialogHeader>
+                <DialogTitle>Editar Dados do Cliente</DialogTitle>
+                <DialogDescription>
+                  Atualize as informações do cliente.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 py-4">
+                <div className="space-y-2">
+                  <Label htmlFor="edit-email-novos">Email</Label>
+                  <Input
+                    id="edit-email-novos"
+                    type="email"
+                    value={editedEmailNovos}
+                    onChange={(e) => setEditedEmailNovos(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="edit-phone-novos">Telefone</Label>
+                  <Input
+                    id="edit-phone-novos"
+                    type="text"
+                    value={editedPhoneNovos}
+                    onChange={(e) => setEditedPhoneNovos(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="edit-cpf-novos">CPF</Label>
+                  <Input
+                    id="edit-cpf-novos"
+                    type="text"
+                    value={editedCPFNovos}
+                    onChange={(e) => setEditedCPFNovos(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="edit-address-novos">Endereço</Label>
+                  <Input
+                    id="edit-address-novos"
+                    type="text"
+                    value={editedAddressNovos}
+                    onChange={(e) => setEditedAddressNovos(e.target.value)}
+                  />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setIsEditClientDataNovosOpen(false)}>
+                  Cancelar
+                </Button>
+                <Button onClick={handleSaveClientDataNovos}>
+                  Salvar
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
+          {/* Modal Editar Histórico Novos */}
+          <Dialog open={isEditHistoryNovosOpen} onOpenChange={setIsEditHistoryNovosOpen}>
+            <DialogContent className="sm:max-w-[500px]">
+              <DialogHeader>
+                <DialogTitle>Editar Histórico do Cliente</DialogTitle>
+                <DialogDescription>
+                  Atualize o histórico de interações com o cliente.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 py-4">
+                <div className="space-y-2">
+                  <Label htmlFor="edit-history-novos">Histórico</Label>
+                  <Input
+                    id="edit-history-novos"
+                    type="text"
+                    value={editedHistoryNovos}
+                    onChange={(e) => setEditedHistoryNovos(e.target.value)}
+                  />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setIsEditHistoryNovosOpen(false)}>
+                  Cancelar
+                </Button>
+                <Button onClick={handleSaveHistoryNovos}>
+                  Salvar
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
       )}
       {activeFilter === "repiques" && (
