@@ -388,6 +388,7 @@ export default function SetorAdministrativoClients() {
   const [newClientCPFLeads, setNewClientCPFLeads] = useState("");
   const [newClientContractTypeLeads, setNewClientContractTypeLeads] = useState("");
   const [newClientRegistrationDateLeads, setNewClientRegistrationDateLeads] = useState("");
+  const [newClientOriginLeads, setNewClientOriginLeads] = useState("");
   const [isEditPhoneLeadsOpen, setIsEditPhoneLeadsOpen] = useState(false);
   const [isEditContractTypeLeadsOpen, setIsEditContractTypeLeadsOpen] = useState(false);
   const [isEditRegistrationDateLeadsOpen, setIsEditRegistrationDateLeadsOpen] = useState(false);
@@ -403,6 +404,7 @@ export default function SetorAdministrativoClients() {
       newClientNameLeads, 
       newClientPhoneLeads, 
       newClientCPFLeads,
+      newClientOriginLeads,
       newClientContractTypeLeads,
       newClientRegistrationDateLeads
     });
@@ -412,6 +414,7 @@ export default function SetorAdministrativoClients() {
     setNewClientCPFLeads("");
     setNewClientContractTypeLeads("");
     setNewClientRegistrationDateLeads("");
+    setNewClientOriginLeads("");
   };
 
   const handleSavePhoneLeads = () => {
@@ -2404,12 +2407,29 @@ export default function SetorAdministrativoClients() {
                     onChange={(e) => setNewClientRegistrationDateLeads(e.target.value)}
                   />
                 </div>
+                <div className="space-y-2">
+                  <Label htmlFor="client-origin-leads">Origem</Label>
+                  <Select value={newClientOriginLeads} onValueChange={setNewClientOriginLeads}>
+                    <SelectTrigger id="client-origin-leads">
+                      <SelectValue placeholder="Selecione a origem" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="repique">Repique</SelectItem>
+                      <SelectItem value="facebook">Facebook</SelectItem>
+                      <SelectItem value="tv">TV</SelectItem>
+                      <SelectItem value="google">Google</SelectItem>
+                      <SelectItem value="indicacao">Indicação</SelectItem>
+                      <SelectItem value="instagram">Instagram</SelectItem>
+                      <SelectItem value="outros">Outros</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
               <DialogFooter>
                 <Button variant="outline" onClick={() => setIsAddClientLeadsOpen(false)}>
                   Cancelar
                 </Button>
-                <Button onClick={handleAddClientLeads} disabled={!newClientNameLeads || !newClientPhoneLeads || !newClientCPFLeads || !newClientContractTypeLeads || !newClientRegistrationDateLeads}>
+                <Button onClick={handleAddClientLeads} disabled={!newClientNameLeads || !newClientPhoneLeads || !newClientCPFLeads || !newClientContractTypeLeads || !newClientRegistrationDateLeads || !newClientOriginLeads}>
                   Adicionar
                 </Button>
               </DialogFooter>
