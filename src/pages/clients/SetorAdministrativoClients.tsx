@@ -23,6 +23,18 @@ export default function SetorAdministrativoClients() {
   const [chargebackValue, setChargebackValue] = useState("");
   const [consultant, setConsultant] = useState("");
   const [allegation, setAllegation] = useState("");
+  const [isAddClientOpen, setIsAddClientOpen] = useState(false);
+  const [newClientName, setNewClientName] = useState("");
+  const [newClientPhone, setNewClientPhone] = useState("");
+  const [newClientCPF, setNewClientCPF] = useState("");
+  const [newClientProtocol, setNewClientProtocol] = useState("");
+  const [isEditingDocuments, setIsEditingDocuments] = useState(false);
+  const [isEditingClientData, setIsEditingClientData] = useState(false);
+  const [isEditingHistory, setIsEditingHistory] = useState(false);
+  const [editedEmail, setEditedEmail] = useState("roberto.silva@email.com");
+  const [editedPhone, setEditedPhone] = useState("(11) 99999-9999");
+  const [editedCPF, setEditedCPF] = useState("123.456.789-00");
+  const [editedAddress, setEditedAddress] = useState("Rua das Flores, 123 - SP");
 
   const documentTypes = [
     "RG/CNH",
@@ -78,6 +90,20 @@ export default function SetorAdministrativoClients() {
     setAllegation("");
   };
 
+  const handleAddClient = () => {
+    console.log("Adicionar cliente:", { newClientName, newClientPhone, newClientCPF, newClientProtocol });
+    setIsAddClientOpen(false);
+    setNewClientName("");
+    setNewClientPhone("");
+    setNewClientCPF("");
+    setNewClientProtocol("");
+  };
+
+  const handleSaveClientData = () => {
+    console.log("Salvar dados:", { editedEmail, editedPhone, editedCPF, editedAddress });
+    setIsEditingClientData(false);
+  };
+
   return (
     <div className="space-y-6">
       <PageHeader 
@@ -129,7 +155,7 @@ export default function SetorAdministrativoClients() {
 
                 {/* Botão Adicionar Cliente */}
                 <Button
-                  onClick={() => console.log("Adicionar cliente")}
+                  onClick={() => setIsAddClientOpen(true)}
                   className="w-full md:w-auto px-6 py-3 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground hover:from-primary/90 hover:to-primary/70 active:scale-95 duration-100 will-change-transform overflow-hidden relative rounded-xl transition-all shadow-lg hover:shadow-xl"
                 >
                   <UserPlus className="w-4 h-4 mr-2" />
@@ -178,13 +204,38 @@ export default function SetorAdministrativoClients() {
                 id: "client-data",
                 title: "Dados do cliente",
                 icon: User,
-                content: <DataGrid data={[
-                  { label: "Email", value: "roberto.silva@email.com" },
-                  { label: "Telefone", value: "(11) 99999-9999" },
-                  { label: "CPF", value: "123.456.789-00" },
-                  { label: "Endereço", value: "Rua das Flores, 123 - SP" }
-                ]} />,
-                onEdit: () => console.log("Editar dados do cliente")
+                content: isEditingClientData ? (
+                  <div className="space-y-4">
+                    <div>
+                      <label className="text-sm font-medium">Email</label>
+                      <Input value={editedEmail} onChange={(e) => setEditedEmail(e.target.value)} />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium">Telefone</label>
+                      <Input value={editedPhone} onChange={(e) => setEditedPhone(e.target.value)} />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium">CPF</label>
+                      <Input value={editedCPF} onChange={(e) => setEditedCPF(e.target.value)} />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium">Endereço</label>
+                      <Input value={editedAddress} onChange={(e) => setEditedAddress(e.target.value)} />
+                    </div>
+                    <div className="flex gap-2">
+                      <Button onClick={handleSaveClientData}>Salvar</Button>
+                      <Button variant="outline" onClick={() => setIsEditingClientData(false)}>Cancelar</Button>
+                    </div>
+                  </div>
+                ) : (
+                  <DataGrid data={[
+                    { label: "Email", value: editedEmail },
+                    { label: "Telefone", value: editedPhone },
+                    { label: "CPF", value: editedCPF },
+                    { label: "Endereço", value: editedAddress }
+                  ]} />
+                ),
+                onEdit: () => setIsEditingClientData(true)
               },
               {
                 id: "history",
@@ -298,6 +349,68 @@ export default function SetorAdministrativoClients() {
                 </Button>
                 <Button onClick={handleGenerateDocuments} disabled={!selectedGenDocType}>
                   Gerar Documentos
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
+          {/* Modal Adicionar Cliente */}
+          <Dialog open={isAddClientOpen} onOpenChange={setIsAddClientOpen}>
+            <DialogContent className="sm:max-w-[500px]">
+              <DialogHeader>
+                <DialogTitle>Adicionar Cliente</DialogTitle>
+                <DialogDescription>
+                  Preencha as informações do novo cliente.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 py-4">
+                <div className="space-y-2">
+                  <Label htmlFor="client-name">Nome</Label>
+                  <Input
+                    id="client-name"
+                    type="text"
+                    placeholder="Nome completo do cliente"
+                    value={newClientName}
+                    onChange={(e) => setNewClientName(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="client-phone">Telefone</Label>
+                  <Input
+                    id="client-phone"
+                    type="text"
+                    placeholder="(00) 00000-0000"
+                    value={newClientPhone}
+                    onChange={(e) => setNewClientPhone(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="client-cpf">CPF</Label>
+                  <Input
+                    id="client-cpf"
+                    type="text"
+                    placeholder="000.000.000-00"
+                    value={newClientCPF}
+                    onChange={(e) => setNewClientCPF(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="client-protocol">Protocolo</Label>
+                  <Input
+                    id="client-protocol"
+                    type="text"
+                    placeholder="PROT-2024-XXX"
+                    value={newClientProtocol}
+                    onChange={(e) => setNewClientProtocol(e.target.value)}
+                  />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setIsAddClientOpen(false)}>
+                  Cancelar
+                </Button>
+                <Button onClick={handleAddClient} disabled={!newClientName || !newClientPhone || !newClientCPF || !newClientProtocol}>
+                  Adicionar Cliente
                 </Button>
               </DialogFooter>
             </DialogContent>

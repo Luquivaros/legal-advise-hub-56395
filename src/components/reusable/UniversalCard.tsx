@@ -150,7 +150,7 @@ export function UniversalCard({
                         <Button 
                           variant="ghost" 
                           size="sm" 
-                          className="h-8 w-8 p-0 hover:bg-accent hover:text-accent-foreground"
+                          className="h-8 w-8 p-0 hover:bg-muted"
                           onClick={section.onEdit}
                         >
                           <Edit className="w-4 h-4" />
