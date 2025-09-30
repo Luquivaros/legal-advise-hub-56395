@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Filter, Shield, Upload } from 'lucide-react';
+import { Filter, Shield, Upload, Check, X } from 'lucide-react';
 import { Chargeback } from '@/types';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -41,6 +41,8 @@ export default function ChargebackListAdministrativo({ chargebacks, loading = fa
   const [filterStatus, setFilterStatus] = useState<FilterStatus>('all');
   const [isDefenseModalOpen, setIsDefenseModalOpen] = useState(false);
   const [selectedChargeback, setSelectedChargeback] = useState<Chargeback | null>(null);
+  const [editingStatusId, setEditingStatusId] = useState<string | null>(null);
+  const [tempStatus, setTempStatus] = useState<string>('');
   
   // Chargeback info
   const [paymentMethod, setPaymentMethod] = useState('');
@@ -146,6 +148,25 @@ export default function ChargebackListAdministrativo({ chargebacks, loading = fa
     setSelectedChargeback(null);
   };
 
+  const handleEditStatus = (chargeback: Chargeback) => {
+    setEditingStatusId(chargeback.id);
+    setTempStatus(chargeback.status);
+  };
+
+  const handleSaveStatus = (chargebackId: string) => {
+    toast({
+      title: "Status atualizado",
+      description: "O status do chargeback foi atualizado com sucesso.",
+    });
+    setEditingStatusId(null);
+    setTempStatus('');
+  };
+
+  const handleCancelEdit = () => {
+    setEditingStatusId(null);
+    setTempStatus('');
+  };
+
   return (
     <>
       <Card className="bg-gradient-to-br from-card to-card/95 border border-gray-200">
@@ -228,7 +249,43 @@ export default function ChargebackListAdministrativo({ chargebacks, loading = fa
                           {format(new Date(chargeback.createdAt), 'dd/MM/yyyy', { locale: ptBR })}
                         </TableCell>
                         <TableCell className="py-4">
-                          {getStatusBadge(chargeback.status)}
+                          {editingStatusId === chargeback.id ? (
+                            <div className="flex items-center gap-2">
+                              <Select value={tempStatus} onValueChange={setTempStatus}>
+                                <SelectTrigger className="w-[140px] h-8">
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="resolved">Revertido</SelectItem>
+                                  <SelectItem value="lost">Cancelado</SelectItem>
+                                  <SelectItem value="pending">Pendente</SelectItem>
+                                </SelectContent>
+                              </Select>
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                className="h-8 w-8 p-0"
+                                onClick={() => handleSaveStatus(chargeback.id)}
+                              >
+                                <Check className="h-4 w-4 text-green-600" />
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                className="h-8 w-8 p-0"
+                                onClick={handleCancelEdit}
+                              >
+                                <X className="h-4 w-4 text-red-600" />
+                              </Button>
+                            </div>
+                          ) : (
+                            <div 
+                              className="cursor-pointer inline-block"
+                              onClick={() => handleEditStatus(chargeback)}
+                            >
+                              {getStatusBadge(chargeback.status)}
+                            </div>
+                          )}
                         </TableCell>
                         <TableCell className="py-4">
                           <Button 
