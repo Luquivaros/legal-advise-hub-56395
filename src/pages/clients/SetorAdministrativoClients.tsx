@@ -29,7 +29,10 @@ export default function SetorAdministrativoClients() {
           {/* Card de Busca com Search Bar e Adicionar Cliente */}
           <div className="bg-gradient-to-br from-card to-card/95 border border-gray-200 rounded-2xl p-6">
             <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-              <h3 className="text-lg font-semibold">Protocolados</h3>
+              <div className="flex items-center gap-2">
+                <Search className="w-5 h-5 text-primary" />
+                <h3 className="text-xl font-semibold">Protocolados</h3>
+              </div>
               
               <div className="flex items-center gap-4 w-full md:w-auto">
                 {/* Search Bar */}
@@ -125,35 +128,35 @@ export default function SetorAdministrativoClients() {
               }
             ]}
             variant="default"
-          >
-            {/* Botões de Ação com Hover Personalizado */}
-            <div className="flex items-center gap-2 mt-4 pt-4 border-t border-border">
-              <Button
-                onClick={() => console.log("Anexar documentos")}
-                variant="outline"
-                className="hover:bg-muted/50 hover:border-muted-foreground/40 transition-all"
-              >
-                <Paperclip className="w-4 h-4 mr-2" />
-                Anexar docs
-              </Button>
-              <Button
-                onClick={() => console.log("Gerar documentos")}
-                variant="outline"
-                className="hover:bg-muted/50 hover:border-muted-foreground/40 transition-all"
-              >
-                <FileText className="w-4 h-4 mr-2" />
-                Gerar docs
-              </Button>
-              <Button
-                onClick={() => console.log("ChargeBack")}
-                variant="outline"
-                className="hover:bg-muted/50 hover:border-muted-foreground/40 transition-all"
-              >
-                <CreditCard className="w-4 h-4 mr-2" />
-                ChargeBack
-              </Button>
-            </div>
-          </UniversalCard>
+          />
+          
+          {/* Botões de Ação posicionados abaixo do card */}
+          <div className="flex items-center gap-2">
+            <Button
+              onClick={() => console.log("Anexar documentos")}
+              variant="outline"
+              className="hover:bg-muted/50 hover:border-muted-foreground/40 transition-all text-foreground hover:text-foreground"
+            >
+              <Paperclip className="w-4 h-4 mr-2" />
+              Anexar docs
+            </Button>
+            <Button
+              onClick={() => console.log("Gerar documentos")}
+              variant="outline"
+              className="hover:bg-muted/50 hover:border-muted-foreground/40 transition-all text-foreground hover:text-foreground"
+            >
+              <FileText className="w-4 h-4 mr-2" />
+              Gerar docs
+            </Button>
+            <Button
+              onClick={() => console.log("ChargeBack")}
+              variant="outline"
+              className="hover:bg-muted/50 hover:border-muted-foreground/40 transition-all text-foreground hover:text-foreground"
+            >
+              <CreditCard className="w-4 h-4 mr-2" />
+              ChargeBack
+            </Button>
+          </div>
         </div>
       )}
       
