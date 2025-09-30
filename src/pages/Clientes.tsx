@@ -3,6 +3,7 @@ import ConsultorJuridicoClients from "./clients/ConsultorJuridicoClients";
 import ConsultorComercialClients from "./clients/ConsultorComercialClients";
 import SupervisorJuridicoClients from "./clients/SupervisorJuridicoClients";
 import SupervisorComercialClients from "./clients/SupervisorComercialClients";
+import SetorAdministrativoClients from "./clients/SetorAdministrativoClients";
 import PageHeader from "@/components/PageHeader";
 
 export default function Clientes() {
@@ -18,6 +19,8 @@ export default function Clientes() {
       return <SupervisorJuridicoClients />;
     case 'supervisor-comercial':
       return <SupervisorComercialClients />;
+    case 'setor-administrativo':
+      return <SetorAdministrativoClients />;
     default:
       return (
         <div className="space-y-6">
