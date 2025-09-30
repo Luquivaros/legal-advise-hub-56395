@@ -5,8 +5,10 @@ import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Filter, Shield } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Filter, Shield, Upload } from 'lucide-react';
 import { Chargeback } from '@/types';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -39,7 +41,21 @@ export default function ChargebackListAdministrativo({ chargebacks, loading = fa
   const [filterStatus, setFilterStatus] = useState<FilterStatus>('all');
   const [isDefenseModalOpen, setIsDefenseModalOpen] = useState(false);
   const [selectedChargeback, setSelectedChargeback] = useState<Chargeback | null>(null);
-  const [defenseDescription, setDefenseDescription] = useState('');
+  
+  // Chargeback info
+  const [paymentMethod, setPaymentMethod] = useState('');
+  const [chargebackReason, setChargebackReason] = useState('');
+  const [deadline, setDeadline] = useState('');
+  
+  // Client data
+  const [clientAddress, setClientAddress] = useState('');
+  const [clientHistory, setClientHistory] = useState('');
+  
+  // Defense context
+  const [defenseContext, setDefenseContext] = useState('');
+  
+  // Documents
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
 
   const filteredChargebacks = chargebacks.filter(chargeback => {
     if (filterStatus === 'all') return true;
@@ -85,11 +101,17 @@ export default function ChargebackListAdministrativo({ chargebacks, loading = fa
     setIsDefenseModalOpen(true);
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setSelectedFiles(Array.from(e.target.files));
+    }
+  };
+
   const handleSaveDefense = () => {
-    if (!defenseDescription.trim()) {
+    if (!paymentMethod || !chargebackReason || !defenseContext.trim()) {
       toast({
-        title: "Campo obrigatório",
-        description: "Por favor, descreva a defesa.",
+        title: "Campos obrigatórios",
+        description: "Por favor, preencha todos os campos obrigatórios.",
         variant: "destructive"
       });
       return;
@@ -100,8 +122,27 @@ export default function ChargebackListAdministrativo({ chargebacks, loading = fa
       description: `Defesa criada com sucesso para ${selectedChargeback?.client.name}`,
     });
     
+    // Reset all fields
     setIsDefenseModalOpen(false);
-    setDefenseDescription('');
+    setPaymentMethod('');
+    setChargebackReason('');
+    setDeadline('');
+    setClientAddress('');
+    setClientHistory('');
+    setDefenseContext('');
+    setSelectedFiles([]);
+    setSelectedChargeback(null);
+  };
+
+  const handleCloseModal = () => {
+    setIsDefenseModalOpen(false);
+    setPaymentMethod('');
+    setChargebackReason('');
+    setDeadline('');
+    setClientAddress('');
+    setClientHistory('');
+    setDefenseContext('');
+    setSelectedFiles([]);
     setSelectedChargeback(null);
   };
 
@@ -210,38 +251,158 @@ export default function ChargebackListAdministrativo({ chargebacks, loading = fa
       </Card>
 
       <Dialog open={isDefenseModalOpen} onOpenChange={setIsDefenseModalOpen}>
-        <DialogContent>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Criar Defesa de Chargeback</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4">
-            <div>
-              <Label className="text-sm font-medium">Cliente</Label>
-              <p className="text-sm text-muted-foreground mt-1">{selectedChargeback?.client.name}</p>
+          <div className="space-y-6">
+            {/* Informações do Chargeback */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-foreground">Informações do Chargeback</h3>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="payment-method">Método *</Label>
+                  <Select value={paymentMethod} onValueChange={setPaymentMethod}>
+                    <SelectTrigger id="payment-method">
+                      <SelectValue placeholder="Selecione o método" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="pix">Pix</SelectItem>
+                      <SelectItem value="fictorpay">FictorPay</SelectItem>
+                      <SelectItem value="mercado-pago">Mercado Pago</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="chargeback-reason">Motivo *</Label>
+                  <Select value={chargebackReason} onValueChange={setChargebackReason}>
+                    <SelectTrigger id="chargeback-reason">
+                      <SelectValue placeholder="Selecione o motivo" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="fraude">Suspeita de Fraude</SelectItem>
+                      <SelectItem value="desacordo">Desacordo Comercial</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label>Valor</Label>
+                  <Input 
+                    value={selectedChargeback ? formatCurrency(selectedChargeback.amount) : ''} 
+                    disabled 
+                    className="bg-muted"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="deadline">Prazo para Envio</Label>
+                  <Input
+                    id="deadline"
+                    type="date"
+                    value={deadline}
+                    onChange={(e) => setDeadline(e.target.value)}
+                  />
+                </div>
+              </div>
             </div>
-            <div>
-              <Label className="text-sm font-medium">Valor</Label>
-              <p className="text-sm text-muted-foreground mt-1">
-                {selectedChargeback && formatCurrency(selectedChargeback.amount)}
-              </p>
+
+            {/* Dados do Cliente */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-foreground">Dados do Cliente</h3>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Nome</Label>
+                  <Input 
+                    value={selectedChargeback?.client.name || ''} 
+                    disabled 
+                    className="bg-muted"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>E-mail</Label>
+                  <Input 
+                    value={selectedChargeback?.client.email || ''} 
+                    disabled 
+                    className="bg-muted"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="client-address">Endereço</Label>
+                  <Input
+                    id="client-address"
+                    placeholder="Digite o endereço do cliente"
+                    value={clientAddress}
+                    onChange={(e) => setClientAddress(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Telefone</Label>
+                  <Input 
+                    value={selectedChargeback?.client.phone || ''} 
+                    disabled 
+                    className="bg-muted"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>CPF</Label>
+                  <Input 
+                    value={selectedChargeback?.client.cpf || ''} 
+                    disabled 
+                    className="bg-muted"
+                  />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="client-history">Histórico do Cliente</Label>
+                <Textarea
+                  id="client-history"
+                  placeholder="Adicione informações sobre o histórico do cliente..."
+                  value={clientHistory}
+                  onChange={(e) => setClientHistory(e.target.value)}
+                  rows={3}
+                />
+              </div>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="defense-description">Descrição da Defesa</Label>
-              <Textarea
-                id="defense-description"
-                placeholder="Descreva os argumentos e evidências da defesa..."
-                value={defenseDescription}
-                onChange={(e) => setDefenseDescription(e.target.value)}
-                rows={6}
-              />
+
+            {/* Contexto da Defesa */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-foreground">Contexto da Defesa</h3>
+              <div className="space-y-2">
+                <Label htmlFor="defense-context">Contexto *</Label>
+                <Textarea
+                  id="defense-context"
+                  placeholder="Descreva o contexto e argumentos da defesa..."
+                  value={defenseContext}
+                  onChange={(e) => setDefenseContext(e.target.value)}
+                  rows={6}
+                />
+              </div>
+            </div>
+
+            {/* Anexar Documentos */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-foreground">Anexar Documento</h3>
+              <div className="space-y-2">
+                <Label htmlFor="documents">Documentos</Label>
+                <div className="flex items-center gap-2">
+                  <Input
+                    id="documents"
+                    type="file"
+                    multiple
+                    onChange={handleFileChange}
+                    className="cursor-pointer"
+                  />
+                  <Upload className="h-5 w-5 text-muted-foreground" />
+                </div>
+                {selectedFiles.length > 0 && (
+                  <div className="text-sm text-muted-foreground mt-2">
+                    {selectedFiles.length} arquivo(s) selecionado(s)
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => {
-              setIsDefenseModalOpen(false);
-              setDefenseDescription('');
-              setSelectedChargeback(null);
-            }}>
+          <DialogFooter className="mt-6">
+            <Button variant="outline" onClick={handleCloseModal}>
               Cancelar
             </Button>
             <Button onClick={handleSaveDefense}>
