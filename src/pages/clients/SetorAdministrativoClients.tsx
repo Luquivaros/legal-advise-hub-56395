@@ -2,59 +2,13 @@ import { useState } from "react";
 import PageHeader from "@/components/PageHeader";
 import { ClientFilterMenu, ClientFilter } from "@/components/ClientFilterMenu";
 import { UniversalCard, DocumentList, DataGrid, NotesList } from "@/components/reusable/UniversalCard";
-import { FileText, User, History, Scale, Package, Paperclip, CreditCard, Search, UserPlus, Users, Upload } from "lucide-react";
+import { FileText, User, History, Scale, Package, Paperclip, CreditCard, Search, UserPlus, Users } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 export default function SetorAdministrativoClients() {
   const [activeFilter, setActiveFilter] = useState<ClientFilter>("protocolados");
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedDocType, setSelectedDocType] = useState<string>("");
-
-  const attachDocTypes = [
-    "RG/CNH",
-    "Procuração judicial",
-    "Comprovante de residência",
-    "Declaração de hipossuficiência",
-    "Carteira de trabalho",
-    "Holerites / Declaração de Rendimento",
-    "Declaração de IR",
-    "Extratos 90 dias",
-    "Reclamação GOV",
-    "Contrato do financiamento",
-    "Documento do veículo",
-    "Cálculo Revisional",
-    "Laudo Financiamento",
-    "Comprovante do pagamento da parcela do financiamento",
-    "Procuração Inicial",
-    "Comprovante de seguro",
-    "Outros gastos fixos",
-    "Questionario para o Titular"
-  ];
-
-  const generateDocTypes = [
-    "Procuração e Hipo",
-    "Citação",
-    "Termo de Ciência",
-    "Homologação",
-    "Termo GOV",
-    "Solicitação de Laudo (Ata)",
-    "Ata de Negociação"
-  ];
-
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file && selectedDocType) {
-      console.log("Upload file:", file.name, "Type:", selectedDocType);
-      // Implementar lógica de upload
-    }
-  };
 
   return (
     <div className="space-y-6">
@@ -118,101 +72,29 @@ export default function SetorAdministrativoClients() {
           </div>
 
           {/* Card de Detalhes do Cliente */}
-          <div className="bg-gradient-to-br from-card to-card/95 border border-gray-200 rounded-2xl p-6">
-            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6">
-              <div>
-                <h2 className="text-2xl font-semibold">Roberto da Silva</h2>
-                <p className="text-sm text-muted-foreground">Protocolo: PROT-2024-001</p>
-              </div>
-              
-              <div className="flex items-center gap-2">
-                {/* Dropdown Anexar Docs */}
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className="hover:bg-muted/50 hover:border-muted-foreground/40 transition-all text-foreground hover:text-foreground"
-                    >
-                      <Paperclip className="w-4 h-4 mr-2" />
-                      Anexar docs
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-80 max-h-96 overflow-y-auto bg-background">
-                    <div className="p-2">
-                      <p className="text-sm font-semibold mb-2">Selecione o tipo de documento:</p>
-                      {attachDocTypes.map((docType) => (
-                        <DropdownMenuItem
-                          key={docType}
-                          onClick={() => setSelectedDocType(docType)}
-                          className="cursor-pointer"
-                        >
-                          {docType}
-                        </DropdownMenuItem>
-                      ))}
-                      {selectedDocType && (
-                        <div className="mt-4 p-3 border border-border rounded-lg bg-muted/30">
-                          <p className="text-sm font-medium mb-2">Documento selecionado: {selectedDocType}</p>
-                          <Input
-                            type="file"
-                            onChange={handleFileUpload}
-                            className="cursor-pointer"
-                          />
-                        </div>
-                      )}
-                    </div>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-
-                {/* Dropdown Gerar Docs */}
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className="hover:bg-muted/50 hover:border-muted-foreground/40 transition-all text-foreground hover:text-foreground"
-                    >
-                      <FileText className="w-4 h-4 mr-2" />
-                      Gerar docs
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-64 bg-background">
-                    <div className="p-2">
-                      <p className="text-sm font-semibold mb-2">Selecione o documento:</p>
-                      {generateDocTypes.map((docType) => (
-                        <DropdownMenuItem
-                          key={docType}
-                          className="cursor-pointer"
-                        >
-                          {docType}
-                        </DropdownMenuItem>
-                      ))}
-                      <div className="mt-4 pt-2 border-t border-border">
-                        <Button
-                          onClick={() => console.log("Gerar documentos")}
-                          className="w-full bg-gradient-to-r from-primary to-primary/80 text-primary-foreground hover:from-primary/90 hover:to-primary/70"
-                        >
-                          <Upload className="w-4 h-4 mr-2" />
-                          Gerar Documentos
-                        </Button>
-                      </div>
-                    </div>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-
-                {/* Botão ChargeBack */}
-                <Button
-                  onClick={() => console.log("ChargeBack")}
-                  variant="outline"
-                  className="hover:bg-muted/50 hover:border-muted-foreground/40 transition-all text-foreground hover:text-foreground"
-                >
-                  <CreditCard className="w-4 h-4 mr-2" />
-                  ChargeBack
-                </Button>
-              </div>
-            </div>
-            
-            <UniversalCard
-            title=""
-            subtitle=""
+          <UniversalCard
+            title="Roberto da Silva"
+            subtitle="Protocolo: PROT-2024-001"
+            actions={[
+              {
+                label: "Anexar docs",
+                onClick: () => console.log("Anexar documentos"),
+                variant: "outline" as const,
+                icon: Paperclip
+              },
+              {
+                label: "Gerar docs",
+                onClick: () => console.log("Gerar documentos"),
+                variant: "outline" as const,
+                icon: FileText
+              },
+              {
+                label: "ChargeBack",
+                onClick: () => console.log("ChargeBack"),
+                variant: "outline" as const,
+                icon: CreditCard
+              }
+            ]}
             sections={[
               {
                 id: "documents",
@@ -267,7 +149,6 @@ export default function SetorAdministrativoClients() {
             ]}
             variant="default"
           />
-          </div>
         </div>
       )}
       
