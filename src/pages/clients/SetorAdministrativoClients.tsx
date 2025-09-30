@@ -2,7 +2,7 @@ import { useState } from "react";
 import PageHeader from "@/components/PageHeader";
 import { ClientFilterMenu, ClientFilter } from "@/components/ClientFilterMenu";
 import { UniversalCard, DocumentList, DataGrid, NotesList } from "@/components/reusable/UniversalCard";
-import { FileText, User, History, Scale, Package, Paperclip, CreditCard, Search, UserPlus, Users, ClipboardCheck } from "lucide-react";
+import { FileText, User, History, Scale, Package, Paperclip, CreditCard, Search, UserPlus, Users, ClipboardCheck, Tag } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
@@ -114,6 +114,8 @@ export default function SetorAdministrativoClients() {
   const [newClientNameRepiques, setNewClientNameRepiques] = useState("");
   const [newClientPhoneRepiques, setNewClientPhoneRepiques] = useState("");
   const [newClientCPFRepiques, setNewClientCPFRepiques] = useState("");
+  const [newClientLastContactRepiques, setNewClientLastContactRepiques] = useState("");
+  const [newClientTypeRepiques, setNewClientTypeRepiques] = useState("");
   const [isEditPhoneRepiquesOpen, setIsEditPhoneRepiquesOpen] = useState(false);
   const [isEditLastContactRepiquesOpen, setIsEditLastContactRepiquesOpen] = useState(false);
   const [isEditHistoryRepiquesOpen, setIsEditHistoryRepiquesOpen] = useState(false);
@@ -346,12 +348,16 @@ export default function SetorAdministrativoClients() {
     console.log("Adicionar cliente repiques:", { 
       newClientNameRepiques, 
       newClientPhoneRepiques, 
-      newClientCPFRepiques 
+      newClientCPFRepiques,
+      newClientLastContactRepiques,
+      newClientTypeRepiques
     });
     setIsAddClientRepiquesOpen(false);
     setNewClientNameRepiques("");
     setNewClientPhoneRepiques("");
     setNewClientCPFRepiques("");
+    setNewClientLastContactRepiques("");
+    setNewClientTypeRepiques("");
   };
 
   const handleSavePhoneRepiques = () => {
@@ -1929,7 +1935,7 @@ export default function SetorAdministrativoClients() {
               {
                 id: "last-contact",
                 title: "Último contato",
-                icon: History,
+                icon: User,
                 content: <DataGrid data={[
                   { label: "Data", value: new Date(editedLastContactRepiques).toLocaleString('pt-BR') }
                 ]} />,
@@ -1952,7 +1958,7 @@ export default function SetorAdministrativoClients() {
               {
                 id: "type",
                 title: "Tipo",
-                icon: Package,
+                icon: Tag,
                 content: <DataGrid data={[
                   { 
                     label: "Origem", 
@@ -2009,12 +2015,38 @@ export default function SetorAdministrativoClients() {
                     onChange={(e) => setNewClientCPFRepiques(e.target.value)}
                   />
                 </div>
+                <div className="space-y-2">
+                  <Label htmlFor="client-last-contact-repiques">Data do último contato</Label>
+                  <Input
+                    id="client-last-contact-repiques"
+                    type="datetime-local"
+                    value={newClientLastContactRepiques}
+                    onChange={(e) => setNewClientLastContactRepiques(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="client-type-repiques">Tipo</Label>
+                  <Select value={newClientTypeRepiques} onValueChange={setNewClientTypeRepiques}>
+                    <SelectTrigger id="client-type-repiques">
+                      <SelectValue placeholder="Selecione o tipo" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="repique">Repique</SelectItem>
+                      <SelectItem value="facebook">Facebook</SelectItem>
+                      <SelectItem value="tv">TV</SelectItem>
+                      <SelectItem value="google">Google</SelectItem>
+                      <SelectItem value="indicacao">Indicação</SelectItem>
+                      <SelectItem value="instagram">Instagram</SelectItem>
+                      <SelectItem value="outros">Outros</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
               <DialogFooter>
                 <Button variant="outline" onClick={() => setIsAddClientRepiquesOpen(false)}>
                   Cancelar
                 </Button>
-                <Button onClick={handleAddClientRepiques} disabled={!newClientNameRepiques || !newClientPhoneRepiques || !newClientCPFRepiques}>
+                <Button onClick={handleAddClientRepiques} disabled={!newClientNameRepiques || !newClientPhoneRepiques || !newClientCPFRepiques || !newClientLastContactRepiques || !newClientTypeRepiques}>
                   Adicionar
                 </Button>
               </DialogFooter>
