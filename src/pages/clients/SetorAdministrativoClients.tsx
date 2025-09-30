@@ -380,6 +380,60 @@ export default function SetorAdministrativoClients() {
     setIsEditTypeRepiquesOpen(false);
   };
 
+  // Leads Recebidos states
+  const [searchTermLeads, setSearchTermLeads] = useState("");
+  const [isAddClientLeadsOpen, setIsAddClientLeadsOpen] = useState(false);
+  const [newClientNameLeads, setNewClientNameLeads] = useState("");
+  const [newClientPhoneLeads, setNewClientPhoneLeads] = useState("");
+  const [newClientCPFLeads, setNewClientCPFLeads] = useState("");
+  const [newClientContractTypeLeads, setNewClientContractTypeLeads] = useState("");
+  const [newClientRegistrationDateLeads, setNewClientRegistrationDateLeads] = useState("");
+  const [isEditPhoneLeadsOpen, setIsEditPhoneLeadsOpen] = useState(false);
+  const [isEditContractTypeLeadsOpen, setIsEditContractTypeLeadsOpen] = useState(false);
+  const [isEditRegistrationDateLeadsOpen, setIsEditRegistrationDateLeadsOpen] = useState(false);
+  const [isEditOriginLeadsOpen, setIsEditOriginLeadsOpen] = useState(false);
+  const [editedPhoneLeads, setEditedPhoneLeads] = useState("(11) 95555-5555");
+  const [editedContractTypeLeads, setEditedContractTypeLeads] = useState("veiculo");
+  const [editedRegistrationDateLeads, setEditedRegistrationDateLeads] = useState("2024-02-01T10:00:00Z");
+  const [editedOriginLeads, setEditedOriginLeads] = useState("google");
+
+  // Leads Recebidos handlers
+  const handleAddClientLeads = () => {
+    console.log("Adicionar cliente leads:", { 
+      newClientNameLeads, 
+      newClientPhoneLeads, 
+      newClientCPFLeads,
+      newClientContractTypeLeads,
+      newClientRegistrationDateLeads
+    });
+    setIsAddClientLeadsOpen(false);
+    setNewClientNameLeads("");
+    setNewClientPhoneLeads("");
+    setNewClientCPFLeads("");
+    setNewClientContractTypeLeads("");
+    setNewClientRegistrationDateLeads("");
+  };
+
+  const handleSavePhoneLeads = () => {
+    console.log("Salvar telefone leads:", editedPhoneLeads);
+    setIsEditPhoneLeadsOpen(false);
+  };
+
+  const handleSaveContractTypeLeads = () => {
+    console.log("Salvar tipo de contrato leads:", editedContractTypeLeads);
+    setIsEditContractTypeLeadsOpen(false);
+  };
+
+  const handleSaveRegistrationDateLeads = () => {
+    console.log("Salvar data de cadastro leads:", editedRegistrationDateLeads);
+    setIsEditRegistrationDateLeadsOpen(false);
+  };
+
+  const handleSaveOriginLeads = () => {
+    console.log("Salvar origem leads:", editedOriginLeads);
+    setIsEditOriginLeadsOpen(false);
+  };
+
   return (
     <div className="space-y-6">
       <PageHeader 
@@ -2186,11 +2240,316 @@ export default function SetorAdministrativoClients() {
         </div>
       )}
       {activeFilter === "leads" && (
-        <div className="bg-white rounded-2xl border border-gray-200 p-6">
-          <div>
-            <h3 className="text-lg font-semibold mb-4">Leads Recebidos</h3>
-            <p className="text-muted-foreground">Conteúdo de leads recebidos em desenvolvimento...</p>
+        <div className="space-y-6">
+          {/* Card de Busca com Search Bar e Adicionar Cliente */}
+          <div className="bg-gradient-to-br from-card to-card/95 border border-gray-200 rounded-2xl p-6">
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+              <div className="flex items-center gap-2">
+                <Users className="w-6 h-6 text-primary" />
+                <h3 className="text-2xl font-semibold">Leads Recebidos</h3>
+              </div>
+              
+              <div className="flex items-center gap-4 w-full md:w-auto">
+                {/* Search Bar */}
+                <div className="relative bg-background w-full md:w-auto md:min-w-sm md:max-w-md flex flex-col md:flex-row items-center justify-center border border-border py-2 px-2 rounded-2xl gap-2 focus-within:border-primary/50 transition-colors">
+                  <Input 
+                    placeholder="Buscar por CPF ou nome do cliente..."
+                    className="px-6 py-2 w-full rounded-md flex-1 outline-none bg-background border-0 focus-visible:ring-0"
+                    value={searchTermLeads}
+                    onChange={(e) => setSearchTermLeads(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && console.log("Buscar:", searchTermLeads)}
+                  />
+                  <Button
+                    onClick={() => console.log("Buscar:", searchTermLeads)}
+                    className="w-full md:w-auto px-6 py-3 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground hover:from-primary/90 hover:to-primary/70 active:scale-95 duration-100 will-change-transform overflow-hidden relative rounded-xl transition-all shadow-lg hover:shadow-xl"
+                  >
+                    <div className="relative">
+                      <div className="flex items-center">
+                        <Search className="w-4 h-4 mr-2" />
+                        <span className="text-sm font-semibold whitespace-nowrap truncate">
+                          Buscar
+                        </span>
+                      </div>
+                    </div>
+                  </Button>
+                </div>
+
+                {/* Botão Adicionar Cliente */}
+                <Button
+                  onClick={() => setIsAddClientLeadsOpen(true)}
+                  className="w-full md:w-auto px-6 py-3 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground hover:from-primary/90 hover:to-primary/70 active:scale-95 duration-100 will-change-transform overflow-hidden relative rounded-xl transition-all shadow-lg hover:shadow-xl"
+                >
+                  <UserPlus className="w-4 h-4 mr-2" />
+                  Adicionar Cliente
+                </Button>
+              </div>
+            </div>
           </div>
+
+          {/* Card de Detalhes do Cliente */}
+          <UniversalCard
+            title="Paula Oliveira"
+            subtitle="Lead"
+            sections={[
+              {
+                id: "phone",
+                title: "Telefone",
+                icon: Phone,
+                content: <DataGrid data={[
+                  { label: "Telefone", value: editedPhoneLeads }
+                ]} />,
+                onEdit: () => setIsEditPhoneLeadsOpen(true)
+              },
+              {
+                id: "contract-type",
+                title: "Tipo",
+                icon: FileText,
+                content: <DataGrid data={[
+                  { 
+                    label: "Tipo de Contrato", 
+                    value: editedContractTypeLeads === "veiculo" ? "Financiamento de Veículo" :
+                           editedContractTypeLeads === "imovel" ? "Financiamento de Imóvel" : "Empréstimo"
+                  }
+                ]} />,
+                onEdit: () => setIsEditContractTypeLeadsOpen(true)
+              },
+              {
+                id: "registration-date",
+                title: "Data de cadastro",
+                icon: ClipboardCheck,
+                content: <DataGrid data={[
+                  { label: "Data", value: new Date(editedRegistrationDateLeads).toLocaleString('pt-BR') }
+                ]} />,
+                onEdit: () => setIsEditRegistrationDateLeadsOpen(true)
+              },
+              {
+                id: "origin",
+                title: "Origem",
+                icon: Tag,
+                content: <DataGrid data={[
+                  { 
+                    label: "Origem", 
+                    value: editedOriginLeads === "facebook" ? "Facebook" :
+                           editedOriginLeads === "tv" ? "TV" :
+                           editedOriginLeads === "google" ? "Google" :
+                           editedOriginLeads === "instagram" ? "Instagram" :
+                           editedOriginLeads === "indicacao" ? "Indicação" : "Outros"
+                  }
+                ]} />,
+                onEdit: () => setIsEditOriginLeadsOpen(true)
+              }
+            ]}
+            variant="default"
+          />
+
+          {/* Modal Adicionar Cliente Leads */}
+          <Dialog open={isAddClientLeadsOpen} onOpenChange={setIsAddClientLeadsOpen}>
+            <DialogContent className="sm:max-w-[500px]">
+              <DialogHeader>
+                <DialogTitle>Adicionar Cliente</DialogTitle>
+                <DialogDescription>
+                  Preencha os dados do novo cliente.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 py-4">
+                <div className="space-y-2">
+                  <Label htmlFor="client-name-leads">Nome</Label>
+                  <Input
+                    id="client-name-leads"
+                    type="text"
+                    placeholder="Nome completo"
+                    value={newClientNameLeads}
+                    onChange={(e) => setNewClientNameLeads(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="client-phone-leads">Telefone</Label>
+                  <Input
+                    id="client-phone-leads"
+                    type="text"
+                    placeholder="(00) 00000-0000"
+                    value={newClientPhoneLeads}
+                    onChange={(e) => setNewClientPhoneLeads(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="client-cpf-leads">CPF</Label>
+                  <Input
+                    id="client-cpf-leads"
+                    type="text"
+                    placeholder="000.000.000-00"
+                    value={newClientCPFLeads}
+                    onChange={(e) => setNewClientCPFLeads(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="client-contract-type-leads">Tipo de Contrato</Label>
+                  <Select value={newClientContractTypeLeads} onValueChange={setNewClientContractTypeLeads}>
+                    <SelectTrigger id="client-contract-type-leads">
+                      <SelectValue placeholder="Selecione o tipo de contrato" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="veiculo">Financiamento de Veículo</SelectItem>
+                      <SelectItem value="imovel">Financiamento de Imóvel</SelectItem>
+                      <SelectItem value="emprestimo">Empréstimo</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="client-registration-date-leads">Data de cadastro</Label>
+                  <Input
+                    id="client-registration-date-leads"
+                    type="datetime-local"
+                    value={newClientRegistrationDateLeads}
+                    onChange={(e) => setNewClientRegistrationDateLeads(e.target.value)}
+                  />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setIsAddClientLeadsOpen(false)}>
+                  Cancelar
+                </Button>
+                <Button onClick={handleAddClientLeads} disabled={!newClientNameLeads || !newClientPhoneLeads || !newClientCPFLeads || !newClientContractTypeLeads || !newClientRegistrationDateLeads}>
+                  Adicionar
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
+          {/* Modal Editar Telefone Leads */}
+          <Dialog open={isEditPhoneLeadsOpen} onOpenChange={setIsEditPhoneLeadsOpen}>
+            <DialogContent className="sm:max-w-[500px]">
+              <DialogHeader>
+                <DialogTitle>Editar Telefone</DialogTitle>
+                <DialogDescription>
+                  Atualize o telefone do cliente.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 py-4">
+                <div className="space-y-2">
+                  <Label htmlFor="edit-phone-leads">Telefone</Label>
+                  <Input
+                    id="edit-phone-leads"
+                    type="text"
+                    value={editedPhoneLeads}
+                    onChange={(e) => setEditedPhoneLeads(e.target.value)}
+                  />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setIsEditPhoneLeadsOpen(false)}>
+                  Cancelar
+                </Button>
+                <Button onClick={handleSavePhoneLeads}>
+                  Salvar
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
+          {/* Modal Editar Tipo de Contrato Leads */}
+          <Dialog open={isEditContractTypeLeadsOpen} onOpenChange={setIsEditContractTypeLeadsOpen}>
+            <DialogContent className="sm:max-w-[500px]">
+              <DialogHeader>
+                <DialogTitle>Editar Tipo de Contrato</DialogTitle>
+                <DialogDescription>
+                  Selecione o tipo de contrato do cliente.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 py-4">
+                <div className="space-y-2">
+                  <Label htmlFor="edit-contract-type-leads">Tipo de Contrato</Label>
+                  <Select value={editedContractTypeLeads} onValueChange={setEditedContractTypeLeads}>
+                    <SelectTrigger id="edit-contract-type-leads">
+                      <SelectValue placeholder="Selecione o tipo de contrato" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="veiculo">Financiamento de Veículo</SelectItem>
+                      <SelectItem value="imovel">Financiamento de Imóvel</SelectItem>
+                      <SelectItem value="emprestimo">Empréstimo</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setIsEditContractTypeLeadsOpen(false)}>
+                  Cancelar
+                </Button>
+                <Button onClick={handleSaveContractTypeLeads}>
+                  Salvar
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
+          {/* Modal Editar Data de Cadastro Leads */}
+          <Dialog open={isEditRegistrationDateLeadsOpen} onOpenChange={setIsEditRegistrationDateLeadsOpen}>
+            <DialogContent className="sm:max-w-[500px]">
+              <DialogHeader>
+                <DialogTitle>Editar Data de Cadastro</DialogTitle>
+                <DialogDescription>
+                  Atualize a data de cadastro do cliente.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 py-4">
+                <div className="space-y-2">
+                  <Label htmlFor="edit-registration-date-leads">Data e Hora</Label>
+                  <Input
+                    id="edit-registration-date-leads"
+                    type="datetime-local"
+                    value={editedRegistrationDateLeads.slice(0, 16)}
+                    onChange={(e) => setEditedRegistrationDateLeads(e.target.value + ":00Z")}
+                  />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setIsEditRegistrationDateLeadsOpen(false)}>
+                  Cancelar
+                </Button>
+                <Button onClick={handleSaveRegistrationDateLeads}>
+                  Salvar
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
+          {/* Modal Editar Origem Leads */}
+          <Dialog open={isEditOriginLeadsOpen} onOpenChange={setIsEditOriginLeadsOpen}>
+            <DialogContent className="sm:max-w-[500px]">
+              <DialogHeader>
+                <DialogTitle>Editar Origem</DialogTitle>
+                <DialogDescription>
+                  Selecione a origem do lead.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 py-4">
+                <div className="space-y-2">
+                  <Label htmlFor="edit-origin-leads">Origem</Label>
+                  <Select value={editedOriginLeads} onValueChange={setEditedOriginLeads}>
+                    <SelectTrigger id="edit-origin-leads">
+                      <SelectValue placeholder="Selecione a origem" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="facebook">Facebook</SelectItem>
+                      <SelectItem value="tv">TV</SelectItem>
+                      <SelectItem value="google">Google</SelectItem>
+                      <SelectItem value="instagram">Instagram</SelectItem>
+                      <SelectItem value="indicacao">Indicação</SelectItem>
+                      <SelectItem value="outros">Outros</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setIsEditOriginLeadsOpen(false)}>
+                  Cancelar
+                </Button>
+                <Button onClick={handleSaveOriginLeads}>
+                  Salvar
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
       )}
     </div>
