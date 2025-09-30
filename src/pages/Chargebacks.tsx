@@ -1,6 +1,7 @@
 import { useAuth } from '@/contexts/AuthContext';
 import SupervisorJuridicoChargebacks from './chargebacks/SupervisorJuridicoChargebacks';
 import SupervisorComercialChargebacks from './chargebacks/SupervisorComercialChargebacks';
+import SetorAdministrativoChargebacks from './chargebacks/SetorAdministrativoChargebacks';
 
 export default function Chargebacks() {
   const { user } = useAuth();
@@ -14,6 +15,8 @@ export default function Chargebacks() {
       return <SupervisorJuridicoChargebacks />;
     case 'supervisor-comercial':
       return <SupervisorComercialChargebacks />;
+    case 'setor-administrativo':
+      return <SetorAdministrativoChargebacks />;
     default:
       return <div>Acesso não autorizado para chargebacks</div>;
   }
