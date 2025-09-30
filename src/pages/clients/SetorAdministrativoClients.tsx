@@ -28,13 +28,25 @@ export default function SetorAdministrativoClients() {
   const [newClientPhone, setNewClientPhone] = useState("");
   const [newClientCPF, setNewClientCPF] = useState("");
   const [newClientProtocol, setNewClientProtocol] = useState("");
-  const [isEditingDocuments, setIsEditingDocuments] = useState(false);
-  const [isEditingClientData, setIsEditingClientData] = useState(false);
-  const [isEditingHistory, setIsEditingHistory] = useState(false);
+  // Modal states for editing sections
+  const [isEditDocumentsOpen, setIsEditDocumentsOpen] = useState(false);
+  const [isEditClientDataOpen, setIsEditClientDataOpen] = useState(false);
+  const [isEditHistoryOpen, setIsEditHistoryOpen] = useState(false);
+  const [isEditMovementsOpen, setIsEditMovementsOpen] = useState(false);
+  const [isEditServiceOpen, setIsEditServiceOpen] = useState(false);
+  
+  // Edited data states
   const [editedEmail, setEditedEmail] = useState("roberto.silva@email.com");
   const [editedPhone, setEditedPhone] = useState("(11) 99999-9999");
   const [editedCPF, setEditedCPF] = useState("123.456.789-00");
   const [editedAddress, setEditedAddress] = useState("Rua das Flores, 123 - SP");
+  const [editedDocuments, setEditedDocuments] = useState([
+    { id: "1", name: "Contrato.pdf", uploadedAt: "2024-01-15T10:30:00Z" },
+    { id: "2", name: "RG.pdf", uploadedAt: "2024-01-16T14:20:00Z" }
+  ]);
+  const [editedHistory, setEditedHistory] = useState("Cliente contatado via telefone. Confirmou interesse no processo.");
+  const [editedMovements, setEditedMovements] = useState("Últimas movimentações do processo...");
+  const [editedService, setEditedService] = useState("audiencia");
 
   const documentTypes = [
     "RG/CNH",
@@ -99,9 +111,29 @@ export default function SetorAdministrativoClients() {
     setNewClientProtocol("");
   };
 
+  const handleSaveDocuments = () => {
+    console.log("Salvar documentos:", editedDocuments);
+    setIsEditDocumentsOpen(false);
+  };
+
   const handleSaveClientData = () => {
     console.log("Salvar dados:", { editedEmail, editedPhone, editedCPF, editedAddress });
-    setIsEditingClientData(false);
+    setIsEditClientDataOpen(false);
+  };
+
+  const handleSaveHistory = () => {
+    console.log("Salvar histórico:", editedHistory);
+    setIsEditHistoryOpen(false);
+  };
+
+  const handleSaveMovements = () => {
+    console.log("Salvar movimentações:", editedMovements);
+    setIsEditMovementsOpen(false);
+  };
+
+  const handleSaveService = () => {
+    console.log("Salvar serviço:", editedService);
+    setIsEditServiceOpen(false);
   };
 
   return (
@@ -194,48 +226,20 @@ export default function SetorAdministrativoClients() {
                 id: "documents",
                 title: "Documentos anexados",
                 icon: FileText,
-                content: <DocumentList documents={[
-                  { id: "1", name: "Contrato.pdf", uploadedAt: "2024-01-15T10:30:00Z" },
-                  { id: "2", name: "RG.pdf", uploadedAt: "2024-01-16T14:20:00Z" }
-                ]} />,
-                onEdit: () => console.log("Editar documentos")
+                content: <DocumentList documents={editedDocuments} />,
+                onEdit: () => setIsEditDocumentsOpen(true)
               },
               {
                 id: "client-data",
                 title: "Dados do cliente",
                 icon: User,
-                content: isEditingClientData ? (
-                  <div className="space-y-4">
-                    <div>
-                      <label className="text-sm font-medium">Email</label>
-                      <Input value={editedEmail} onChange={(e) => setEditedEmail(e.target.value)} />
-                    </div>
-                    <div>
-                      <label className="text-sm font-medium">Telefone</label>
-                      <Input value={editedPhone} onChange={(e) => setEditedPhone(e.target.value)} />
-                    </div>
-                    <div>
-                      <label className="text-sm font-medium">CPF</label>
-                      <Input value={editedCPF} onChange={(e) => setEditedCPF(e.target.value)} />
-                    </div>
-                    <div>
-                      <label className="text-sm font-medium">Endereço</label>
-                      <Input value={editedAddress} onChange={(e) => setEditedAddress(e.target.value)} />
-                    </div>
-                    <div className="flex gap-2">
-                      <Button onClick={handleSaveClientData}>Salvar</Button>
-                      <Button variant="outline" onClick={() => setIsEditingClientData(false)}>Cancelar</Button>
-                    </div>
-                  </div>
-                ) : (
-                  <DataGrid data={[
-                    { label: "Email", value: editedEmail },
-                    { label: "Telefone", value: editedPhone },
-                    { label: "CPF", value: editedCPF },
-                    { label: "Endereço", value: editedAddress }
-                  ]} />
-                ),
-                onEdit: () => setIsEditingClientData(true)
+                content: <DataGrid data={[
+                  { label: "Email", value: editedEmail },
+                  { label: "Telefone", value: editedPhone },
+                  { label: "CPF", value: editedCPF },
+                  { label: "Endereço", value: editedAddress }
+                ]} />,
+                onEdit: () => setIsEditClientDataOpen(true)
               },
               {
                 id: "history",
@@ -244,26 +248,26 @@ export default function SetorAdministrativoClients() {
                 content: <NotesList notes={[
                   { 
                     id: "1", 
-                    content: "Cliente contatado via telefone. Confirmou interesse no processo.", 
+                    content: editedHistory, 
                     createdBy: "Ana Silva", 
                     createdAt: "2024-01-15T10:30:00Z" 
                   }
                 ]} />,
-                onEdit: () => console.log("Editar histórico")
+                onEdit: () => setIsEditHistoryOpen(true)
               },
               {
                 id: "movements",
                 title: "Movimentações",
                 icon: Scale,
-                content: <p>Últimas movimentações do processo...</p>,
-                onEdit: () => console.log("Editar movimentações")
+                content: <p>{editedMovements}</p>,
+                onEdit: () => setIsEditMovementsOpen(true)
               },
               {
                 id: "service",
                 title: "Serviço",
                 icon: Package,
-                content: <p>Serviço: <span className="font-medium text-foreground">audiencia</span></p>,
-                onEdit: () => console.log("Editar serviço")
+                content: <p>Serviço: <span className="font-medium text-foreground">{editedService}</span></p>,
+                onEdit: () => setIsEditServiceOpen(true)
               }
             ]}
             variant="default"
@@ -490,6 +494,193 @@ export default function SetorAdministrativoClients() {
                 </Button>
                 <Button onClick={handleChargebackSubmit}>
                   Enviar Chargeback
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
+          {/* Modal Editar Documentos */}
+          <Dialog open={isEditDocumentsOpen} onOpenChange={setIsEditDocumentsOpen}>
+            <DialogContent className="sm:max-w-[500px]">
+              <DialogHeader>
+                <DialogTitle>Editar Documentos Anexados</DialogTitle>
+                <DialogDescription>
+                  Gerencie os documentos anexados ao cliente.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 py-4">
+                <div className="space-y-2">
+                  {editedDocuments.map((doc) => (
+                    <div key={doc.id} className="flex items-center justify-between p-2 rounded-md bg-muted/50">
+                      <span>{doc.name}</span>
+                      <Button 
+                        variant="ghost" 
+                        size="sm"
+                        onClick={() => setEditedDocuments(editedDocuments.filter(d => d.id !== doc.id))}
+                      >
+                        Remover
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setIsEditDocumentsOpen(false)}>
+                  Cancelar
+                </Button>
+                <Button onClick={handleSaveDocuments}>
+                  Salvar
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
+          {/* Modal Editar Dados do Cliente */}
+          <Dialog open={isEditClientDataOpen} onOpenChange={setIsEditClientDataOpen}>
+            <DialogContent className="sm:max-w-[500px]">
+              <DialogHeader>
+                <DialogTitle>Editar Dados do Cliente</DialogTitle>
+                <DialogDescription>
+                  Atualize as informações do cliente.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 py-4">
+                <div className="space-y-2">
+                  <Label htmlFor="edit-email">Email</Label>
+                  <Input
+                    id="edit-email"
+                    type="email"
+                    value={editedEmail}
+                    onChange={(e) => setEditedEmail(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="edit-phone">Telefone</Label>
+                  <Input
+                    id="edit-phone"
+                    type="text"
+                    value={editedPhone}
+                    onChange={(e) => setEditedPhone(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="edit-cpf">CPF</Label>
+                  <Input
+                    id="edit-cpf"
+                    type="text"
+                    value={editedCPF}
+                    onChange={(e) => setEditedCPF(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="edit-address">Endereço</Label>
+                  <Input
+                    id="edit-address"
+                    type="text"
+                    value={editedAddress}
+                    onChange={(e) => setEditedAddress(e.target.value)}
+                  />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setIsEditClientDataOpen(false)}>
+                  Cancelar
+                </Button>
+                <Button onClick={handleSaveClientData}>
+                  Salvar
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
+          {/* Modal Editar Histórico */}
+          <Dialog open={isEditHistoryOpen} onOpenChange={setIsEditHistoryOpen}>
+            <DialogContent className="sm:max-w-[500px]">
+              <DialogHeader>
+                <DialogTitle>Editar Histórico do Cliente</DialogTitle>
+                <DialogDescription>
+                  Atualize o histórico de interações com o cliente.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 py-4">
+                <div className="space-y-2">
+                  <Label htmlFor="edit-history">Histórico</Label>
+                  <Input
+                    id="edit-history"
+                    type="text"
+                    value={editedHistory}
+                    onChange={(e) => setEditedHistory(e.target.value)}
+                  />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setIsEditHistoryOpen(false)}>
+                  Cancelar
+                </Button>
+                <Button onClick={handleSaveHistory}>
+                  Salvar
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
+          {/* Modal Editar Movimentações */}
+          <Dialog open={isEditMovementsOpen} onOpenChange={setIsEditMovementsOpen}>
+            <DialogContent className="sm:max-w-[500px]">
+              <DialogHeader>
+                <DialogTitle>Editar Movimentações</DialogTitle>
+                <DialogDescription>
+                  Atualize as informações sobre movimentações do processo.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 py-4">
+                <div className="space-y-2">
+                  <Label htmlFor="edit-movements">Movimentações</Label>
+                  <Input
+                    id="edit-movements"
+                    type="text"
+                    value={editedMovements}
+                    onChange={(e) => setEditedMovements(e.target.value)}
+                  />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setIsEditMovementsOpen(false)}>
+                  Cancelar
+                </Button>
+                <Button onClick={handleSaveMovements}>
+                  Salvar
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
+          {/* Modal Editar Serviço */}
+          <Dialog open={isEditServiceOpen} onOpenChange={setIsEditServiceOpen}>
+            <DialogContent className="sm:max-w-[500px]">
+              <DialogHeader>
+                <DialogTitle>Editar Serviço</DialogTitle>
+                <DialogDescription>
+                  Atualize o tipo de serviço associado ao cliente.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 py-4">
+                <div className="space-y-2">
+                  <Label htmlFor="edit-service">Serviço</Label>
+                  <Input
+                    id="edit-service"
+                    type="text"
+                    value={editedService}
+                    onChange={(e) => setEditedService(e.target.value)}
+                  />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setIsEditServiceOpen(false)}>
+                  Cancelar
+                </Button>
+                <Button onClick={handleSaveService}>
+                  Salvar
                 </Button>
               </DialogFooter>
             </DialogContent>
