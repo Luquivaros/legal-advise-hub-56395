@@ -108,6 +108,21 @@ export default function SetorAdministrativoClients() {
   ]);
   const [editedHistoryNovos, setEditedHistoryNovos] = useState("Novo cliente cadastrado no sistema.");
 
+  // Repiques states
+  const [searchTermRepiques, setSearchTermRepiques] = useState("");
+  const [isAddClientRepiquesOpen, setIsAddClientRepiquesOpen] = useState(false);
+  const [newClientNameRepiques, setNewClientNameRepiques] = useState("");
+  const [newClientPhoneRepiques, setNewClientPhoneRepiques] = useState("");
+  const [newClientCPFRepiques, setNewClientCPFRepiques] = useState("");
+  const [isEditPhoneRepiquesOpen, setIsEditPhoneRepiquesOpen] = useState(false);
+  const [isEditLastContactRepiquesOpen, setIsEditLastContactRepiquesOpen] = useState(false);
+  const [isEditHistoryRepiquesOpen, setIsEditHistoryRepiquesOpen] = useState(false);
+  const [isEditTypeRepiquesOpen, setIsEditTypeRepiquesOpen] = useState(false);
+  const [editedPhoneRepiques, setEditedPhoneRepiques] = useState("(11) 96666-6666");
+  const [editedLastContactRepiques, setEditedLastContactRepiques] = useState("2024-01-30T15:45:00Z");
+  const [editedHistoryRepiques, setEditedHistoryRepiques] = useState("Cliente contatado para repique.");
+  const [editedTypeRepiques, setEditedTypeRepiques] = useState("facebook");
+
   const documentTypes = [
     "RG/CNH",
     "Procuração judicial",
@@ -324,6 +339,39 @@ export default function SetorAdministrativoClients() {
   const handleSaveHistoryNovos = () => {
     console.log("Salvar histórico novos:", editedHistoryNovos);
     setIsEditHistoryNovosOpen(false);
+  };
+
+  // Repiques handlers
+  const handleAddClientRepiques = () => {
+    console.log("Adicionar cliente repiques:", { 
+      newClientNameRepiques, 
+      newClientPhoneRepiques, 
+      newClientCPFRepiques 
+    });
+    setIsAddClientRepiquesOpen(false);
+    setNewClientNameRepiques("");
+    setNewClientPhoneRepiques("");
+    setNewClientCPFRepiques("");
+  };
+
+  const handleSavePhoneRepiques = () => {
+    console.log("Salvar telefone repiques:", editedPhoneRepiques);
+    setIsEditPhoneRepiquesOpen(false);
+  };
+
+  const handleSaveLastContactRepiques = () => {
+    console.log("Salvar último contato repiques:", editedLastContactRepiques);
+    setIsEditLastContactRepiquesOpen(false);
+  };
+
+  const handleSaveHistoryRepiques = () => {
+    console.log("Salvar histórico repiques:", editedHistoryRepiques);
+    setIsEditHistoryRepiquesOpen(false);
+  };
+
+  const handleSaveTypeRepiques = () => {
+    console.log("Salvar tipo repiques:", editedTypeRepiques);
+    setIsEditTypeRepiquesOpen(false);
   };
 
   return (
@@ -1818,11 +1866,291 @@ export default function SetorAdministrativoClients() {
         </div>
       )}
       {activeFilter === "repiques" && (
-        <div className="bg-white rounded-2xl border border-gray-200 p-6">
-          <div>
-            <h3 className="text-lg font-semibold mb-4">Repiques</h3>
-            <p className="text-muted-foreground">Conteúdo de repiques em desenvolvimento...</p>
+        <div className="space-y-6">
+          {/* Card de Busca com Search Bar e Adicionar Cliente */}
+          <div className="bg-gradient-to-br from-card to-card/95 border border-gray-200 rounded-2xl p-6">
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+              <div className="flex items-center gap-2">
+                <Users className="w-6 h-6 text-primary" />
+                <h3 className="text-2xl font-semibold">Repiques</h3>
+              </div>
+              
+              <div className="flex items-center gap-4 w-full md:w-auto">
+                {/* Search Bar */}
+                <div className="relative bg-background w-full md:w-auto md:min-w-sm md:max-w-md flex flex-col md:flex-row items-center justify-center border border-border py-2 px-2 rounded-2xl gap-2 focus-within:border-primary/50 transition-colors">
+                  <Input 
+                    placeholder="Buscar por CPF ou nome do cliente..."
+                    className="px-6 py-2 w-full rounded-md flex-1 outline-none bg-background border-0 focus-visible:ring-0"
+                    value={searchTermRepiques}
+                    onChange={(e) => setSearchTermRepiques(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && console.log("Buscar:", searchTermRepiques)}
+                  />
+                  <Button
+                    onClick={() => console.log("Buscar:", searchTermRepiques)}
+                    className="w-full md:w-auto px-6 py-3 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground hover:from-primary/90 hover:to-primary/70 active:scale-95 duration-100 will-change-transform overflow-hidden relative rounded-xl transition-all shadow-lg hover:shadow-xl"
+                  >
+                    <div className="relative">
+                      <div className="flex items-center">
+                        <Search className="w-4 h-4 mr-2" />
+                        <span className="text-sm font-semibold whitespace-nowrap truncate">
+                          Buscar
+                        </span>
+                      </div>
+                    </div>
+                  </Button>
+                </div>
+
+                {/* Botão Adicionar Cliente */}
+                <Button
+                  onClick={() => setIsAddClientRepiquesOpen(true)}
+                  className="w-full md:w-auto px-6 py-3 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground hover:from-primary/90 hover:to-primary/70 active:scale-95 duration-100 will-change-transform overflow-hidden relative rounded-xl transition-all shadow-lg hover:shadow-xl"
+                >
+                  <UserPlus className="w-4 h-4 mr-2" />
+                  Adicionar Cliente
+                </Button>
+              </div>
+            </div>
           </div>
+
+          {/* Card de Detalhes do Cliente */}
+          <UniversalCard
+            title="Carlos Mendes"
+            subtitle="Repique"
+            sections={[
+              {
+                id: "phone",
+                title: "Telefone",
+                icon: User,
+                content: <DataGrid data={[
+                  { label: "Telefone", value: editedPhoneRepiques }
+                ]} />,
+                onEdit: () => setIsEditPhoneRepiquesOpen(true)
+              },
+              {
+                id: "last-contact",
+                title: "Último contato",
+                icon: History,
+                content: <DataGrid data={[
+                  { label: "Data", value: new Date(editedLastContactRepiques).toLocaleString('pt-BR') }
+                ]} />,
+                onEdit: () => setIsEditLastContactRepiquesOpen(true)
+              },
+              {
+                id: "history",
+                title: "Histórico do Cliente",
+                icon: History,
+                content: <NotesList notes={[
+                  { 
+                    id: "1", 
+                    content: editedHistoryRepiques, 
+                    createdBy: "Ana Costa", 
+                    createdAt: "2024-01-30T15:45:00Z" 
+                  }
+                ]} />,
+                onEdit: () => setIsEditHistoryRepiquesOpen(true)
+              },
+              {
+                id: "type",
+                title: "Tipo",
+                icon: Package,
+                content: <DataGrid data={[
+                  { 
+                    label: "Origem", 
+                    value: editedTypeRepiques === "facebook" ? "Facebook" :
+                           editedTypeRepiques === "tv" ? "TV" :
+                           editedTypeRepiques === "google" ? "Google" :
+                           editedTypeRepiques === "instagram" ? "Instagram" :
+                           editedTypeRepiques === "indicacao" ? "Indicação" : "Outros"
+                  }
+                ]} />,
+                onEdit: () => setIsEditTypeRepiquesOpen(true)
+              }
+            ]}
+            variant="default"
+          />
+
+          {/* Modal Adicionar Cliente Repiques */}
+          <Dialog open={isAddClientRepiquesOpen} onOpenChange={setIsAddClientRepiquesOpen}>
+            <DialogContent className="sm:max-w-[500px]">
+              <DialogHeader>
+                <DialogTitle>Adicionar Cliente</DialogTitle>
+                <DialogDescription>
+                  Preencha os dados do novo cliente.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 py-4">
+                <div className="space-y-2">
+                  <Label htmlFor="client-name-repiques">Nome</Label>
+                  <Input
+                    id="client-name-repiques"
+                    type="text"
+                    placeholder="Nome completo"
+                    value={newClientNameRepiques}
+                    onChange={(e) => setNewClientNameRepiques(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="client-phone-repiques">Telefone</Label>
+                  <Input
+                    id="client-phone-repiques"
+                    type="text"
+                    placeholder="(00) 00000-0000"
+                    value={newClientPhoneRepiques}
+                    onChange={(e) => setNewClientPhoneRepiques(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="client-cpf-repiques">CPF</Label>
+                  <Input
+                    id="client-cpf-repiques"
+                    type="text"
+                    placeholder="000.000.000-00"
+                    value={newClientCPFRepiques}
+                    onChange={(e) => setNewClientCPFRepiques(e.target.value)}
+                  />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setIsAddClientRepiquesOpen(false)}>
+                  Cancelar
+                </Button>
+                <Button onClick={handleAddClientRepiques} disabled={!newClientNameRepiques || !newClientPhoneRepiques || !newClientCPFRepiques}>
+                  Adicionar
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
+          {/* Modal Editar Telefone Repiques */}
+          <Dialog open={isEditPhoneRepiquesOpen} onOpenChange={setIsEditPhoneRepiquesOpen}>
+            <DialogContent className="sm:max-w-[500px]">
+              <DialogHeader>
+                <DialogTitle>Editar Telefone</DialogTitle>
+                <DialogDescription>
+                  Atualize o telefone do cliente.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 py-4">
+                <div className="space-y-2">
+                  <Label htmlFor="edit-phone-repiques">Telefone</Label>
+                  <Input
+                    id="edit-phone-repiques"
+                    type="text"
+                    value={editedPhoneRepiques}
+                    onChange={(e) => setEditedPhoneRepiques(e.target.value)}
+                  />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setIsEditPhoneRepiquesOpen(false)}>
+                  Cancelar
+                </Button>
+                <Button onClick={handleSavePhoneRepiques}>
+                  Salvar
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
+          {/* Modal Editar Último Contato Repiques */}
+          <Dialog open={isEditLastContactRepiquesOpen} onOpenChange={setIsEditLastContactRepiquesOpen}>
+            <DialogContent className="sm:max-w-[500px]">
+              <DialogHeader>
+                <DialogTitle>Editar Último Contato</DialogTitle>
+                <DialogDescription>
+                  Atualize a data do último contato.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 py-4">
+                <div className="space-y-2">
+                  <Label htmlFor="edit-last-contact-repiques">Data e Hora</Label>
+                  <Input
+                    id="edit-last-contact-repiques"
+                    type="datetime-local"
+                    value={editedLastContactRepiques.slice(0, 16)}
+                    onChange={(e) => setEditedLastContactRepiques(e.target.value + ":00Z")}
+                  />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setIsEditLastContactRepiquesOpen(false)}>
+                  Cancelar
+                </Button>
+                <Button onClick={handleSaveLastContactRepiques}>
+                  Salvar
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
+          {/* Modal Editar Histórico Repiques */}
+          <Dialog open={isEditHistoryRepiquesOpen} onOpenChange={setIsEditHistoryRepiquesOpen}>
+            <DialogContent className="sm:max-w-[500px]">
+              <DialogHeader>
+                <DialogTitle>Editar Histórico do Cliente</DialogTitle>
+                <DialogDescription>
+                  Atualize o histórico de interações com o cliente.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 py-4">
+                <div className="space-y-2">
+                  <Label htmlFor="edit-history-repiques">Histórico</Label>
+                  <Input
+                    id="edit-history-repiques"
+                    type="text"
+                    value={editedHistoryRepiques}
+                    onChange={(e) => setEditedHistoryRepiques(e.target.value)}
+                  />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setIsEditHistoryRepiquesOpen(false)}>
+                  Cancelar
+                </Button>
+                <Button onClick={handleSaveHistoryRepiques}>
+                  Salvar
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
+          {/* Modal Editar Tipo Repiques */}
+          <Dialog open={isEditTypeRepiquesOpen} onOpenChange={setIsEditTypeRepiquesOpen}>
+            <DialogContent className="sm:max-w-[500px]">
+              <DialogHeader>
+                <DialogTitle>Editar Tipo</DialogTitle>
+                <DialogDescription>
+                  Selecione a origem do repique.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 py-4">
+                <div className="space-y-2">
+                  <Label htmlFor="edit-type-repiques">Origem</Label>
+                  <Select value={editedTypeRepiques} onValueChange={setEditedTypeRepiques}>
+                    <SelectTrigger id="edit-type-repiques">
+                      <SelectValue placeholder="Selecione a origem" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="facebook">Facebook</SelectItem>
+                      <SelectItem value="tv">TV</SelectItem>
+                      <SelectItem value="google">Google</SelectItem>
+                      <SelectItem value="instagram">Instagram</SelectItem>
+                      <SelectItem value="indicacao">Indicação</SelectItem>
+                      <SelectItem value="outros">Outros</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setIsEditTypeRepiquesOpen(false)}>
+                  Cancelar
+                </Button>
+                <Button onClick={handleSaveTypeRepiques}>
+                  Salvar
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
       )}
       {activeFilter === "leads" && (
