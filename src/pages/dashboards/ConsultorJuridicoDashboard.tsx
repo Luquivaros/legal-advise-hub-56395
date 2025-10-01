@@ -4,7 +4,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button";
 import PageHeader from "@/components/PageHeader";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
-import { Edit, Trash2 } from 'lucide-react';
+import { Edit, Trash2, Calendar, Trophy, ShoppingCart, TrendingUp, BarChart3 } from 'lucide-react';
 
 // Dados mock específicos para Consultor Jurídico
 const rendimentoSemanal = [
@@ -92,7 +92,7 @@ export default function ConsultorJuridicoDashboard() {
         
         <MetricCard
           value="8"
-          label="Leads em Negociação"
+          label="Em Negociação"
           trend={{
             value: "+25.0%",
             isPositive: true
@@ -123,9 +123,12 @@ export default function ConsultorJuridicoDashboard() {
       </div>
 
       {/* Metas do Dia */}
-      <Card className="bg-gradient-to-br from-card to-card/95 shadow-lg border border-border/30">
+      <Card className="bg-gradient-to-br from-card to-card/95 border border-border">
         <CardHeader>
-          <CardTitle className="text-lg font-semibold text-foreground">Metas do Dia</CardTitle>
+          <CardTitle className="text-lg font-semibold text-foreground flex items-center gap-2">
+            <Calendar className="w-5 h-5 text-orange-light" />
+            Metas do Dia
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -164,9 +167,12 @@ export default function ConsultorJuridicoDashboard() {
       </Card>
 
       {/* Metas do Mês */}
-      <Card className="bg-gradient-to-br from-card to-card/95 shadow-lg border border-border/30">
+      <Card className="bg-gradient-to-br from-card to-card/95 border border-border">
         <CardHeader>
-          <CardTitle className="text-lg font-semibold text-foreground">Metas do Mês</CardTitle>
+          <CardTitle className="text-lg font-semibold text-foreground flex items-center gap-2">
+            <Trophy className="w-5 h-5 text-orange-light" />
+            Metas do Mês
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -205,9 +211,12 @@ export default function ConsultorJuridicoDashboard() {
       </Card>
 
       {/* Tabela de Vendas do Mês */}
-      <Card className="bg-gradient-to-br from-card to-card/95 shadow-lg border border-border/30">
+      <Card className="bg-gradient-to-br from-card to-card/95 border border-border">
         <CardHeader>
-          <CardTitle className="text-lg font-semibold text-foreground">Vendas Realizadas no Mês</CardTitle>
+          <CardTitle className="text-lg font-semibold text-foreground flex items-center gap-2">
+            <ShoppingCart className="w-5 h-5 text-orange-light" />
+            Vendas Realizadas no Mês
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <Table>
@@ -247,9 +256,12 @@ export default function ConsultorJuridicoDashboard() {
       {/* Gráficos de Rendimento */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Gráfico Semanal */}
-        <Card className="bg-gradient-to-br from-card to-card/95 shadow-lg border border-border/30">
+        <Card className="bg-gradient-to-br from-card to-card/95 border border-border">
           <CardHeader>
-            <CardTitle className="text-lg font-semibold text-foreground">Rendimento das Últimas Semanas</CardTitle>
+            <CardTitle className="text-lg font-semibold text-foreground flex items-center gap-2">
+              <BarChart3 className="w-5 h-5 text-orange-light" />
+              Rendimento das Últimas Semanas
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="h-80">
@@ -301,9 +313,12 @@ export default function ConsultorJuridicoDashboard() {
         </Card>
 
         {/* Gráfico Mensal */}
-        <Card className="bg-gradient-to-br from-card to-card/95 shadow-lg border border-border/30">
+        <Card className="bg-gradient-to-br from-card to-card/95 border border-border">
           <CardHeader>
-            <CardTitle className="text-lg font-semibold text-foreground">Rendimento Mensal</CardTitle>
+            <CardTitle className="text-lg font-semibold text-foreground flex items-center gap-2">
+              <TrendingUp className="w-5 h-5 text-orange-light" />
+              Rendimento Mensal
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="h-80">
