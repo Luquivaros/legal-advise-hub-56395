@@ -188,7 +188,7 @@ export default function SupervisorJuridicoClients() {
       />
       
       {/* Lista de Clientes Protocolados */}
-      <Card className="bg-gradient-to-br from-card to-card/50 shadow-lg hover:shadow-xl transition-shadow duration-300">
+      <Card className="bg-gradient-to-br from-card to-card/50 border border-border">
         <CardHeader>
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <CardTitle className="flex items-center gap-2">
@@ -304,7 +304,7 @@ export default function SupervisorJuridicoClients() {
       </Card>
 
       {/* Lista de Novos Clientes */}
-      <Card className="bg-gradient-to-br from-card to-card/50 shadow-lg hover:shadow-xl transition-shadow duration-300">
+      <Card className="bg-gradient-to-br from-card to-card/50 border border-border">
         <CardHeader>
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <CardTitle className="flex items-center gap-2">
