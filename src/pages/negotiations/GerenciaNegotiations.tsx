@@ -24,7 +24,10 @@ import {
   Users,
   FileText,
   Download,
-  Trophy
+  Trophy,
+  Scale,
+  Briefcase,
+  Building2
 } from 'lucide-react';
 
 const statusColors = {
@@ -159,9 +162,12 @@ export default function GerenciaNegotiations() {
       />
 
       {/* Métricas do Setor Jurídico */}
-      <Card className="bg-gradient-to-br from-card to-card/95 shadow-lg border border-border/30">
+      <Card className="bg-gradient-to-br from-card to-card/95 border border-border">
         <CardHeader>
-          <CardTitle className="text-xl font-semibold text-foreground">Setor Jurídico</CardTitle>
+          <CardTitle className="text-xl font-semibold text-foreground flex items-center gap-2">
+            <Scale className="w-5 h-5 text-orange-500" />
+            Setor Jurídico
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -176,11 +182,11 @@ export default function GerenciaNegotiations() {
             trend={{ value: "8%", isPositive: true }}
           />
           <MetricCard
-            label="Percentual alcançado da meta do dia"
+            label="Percentual meta do dia"
             value={`${setorJuridico.percentualMeta.toFixed(1)}%`}
             trend={{ value: "12%", isPositive: true }}
           />
-          <div className="relative bg-gradient-to-r from-primary to-orange-light rounded-xl p-4 border border-white/20 shadow-2xl backdrop-blur-lg overflow-hidden">
+          <div className="relative bg-gradient-to-r from-primary to-orange-light rounded-xl p-4 border border-white/20 backdrop-blur-lg overflow-hidden">
             <div className="absolute inset-0 bg-white/10 backdrop-blur-sm"></div>
             <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-transparent"></div>
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-white/20 via-transparent to-transparent"></div>
@@ -208,9 +214,12 @@ export default function GerenciaNegotiations() {
       </Card>
 
       {/* Métricas do Setor Comercial */}
-      <Card className="bg-gradient-to-br from-card to-card/95 shadow-lg border border-border/30">
+      <Card className="bg-gradient-to-br from-card to-card/95 border border-border">
         <CardHeader>
-          <CardTitle className="text-xl font-semibold text-foreground">Setor Comercial</CardTitle>
+          <CardTitle className="text-xl font-semibold text-foreground flex items-center gap-2">
+            <Briefcase className="w-5 h-5 text-orange-500" />
+            Setor Comercial
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -225,11 +234,11 @@ export default function GerenciaNegotiations() {
             trend={{ value: "12%", isPositive: true }}
           />
           <MetricCard
-            label="Percentual alcançado da meta do dia"
+            label="Percentual meta do dia"
             value={`${setorComercial.percentualMeta.toFixed(1)}%`}
             trend={{ value: "18%", isPositive: true }}
           />
-          <div className="relative bg-gradient-to-r from-primary to-orange-light rounded-xl p-4 border border-white/20 shadow-2xl backdrop-blur-lg overflow-hidden">
+          <div className="relative bg-gradient-to-r from-primary to-orange-light rounded-xl p-4 border border-white/20 backdrop-blur-lg overflow-hidden">
             <div className="absolute inset-0 bg-white/10 backdrop-blur-sm"></div>
             <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-transparent"></div>
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-white/20 via-transparent to-transparent"></div>
@@ -257,9 +266,12 @@ export default function GerenciaNegotiations() {
       </Card>
 
       {/* Card Consolidado - Valor Total da Empresa */}
-      <Card className="bg-gradient-to-br from-card to-card/95 shadow-lg border border-border/30">
+      <Card className="bg-gradient-to-br from-card to-card/95 border border-border">
         <CardHeader>
-          <CardTitle className="text-xl font-semibold text-foreground">Consolidado Empresa</CardTitle>
+          <CardTitle className="text-xl font-semibold text-foreground flex items-center gap-2">
+            <Building2 className="w-5 h-5 text-orange-500" />
+            Consolidado Empresa
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="max-w-sm">
@@ -293,7 +305,7 @@ export default function GerenciaNegotiations() {
       {/* Projeções dos Setores */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Projeção Setor Jurídico */}
-        <Card className="bg-gradient-to-br from-card to-card/95 shadow-lg border border-border/30">
+        <Card className="bg-gradient-to-br from-card to-card/95 border border-border">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <TrendingUp className="w-5 h-5 text-primary" />
@@ -343,7 +355,7 @@ export default function GerenciaNegotiations() {
         </Card>
 
         {/* Projeção Setor Comercial */}
-        <Card className="bg-gradient-to-br from-card to-card/95 shadow-lg border border-border/30">
+        <Card className="bg-gradient-to-br from-card to-card/95 border border-border">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <TrendingUp className="w-5 h-5 text-primary" />
@@ -396,7 +408,7 @@ export default function GerenciaNegotiations() {
       {/* Rankings dos Setores */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Ranking Setor Jurídico */}
-        <Card className="bg-gradient-to-br from-card to-card/95 shadow-lg border border-border/30">
+        <Card className="bg-gradient-to-br from-card to-card/95 border border-border">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Trophy className="w-5 h-5 text-primary" />
@@ -406,7 +418,7 @@ export default function GerenciaNegotiations() {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              <div className="relative bg-gradient-to-r from-primary to-orange-light rounded-xl p-4 border border-white/20 shadow-2xl backdrop-blur-lg overflow-hidden">
+              <div className="relative bg-gradient-to-r from-primary to-orange-light rounded-xl p-4 border border-white/20 backdrop-blur-lg overflow-hidden">
                 <div className="absolute inset-0 bg-white/10 backdrop-blur-sm"></div>
                 <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-transparent"></div>
                 <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-white/20 via-transparent to-transparent"></div>
@@ -468,7 +480,7 @@ export default function GerenciaNegotiations() {
         </Card>
 
         {/* Ranking Setor Comercial */}
-        <Card className="bg-gradient-to-br from-card to-card/95 shadow-lg border border-border/30">
+        <Card className="bg-gradient-to-br from-card to-card/95 border border-border">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Trophy className="w-5 h-5 text-primary" />
@@ -478,7 +490,7 @@ export default function GerenciaNegotiations() {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              <div className="relative bg-gradient-to-r from-primary to-orange-light rounded-xl p-4 border border-white/20 shadow-2xl backdrop-blur-lg overflow-hidden">
+              <div className="relative bg-gradient-to-r from-primary to-orange-light rounded-xl p-4 border border-white/20 backdrop-blur-lg overflow-hidden">
                 <div className="absolute inset-0 bg-white/10 backdrop-blur-sm"></div>
                 <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-transparent"></div>
                 <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-white/20 via-transparent to-transparent"></div>
