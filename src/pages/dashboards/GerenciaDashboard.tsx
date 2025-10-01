@@ -78,10 +78,10 @@ export default function GerenciaDashboard() {
       {/* Metas Diárias e Mensais */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Metas do Dia */}
-        <Card className="bg-gradient-to-br from-card to-card/95 shadow-lg border border-border/30">
+        <Card className="bg-gradient-to-br from-card to-card/95 border border-border">
           <CardHeader>
             <CardTitle className="text-lg font-semibold text-foreground flex items-center gap-2">
-              <Calendar className="w-5 h-5" />
+              <Calendar className="w-5 h-5 text-orange-500" />
               Metas do Dia
             </CardTitle>
           </CardHeader>
@@ -146,10 +146,10 @@ export default function GerenciaDashboard() {
         </Card>
 
         {/* Metas do Mês */}
-        <Card className="bg-gradient-to-br from-card to-card/95 shadow-lg border border-border/30">
+        <Card className="bg-gradient-to-br from-card to-card/95 border border-border">
           <CardHeader>
             <CardTitle className="text-lg font-semibold text-foreground flex items-center gap-2">
-              <BarChart3 className="w-5 h-5" />
+              <BarChart3 className="w-5 h-5 text-orange-500" />
               Metas do Mês
             </CardTitle>
           </CardHeader>
@@ -215,10 +215,10 @@ export default function GerenciaDashboard() {
       </div>
 
       {/* Leads e Taxa de Conversão por Setor */}
-      <Card className="bg-gradient-to-br from-card to-card/95 shadow-lg border border-border/30">
+      <Card className="bg-gradient-to-br from-card to-card/95 border border-border">
         <CardHeader>
           <CardTitle className="text-lg font-semibold text-foreground flex items-center gap-2">
-            <Users className="w-5 h-5" />
+            <Users className="w-5 h-5 text-orange-500" />
             Leads e Taxa de Conversão por Setor
           </CardTitle>
         </CardHeader>
@@ -244,10 +244,11 @@ export default function GerenciaDashboard() {
       </Card>
 
       {/* Gráfico de Rendimento */}
-      <Card className="bg-gradient-to-br from-card to-card/95 shadow-lg border border-border/30">
+      <Card className="bg-gradient-to-br from-card to-card/95 border border-border">
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle className="text-lg font-semibold text-foreground">
+            <CardTitle className="text-lg font-semibold text-foreground flex items-center gap-2">
+              <TrendingUp className="w-5 h-5 text-orange-500" />
               Gráfico de Rendimento por Setor
             </CardTitle>
             <div className="flex gap-2">
@@ -316,9 +317,12 @@ export default function GerenciaDashboard() {
       {/* Ticket Médio por Produto e Gestão de Metas */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Ticket Médio por Produto */}
-        <Card className="bg-gradient-to-br from-card to-card/95 shadow-lg border border-border/30">
+        <Card className="bg-gradient-to-br from-card to-card/95 border border-border">
           <CardHeader>
-            <CardTitle className="text-lg font-semibold text-foreground">Ticket Médio por Produto</CardTitle>
+            <CardTitle className="text-lg font-semibold text-foreground flex items-center gap-2">
+              <DollarSign className="w-5 h-5 text-orange-500" />
+              Ticket Médio por Produto
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
@@ -342,10 +346,10 @@ export default function GerenciaDashboard() {
         </Card>
 
         {/* Gestão de Metas por Setor */}
-        <Card className="bg-gradient-to-br from-card to-card/95 shadow-lg border border-border/30">
+        <Card className="bg-gradient-to-br from-card to-card/95 border border-border">
           <CardHeader>
             <CardTitle className="text-lg font-semibold text-foreground flex items-center gap-2">
-              <Settings className="w-5 h-5" />
+              <Settings className="w-5 h-5 text-orange-500" />
               Gestão de Metas por Setor
             </CardTitle>
           </CardHeader>
@@ -380,10 +384,10 @@ export default function GerenciaDashboard() {
       </div>
 
       {/* Taxa de Conversão por Plataforma */}
-      <Card className="bg-gradient-to-br from-card to-card/95 shadow-lg border border-border/30">
+      <Card className="bg-gradient-to-br from-card to-card/95 border border-border">
         <CardHeader>
           <CardTitle className="text-lg font-semibold text-foreground flex items-center gap-2">
-            <Zap className="w-5 h-5" />
+            <Zap className="w-5 h-5 text-orange-500" />
             Taxa de Conversão por Plataforma de Origem
           </CardTitle>
         </CardHeader>
