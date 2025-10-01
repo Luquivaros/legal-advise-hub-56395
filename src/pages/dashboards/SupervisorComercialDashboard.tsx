@@ -171,10 +171,10 @@ export default function SupervisorComercialDashboard() {
       {/* Metas Diárias e Mensais */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Meta do Dia */}
-        <Card className="bg-gradient-to-br from-card to-card/95 shadow-lg border border-border/30">
+        <Card className="bg-gradient-to-br from-card to-card/95 border border-border">
           <CardHeader>
             <CardTitle className="text-lg font-semibold text-foreground flex items-center gap-2">
-              <Calendar className="w-5 h-5" />
+              <Calendar className="w-5 h-5 text-orange-light" />
               Meta do Dia
             </CardTitle>
           </CardHeader>
@@ -202,10 +202,10 @@ export default function SupervisorComercialDashboard() {
         </Card>
 
         {/* Meta do Mês */}
-        <Card className="bg-gradient-to-br from-card to-card/95 shadow-lg border border-border/30">
+        <Card className="bg-gradient-to-br from-card to-card/95 border border-border">
           <CardHeader>
             <CardTitle className="text-lg font-semibold text-foreground flex items-center gap-2">
-              <Trophy className="w-5 h-5" />
+              <Trophy className="w-5 h-5 text-orange-light" />
               Meta do Mês
             </CardTitle>
           </CardHeader>
@@ -234,9 +234,12 @@ export default function SupervisorComercialDashboard() {
       </div>
 
       {/* Performance Individual da Equipe */}
-      <Card className="bg-gradient-to-br from-card to-card/95 shadow-lg border border-border/30">
+      <Card className="bg-gradient-to-br from-card to-card/95 border border-border">
         <CardHeader>
-          <CardTitle className="text-lg font-semibold text-foreground">Performance Individual da Equipe</CardTitle>
+          <CardTitle className="text-lg font-semibold text-foreground flex items-center gap-2">
+            <Users className="w-5 h-5 text-orange-light" />
+            Performance Individual da Equipe
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
@@ -310,10 +313,10 @@ export default function SupervisorComercialDashboard() {
       </Card>
 
       {/* Taxa de Conversão por Plataforma */}
-      <Card className="bg-gradient-to-br from-card to-card/95 shadow-lg border border-border/30">
+      <Card className="bg-gradient-to-br from-card to-card/95 border border-border">
         <CardHeader>
           <CardTitle className="text-lg font-semibold text-foreground flex items-center gap-2">
-            <Share2 className="w-5 h-5" />
+            <Share2 className="w-5 h-5 text-orange-light" />
             Taxa de Conversão por Plataforma
           </CardTitle>
         </CardHeader>
@@ -343,10 +346,10 @@ export default function SupervisorComercialDashboard() {
       </Card>
 
       {/* Ticket Médio por Produto */}
-      <Card className="bg-gradient-to-br from-card to-card/95 shadow-lg border border-border/30">
+      <Card className="bg-gradient-to-br from-card to-card/95 border border-border">
         <CardHeader>
           <CardTitle className="text-lg font-semibold text-foreground flex items-center gap-2">
-            <DollarSign className="w-5 h-5" />
+            <DollarSign className="w-5 h-5 text-orange-light" />
             Ticket Médio por Produto
           </CardTitle>
         </CardHeader>
@@ -371,10 +374,11 @@ export default function SupervisorComercialDashboard() {
       {/* Gráficos */}
       <div className="space-y-6">
         {/* Rendimento com Controle de Visualização */}
-        <Card className="bg-gradient-to-br from-card to-card/95 shadow-lg border border-border/30">
+        <Card className="bg-gradient-to-br from-card to-card/95 border border-border">
           <CardHeader>
             <div className="flex items-center justify-between">
-              <CardTitle className="text-lg font-semibold text-foreground">
+              <CardTitle className="text-lg font-semibold text-foreground flex items-center gap-2">
+                <TrendingUp className="w-5 h-5 text-orange-light" />
                 Rendimento {viewType === 'semanal' ? 'Semanal' : 'Mensal'} por Consultor
               </CardTitle>
               <div className="flex gap-2">
