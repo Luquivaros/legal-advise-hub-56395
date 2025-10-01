@@ -275,7 +275,7 @@ export default function GerenciaNegotiations() {
         </CardHeader>
         <CardContent>
           <div className="max-w-sm">
-          <div className="relative bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl p-6 border border-white/20 shadow-2xl backdrop-blur-lg overflow-hidden">
+          <div className="relative bg-gradient-to-r from-primary to-orange-light rounded-xl p-6 border border-white/20 backdrop-blur-lg overflow-hidden">
             <div className="absolute inset-0 bg-white/10 backdrop-blur-sm"></div>
             <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-transparent"></div>
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-white/20 via-transparent to-transparent"></div>
