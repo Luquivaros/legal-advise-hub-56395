@@ -54,7 +54,7 @@ export default function ConsultorJuridicoNegotiations() {
       />
 
       {/* Card com Título e Search Bar */}
-      <Card className="bg-gradient-to-br from-card to-card/95 shadow-lg border border-border/30">
+      <Card className="bg-gradient-to-br from-card to-card/95 border border-border">
         <CardHeader>
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <CardTitle className="flex items-center gap-2">
@@ -112,7 +112,7 @@ export default function ConsultorJuridicoNegotiations() {
       </div>
 
       {/* Card de Projeções e Performance */}
-      <Card className="bg-gradient-to-br from-card to-card/95 shadow-lg border border-border/30">
+      <Card className="bg-gradient-to-br from-card to-card/95 border border-border">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <TrendingUp className="w-5 h-5 text-primary" />
@@ -162,7 +162,7 @@ export default function ConsultorJuridicoNegotiations() {
               </div>
 
               {/* Valor Previsto */}
-              <div className="relative bg-gradient-to-r from-primary to-orange-light rounded-xl p-4 border border-white/20 shadow-2xl backdrop-blur-lg overflow-hidden">
+              <div className="relative bg-gradient-to-r from-primary to-orange-light rounded-xl p-4 border border-white/20 backdrop-blur-lg overflow-hidden">
                 {/* Glassmorphism texture overlay */}
                 <div className="absolute inset-0 bg-white/10 backdrop-blur-sm"></div>
                 <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-transparent"></div>
@@ -208,7 +208,7 @@ export default function ConsultorJuridicoNegotiations() {
         </Card>
 
       {/* Card de Ranking do Setor */}
-      <Card className="bg-gradient-to-br from-card to-card/95 shadow-lg border border-border/30">
+      <Card className="bg-gradient-to-br from-card to-card/95 border border-border">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <TrendingUp className="w-5 h-5 text-primary" />
@@ -219,7 +219,7 @@ export default function ConsultorJuridicoNegotiations() {
         <CardContent>
           <div className="space-y-3">
             {/* 1º Colocado - Destacado */}
-            <div className="relative bg-gradient-to-r from-primary to-orange-light rounded-xl p-4 border border-white/20 shadow-2xl backdrop-blur-lg overflow-hidden">
+            <div className="relative bg-gradient-to-r from-primary to-orange-light rounded-xl p-4 border border-white/20 backdrop-blur-lg overflow-hidden">
               {/* Glassmorphism texture overlay */}
               <div className="absolute inset-0 bg-white/10 backdrop-blur-sm"></div>
               <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-transparent"></div>
