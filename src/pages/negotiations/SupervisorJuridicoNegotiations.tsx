@@ -144,7 +144,7 @@ export default function SupervisorJuridicoNegotiations() {
           value={`${percentualMeta.toFixed(1)}%`}
           trend={{ value: "12%", isPositive: true }}
         />
-        <div className="relative bg-gradient-to-r from-primary to-orange-light rounded-xl p-4 border border-white/20 shadow-2xl backdrop-blur-lg overflow-hidden">
+        <div className="relative bg-gradient-to-r from-primary to-orange-light rounded-xl p-4 border border-white/20 backdrop-blur-lg overflow-hidden">
           {/* Glassmorphism texture overlay */}
           <div className="absolute inset-0 bg-white/10 backdrop-blur-sm"></div>
           <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-transparent"></div>
@@ -167,7 +167,7 @@ export default function SupervisorJuridicoNegotiations() {
       </div>
 
       {/* Projeção Diária */}
-      <Card className="bg-gradient-to-br from-card to-card/95 shadow-lg border border-border/30">
+      <Card className="bg-gradient-to-br from-card to-card/95 border border-border">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <TrendingUp className="w-5 h-5 text-primary" />
@@ -220,7 +220,7 @@ export default function SupervisorJuridicoNegotiations() {
       </Card>
 
       {/* Ranking Mensal */}
-      <Card className="bg-gradient-to-br from-card to-card/95 shadow-lg border border-border/30">
+      <Card className="bg-gradient-to-br from-card to-card/95 border border-border">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <TrendingUp className="w-5 h-5 text-primary" />
@@ -231,7 +231,7 @@ export default function SupervisorJuridicoNegotiations() {
         <CardContent>
           <div className="space-y-3">
             {/* 1º Colocado - Destacado */}
-            <div className="relative bg-gradient-to-r from-primary to-orange-light rounded-xl p-4 border border-white/20 shadow-2xl backdrop-blur-lg overflow-hidden">
+            <div className="relative bg-gradient-to-r from-primary to-orange-light rounded-xl p-4 border border-white/20 backdrop-blur-lg overflow-hidden">
               {/* Glassmorphism texture overlay */}
               <div className="absolute inset-0 bg-white/10 backdrop-blur-sm"></div>
               <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-transparent"></div>
@@ -297,10 +297,10 @@ export default function SupervisorJuridicoNegotiations() {
 
 
       {/* Lista de Negociações */}
-      <Card className="bg-gradient-to-br from-card to-card/95 shadow-lg border border-border/30">
+      <Card className="bg-gradient-to-br from-card to-card/95 border border-border">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Users className="w-5 h-5" />
+            <Users className="w-5 h-5 text-orange-light" />
             Lista de Negociações
           </CardTitle>
         </CardHeader>
