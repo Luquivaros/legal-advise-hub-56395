@@ -121,7 +121,7 @@ export default function SupervisorComercialNegotiations() {
           value={`${percentualMeta.toFixed(1)}%`}
           trend={{ value: "12%", isPositive: true }}
         />
-        <div className="relative bg-gradient-to-r from-primary to-orange-light rounded-xl p-4 border border-white/20 shadow-2xl backdrop-blur-lg overflow-hidden">
+        <div className="relative bg-gradient-to-r from-primary to-orange-light rounded-xl p-4 border border-border backdrop-blur-lg overflow-hidden">
           {/* Glassmorphism texture overlay */}
           <div className="absolute inset-0 bg-white/10 backdrop-blur-sm"></div>
           <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-transparent"></div>
@@ -210,7 +210,7 @@ export default function SupervisorComercialNegotiations() {
         <CardContent>
           <div className="space-y-3">
             {/* 1º Colocado - Destacado */}
-            <div className="relative bg-gradient-to-r from-primary to-orange-light rounded-xl p-4 border border-white/20 shadow-2xl backdrop-blur-lg overflow-hidden">
+            <div className="relative bg-gradient-to-r from-primary to-orange-light rounded-xl p-4 border border-white/20 backdrop-blur-lg overflow-hidden">
               {/* Glassmorphism texture overlay */}
               <div className="absolute inset-0 bg-white/10 backdrop-blur-sm"></div>
               <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-transparent"></div>
