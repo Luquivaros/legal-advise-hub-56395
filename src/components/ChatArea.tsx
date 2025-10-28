@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { Send, Paperclip, Smile, Mic, Zap, Plus, Edit2, Trash2, FileText, Image, Music, ChevronDown } from "lucide-react";
+import { Send, Paperclip, Smile, Mic, Zap, Plus, Edit2, Trash2, FileText, Image, Music, ChevronDown, Search, MoreVertical, Phone, Video } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -112,6 +113,31 @@ export const ChatArea = () => {
 
   return (
     <div className="flex flex-col h-full">
+      {/* Conversation Profile Header */}
+      <div className="flex items-center gap-3 border-b border-border bg-background px-4 py-3">
+        <Avatar className="h-10 w-10">
+          <AvatarImage src="" alt="Contato" />
+          <AvatarFallback className="bg-primary/10 text-primary font-semibold">
+            CS
+          </AvatarFallback>
+        </Avatar>
+        
+        <div className="flex-1 min-w-0">
+          <h3 className="font-semibold text-foreground truncate">
+            +55 11 93207-0637
+          </h3>
+        </div>
+
+        <div className="flex items-center gap-1">
+          <Button variant="ghost" size="icon" className="h-9 w-9" title="Buscar">
+            <Search className="h-5 w-5" />
+          </Button>
+          <Button variant="ghost" size="icon" className="h-9 w-9" title="Mais opções">
+            <MoreVertical className="h-5 w-5" />
+          </Button>
+        </div>
+      </div>
+
       {/* Messages Area */}
       <ScrollArea className="flex-1 p-6">
         <div className="text-center text-muted-foreground">
