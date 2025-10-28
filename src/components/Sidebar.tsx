@@ -86,8 +86,8 @@ export function Sidebar({
       </div>
 
       {/* Navigation Menu */}
-      <nav className="flex-1 px-3 py-4 min-h-0">
-        <div className="space-y-4">
+      <nav className="flex-1 px-3 py-6 min-h-0">
+        <div className="space-y-3">
           {filteredMenuItems.map((item) => {
             const Icon = item.icon;
             const isActive = location.pathname === item.path;
@@ -95,7 +95,7 @@ export function Sidebar({
             return (
               <Link key={item.path} to={item.path}>
                 <div className={cn(
-                  "flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200",
+                  "flex items-center gap-3 px-3 py-3 rounded-lg transition-all duration-200",
                   "shadow-sm hover:shadow-md text-sm",
                   isActive 
                     ? "bg-white/25 text-white shadow-lg border border-white/20" 
