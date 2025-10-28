@@ -87,7 +87,7 @@ export function Sidebar({
 
       {/* Navigation Menu */}
       <nav className="flex-1 px-3 py-4 min-h-0">
-        <div className="space-y-2">
+        <div className="space-y-4">
           {filteredMenuItems.map((item) => {
             const Icon = item.icon;
             const isActive = location.pathname === item.path;
