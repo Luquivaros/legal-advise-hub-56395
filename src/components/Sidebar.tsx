@@ -6,7 +6,8 @@ import {
   AlertTriangle, 
   MessageSquare,
   Scale,
-  LogOut
+  LogOut,
+  MessagesSquare
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -45,6 +46,12 @@ const menuItems: MenuItem[] = [
     label: "Chargebacks",
     path: "/app/chargebacks",
     roles: ['supervisor-comercial', 'supervisor-juridico', 'setor-administrativo', 'gerencia']
+  },
+  {
+    icon: MessagesSquare,
+    label: "Conversas",
+    path: "/app/conversas",
+    roles: ['consultor-comercial', 'consultor-juridico', 'supervisor-comercial', 'supervisor-juridico']
   },
   {
     icon: MessageSquare,
