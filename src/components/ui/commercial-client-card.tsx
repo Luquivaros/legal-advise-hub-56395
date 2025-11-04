@@ -11,7 +11,19 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
-import { User, Phone, CreditCard, Trash2, CheckCircle2, CalendarIcon, DollarSign, Clock, MapPin, AlertTriangle } from 'lucide-react';
+import { User, Phone, CreditCard, Trash2, CheckCircle2, CalendarIcon, DollarSign, Clock, MapPin, AlertTriangle, Calculator } from 'lucide-react';
+
+interface RevisionalCalculationData {
+  cpf: string;
+  financeira: string;
+  modeloVeiculo: string;
+  valorFinanciado: number;
+  valorEntrada: number;
+  numeroMeses: number;
+  valorParcela: number;
+  qtPagas: number;
+  qtAtrasadas: number;
+}
 
 interface CommercialClientCardProps {
   client: {
@@ -29,9 +41,21 @@ export function CommercialClientCard({ client }: CommercialClientCardProps) {
   const [scheduledTime, setScheduledTime] = useState('');
   const [isRemoveDialogOpen, setIsRemoveDialogOpen] = useState(false);
   const [isAgreementOpen, setIsAgreementOpen] = useState(false);
+  const [isCalculationOpen, setIsCalculationOpen] = useState(false);
   const [paymentType, setPaymentType] = useState<'total' | 'partial'>('total');
   const [entryValue, setEntryValue] = useState('');
   const [paymentDate, setPaymentDate] = useState<Date>();
+  const [calculationData, setCalculationData] = useState<RevisionalCalculationData>({
+    cpf: client.cpf || '',
+    financeira: '',
+    modeloVeiculo: '',
+    valorFinanciado: 0,
+    valorEntrada: 0,
+    numeroMeses: 0,
+    valorParcela: 0,
+    qtPagas: 0,
+    qtAtrasadas: 0,
+  });
 
   const contractTypes = [
     'Financiamento de Veículo',
@@ -81,6 +105,24 @@ export function CommercialClientCard({ client }: CommercialClientCardProps) {
     setEntryValue('');
     setPaymentDate(undefined);
   };
+
+  const calculateRevisionalValues = () => {
+    const mesesRestantes = calculationData.numeroMeses - calculationData.qtPagas;
+    const reducaoPorParcela = calculationData.valorParcela * 0.3;
+    const valorParcelaCorrigido = calculationData.valorParcela - reducaoPorParcela;
+    const valorEstorno = reducaoPorParcela * calculationData.qtPagas;
+    const reducaoTotal = reducaoPorParcela * mesesRestantes;
+
+    return {
+      mesesRestantes,
+      valorParcelaCorrigido,
+      reducaoPorParcela,
+      valorEstorno,
+      reducaoTotal,
+    };
+  };
+
+  const revisionalCalculations = calculateRevisionalValues();
 
   return (
     <Card className="w-full max-w-4xl mx-auto bg-gradient-to-br from-card to-card/95 shadow-lg border border-border/30">
@@ -182,6 +224,332 @@ export function CommercialClientCard({ client }: CommercialClientCardProps) {
             onChange={(e) => setObservations(e.target.value)}
             className="min-h-[100px] bg-background/80 border border-border/50 focus:border-primary/50"
           />
+        </div>
+
+        {/* Botão de Cálculo Revisional */}
+        <div className="flex justify-center pt-4 border-t border-border/30">
+          <Dialog open={isCalculationOpen} onOpenChange={setIsCalculationOpen}>
+            <DialogTrigger asChild>
+              <Button className="bg-gradient-to-r from-orange-light to-orange-lighter text-white hover:from-orange-light-hover hover:to-orange-light w-full max-w-md shadow-lg hover:shadow-xl transition-all duration-300">
+                <Calculator className="w-4 h-4 mr-2" />
+                Cálculo Revisional
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto bg-gradient-to-br from-background to-background/95">
+              <DialogHeader className="border-b border-border/50 pb-4">
+                <DialogTitle className="text-2xl font-bold text-center text-foreground">
+                  Cálculo Revisional - Financiamento
+                </DialogTitle>
+                <p className="text-center text-muted-foreground text-sm mt-2">
+                  Análise de redução de parcelas e valores de financiamento
+                </p>
+              </DialogHeader>
+              
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 py-6">
+                {/* Seção de Entrada de Dados */}
+                <Card className="bg-gradient-to-br from-card to-card/95 shadow-lg border border-border/30">
+                  <CardHeader className="pb-4">
+                    <CardTitle className="flex items-center gap-2 text-lg">
+                      <CreditCard className="w-5 h-5 text-primary" />
+                      Dados do Financiamento
+                    </CardTitle>
+                    <p className="text-sm text-muted-foreground">
+                      Insira as informações do contrato de financiamento
+                    </p>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                    {/* Dados do Cliente e Veículo */}
+                    <div className="space-y-4">
+                      <h4 className="font-medium text-foreground border-b border-border/30 pb-2">
+                        Informações do Cliente e Veículo
+                      </h4>
+                      <div className="grid grid-cols-1 gap-4">
+                        <div className="space-y-2">
+                          <Label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                            CPF
+                          </Label>
+                          <Input
+                            type="text"
+                            placeholder="000.000.000-00"
+                            className="bg-background/80 border border-border/50 focus:border-primary/50"
+                            value={calculationData.cpf}
+                            onChange={(e) => setCalculationData({
+                              ...calculationData,
+                              cpf: e.target.value
+                            })}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                            Financeira
+                          </Label>
+                          <Input
+                            type="text"
+                            placeholder="Nome da financeira"
+                            className="bg-background/80 border border-border/50 focus:border-primary/50"
+                            value={calculationData.financeira}
+                            onChange={(e) => setCalculationData({
+                              ...calculationData,
+                              financeira: e.target.value
+                            })}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                            Modelo do Veículo
+                          </Label>
+                          <Input
+                            type="text"
+                            placeholder="Ex: Honda Civic 2020"
+                            className="bg-background/80 border border-border/50 focus:border-primary/50"
+                            value={calculationData.modeloVeiculo}
+                            onChange={(e) => setCalculationData({
+                              ...calculationData,
+                              modeloVeiculo: e.target.value
+                            })}
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Valores do Financiamento */}
+                    <div className="space-y-4">
+                      <h4 className="font-medium text-foreground border-b border-border/30 pb-2">
+                        Valores do Contrato
+                      </h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                            Valor Financiado
+                          </Label>
+                          <Input
+                            type="number"
+                            placeholder="R$ 0,00"
+                            className="bg-background/80 border border-border/50 focus:border-primary/50"
+                            value={calculationData.valorFinanciado || ''}
+                            onChange={(e) => setCalculationData({
+                              ...calculationData,
+                              valorFinanciado: Number(e.target.value)
+                            })}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                            Valor de Entrada
+                          </Label>
+                          <Input
+                            type="number"
+                            placeholder="R$ 0,00"
+                            className="bg-background/80 border border-border/50 focus:border-primary/50"
+                            value={calculationData.valorEntrada || ''}
+                            onChange={(e) => setCalculationData({
+                              ...calculationData,
+                              valorEntrada: Number(e.target.value)
+                            })}
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Informações das Parcelas */}
+                    <div className="space-y-4">
+                      <h4 className="font-medium text-foreground border-b border-border/30 pb-2">
+                        Parcelas
+                      </h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                            Nº de Meses (Total)
+                          </Label>
+                          <Input
+                            type="number"
+                            placeholder="0"
+                            className="bg-background/80 border border-border/50 focus:border-primary/50"
+                            value={calculationData.numeroMeses || ''}
+                            onChange={(e) => setCalculationData({
+                              ...calculationData,
+                              numeroMeses: Number(e.target.value)
+                            })}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                            Valor da Parcela
+                          </Label>
+                          <Input
+                            type="number"
+                            placeholder="R$ 0,00"
+                            className="bg-background/80 border border-border/50 focus:border-primary/50"
+                            value={calculationData.valorParcela || ''}
+                            onChange={(e) => setCalculationData({
+                              ...calculationData,
+                              valorParcela: Number(e.target.value)
+                            })}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                            Qt. Pagas
+                          </Label>
+                          <Input
+                            type="number"
+                            placeholder="0"
+                            className="bg-background/80 border border-border/50 focus:border-primary/50"
+                            value={calculationData.qtPagas || ''}
+                            onChange={(e) => setCalculationData({
+                              ...calculationData,
+                              qtPagas: Number(e.target.value)
+                            })}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                            Qt. Atrasadas
+                          </Label>
+                          <Input
+                            type="number"
+                            placeholder="0"
+                            className="bg-background/80 border border-border/50 focus:border-primary/50"
+                            value={calculationData.qtAtrasadas || ''}
+                            onChange={(e) => setCalculationData({
+                              ...calculationData,
+                              qtAtrasadas: Number(e.target.value)
+                            })}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Seção de Resultados */}
+                <Card className="bg-gradient-to-br from-primary/5 to-orange-light/5 shadow-lg border border-primary/20">
+                  <CardHeader className="pb-4">
+                    <CardTitle className="flex items-center gap-2 text-lg">
+                      <Calculator className="w-5 h-5 text-primary" />
+                      Resultados da Análise
+                    </CardTitle>
+                    <p className="text-sm text-muted-foreground">
+                      Cálculos automáticos de redução e economia
+                    </p>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                    {/* Cards de Resultados */}
+                    <div className="grid grid-cols-1 gap-4">
+                      {/* Meses Restantes */}
+                      <div className="bg-background/80 backdrop-blur-sm rounded-xl p-4 border border-border/30">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="text-xs uppercase tracking-wide text-muted-foreground mb-1">
+                              Nº de Meses Restantes
+                            </p>
+                            <p className="text-2xl font-bold text-foreground">
+                              {revisionalCalculations.mesesRestantes}
+                            </p>
+                          </div>
+                          <DollarSign className="w-8 h-8 text-primary/40" />
+                        </div>
+                      </div>
+
+                      {/* Valor da Parcela Corrigido */}
+                      <div className="bg-background/80 backdrop-blur-sm rounded-xl p-4 border border-border/30">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="text-xs uppercase tracking-wide text-muted-foreground mb-1">
+                              Valor da Parcela Corrigido
+                            </p>
+                            <p className="text-2xl font-bold text-green-600">
+                              R$ {revisionalCalculations.valorParcelaCorrigido.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                            </p>
+                            <p className="text-xs text-muted-foreground mt-1">
+                              Redução de 30% aplicada
+                            </p>
+                          </div>
+                          <DollarSign className="w-8 h-8 text-green-600/40" />
+                        </div>
+                      </div>
+
+                      {/* Redução por Parcela */}
+                      <div className="bg-background/80 backdrop-blur-sm rounded-xl p-4 border border-border/30">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="text-xs uppercase tracking-wide text-muted-foreground mb-1">
+                              Redução por Parcela
+                            </p>
+                            <p className="text-2xl font-bold text-orange-600">
+                              R$ {revisionalCalculations.reducaoPorParcela.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                            </p>
+                          </div>
+                          <DollarSign className="w-8 h-8 text-orange-600/40" />
+                        </div>
+                      </div>
+
+                      {/* Valor de Estorno */}
+                      <div className="bg-background/80 backdrop-blur-sm rounded-xl p-4 border border-border/30">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="text-xs uppercase tracking-wide text-muted-foreground mb-1">
+                              Valor de Estorno
+                            </p>
+                            <p className="text-2xl font-bold text-blue-600">
+                              R$ {revisionalCalculations.valorEstorno.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                            </p>
+                            <p className="text-xs text-muted-foreground mt-1">
+                              Total das parcelas já pagas
+                            </p>
+                          </div>
+                          <DollarSign className="w-8 h-8 text-blue-600/40" />
+                        </div>
+                      </div>
+
+                      {/* Redução Total */}
+                      <div className="bg-gradient-to-br from-primary/10 to-orange-light/10 rounded-xl p-4 border-2 border-primary/30">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="text-xs uppercase tracking-wide text-primary mb-1 font-semibold">
+                              Redução Total
+                            </p>
+                            <p className="text-3xl font-bold text-primary">
+                              R$ {revisionalCalculations.reducaoTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                            </p>
+                            <p className="text-xs text-muted-foreground mt-1">
+                              Economia nos meses restantes
+                            </p>
+                          </div>
+                          <DollarSign className="w-10 h-10 text-primary/40" />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Resumo Total */}
+                    <div className="bg-gradient-to-r from-primary to-orange-light rounded-xl p-6 text-white">
+                      <h4 className="font-semibold mb-3">Resumo do Benefício</h4>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex justify-between">
+                          <span className="opacity-90">Economia Mensal:</span>
+                          <span className="font-bold">
+                            R$ {revisionalCalculations.reducaoPorParcela.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="opacity-90">Valor a Receber:</span>
+                          <span className="font-bold">
+                            R$ {revisionalCalculations.valorEstorno.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                          </span>
+                        </div>
+                        <div className="flex justify-between pt-2 border-t border-white/30">
+                          <span className="opacity-90">Total de Economia:</span>
+                          <span className="font-bold text-lg">
+                            R$ {(revisionalCalculations.valorEstorno + revisionalCalculations.reducaoTotal).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </DialogContent>
+          </Dialog>
         </div>
 
         {/* Botões de Ação */}
