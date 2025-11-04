@@ -93,18 +93,6 @@ export interface Client {
   updatedAt: string;
   documents?: Document[];
   notes?: Note[];
-  // Campos GOV
-  senhaGov?: string;
-  dataSolicitacao?: string;
-  dataReembolso?: string;
-  valorReembolso?: number;
-  nomeConsultor?: string;
-  procuracaoInicial?: "sim" | "nao";
-  selfieAnexada?: "sim" | "nao";
-  observacoes?: string;
-  seguro?: "sim" | "nao";
-  banco?: string;
-  seguradora?: string;
 }
 
 export type ClientStatus = 
