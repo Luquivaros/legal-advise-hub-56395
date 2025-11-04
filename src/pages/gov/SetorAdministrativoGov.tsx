@@ -6,15 +6,22 @@ import { Input } from '@/components/ui/input';
 import { Search, Filter, Building2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Label } from '@/components/ui/label';
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Textarea } from '@/components/ui/textarea';
 
 // Mock data
 const mockSeguroData = [
@@ -105,6 +112,24 @@ export default function SetorAdministrativoGov() {
   const [editableInsurance, setEditableInsurance] = useState<{[key: string]: boolean}>({
     "1": true
   });
+
+  // Modal state
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentEditId, setCurrentEditId] = useState<string | null>(null);
+  const [modalNotes, setModalNotes] = useState("");
+
+  const openNotesModal = (id: string, notes: string) => {
+    setCurrentEditId(id);
+    setModalNotes(notes || "");
+    setIsModalOpen(true);
+  };
+
+  const saveNotes = () => {
+    if (currentEditId) {
+      setEditableNotes({ ...editableNotes, [currentEditId]: modalNotes });
+    }
+    setIsModalOpen(false);
+  };
 
   const renderMetricCards = () => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-full">
@@ -212,105 +237,112 @@ export default function SetorAdministrativoGov() {
         </CardContent>
       </Card>
 
-      {/* Tabela com scroll horizontal */}
+      {/* Accordion */}
       <Card className="max-w-full">
-        <CardContent className="p-0">
-          <div className="overflow-x-auto">
-            <div className="p-6">
-              <Table className="min-w-max">
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="whitespace-nowrap">Nome do Cliente</TableHead>
-                    <TableHead className="whitespace-nowrap">CPF</TableHead>
-                    <TableHead className="whitespace-nowrap">Senha GOV</TableHead>
-                    <TableHead className="whitespace-nowrap">Data Solicitação</TableHead>
-                    <TableHead className="whitespace-nowrap">Data Reembolso</TableHead>
-                    <TableHead className="whitespace-nowrap">Valor Reembolso</TableHead>
-                    <TableHead className="whitespace-nowrap">Consultor</TableHead>
-                    <TableHead className="whitespace-nowrap">Procuração</TableHead>
-                    <TableHead className="whitespace-nowrap">Selfie</TableHead>
-                    <TableHead className="whitespace-nowrap min-w-[200px]">Observações</TableHead>
-                    <TableHead className="whitespace-nowrap">Seguro</TableHead>
-                    <TableHead className="whitespace-nowrap">Banco</TableHead>
-                    <TableHead className="whitespace-nowrap">Seguradora</TableHead>
-                  </TableRow>
-                </TableHeader>
-            <TableBody>
-              {mockSeguroData.map((item) => (
-                <TableRow key={item.id}>
-                  <TableCell className="font-medium whitespace-nowrap">{item.clientName}</TableCell>
-                  <TableCell className="whitespace-nowrap">{item.cpf}</TableCell>
-                  <TableCell className="whitespace-nowrap">{item.govPassword}</TableCell>
-                  <TableCell className="whitespace-nowrap">{item.requestDate}</TableCell>
-                  <TableCell className="whitespace-nowrap">{item.refundDate}</TableCell>
-                  <TableCell className="whitespace-nowrap">{item.refundValue}</TableCell>
-                  <TableCell className="whitespace-nowrap">{item.consultantName}</TableCell>
-                  <TableCell>
-                    <Select 
-                      value={editableProcuration[item.id] ? "sim" : "nao"}
-                      onValueChange={(value) => setEditableProcuration({...editableProcuration, [item.id]: value === "sim"})}
-                    >
-                      <SelectTrigger className="w-20">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="sim">Sim</SelectItem>
-                        <SelectItem value="nao">Não</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </TableCell>
-                  <TableCell>
-                    <Select 
-                      value={editableSelfie[item.id] ? "sim" : "nao"}
-                      onValueChange={(value) => setEditableSelfie({...editableSelfie, [item.id]: value === "sim"})}
-                    >
-                      <SelectTrigger className="w-20">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="sim">Sim</SelectItem>
-                        <SelectItem value="nao">Não</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </TableCell>
-                  <TableCell className="min-w-[200px]">
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Input
-                            value={editableNotes[item.id] || item.sectorNotes}
-                            onChange={(e) => setEditableNotes({...editableNotes, [item.id]: e.target.value})}
-                            className="w-full truncate"
-                          />
-                        </TooltipTrigger>
-                        <TooltipContent className="max-w-md">
-                          <p>{editableNotes[item.id] || item.sectorNotes}</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </TableCell>
-                  <TableCell>
-                    <Select 
-                      value={editableInsurance[item.id] ? "sim" : "nao"}
-                      onValueChange={(value) => setEditableInsurance({...editableInsurance, [item.id]: value === "sim"})}
-                    >
-                      <SelectTrigger className="w-20">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="sim">Sim</SelectItem>
-                        <SelectItem value="nao">Não</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </TableCell>
-                  <TableCell className="whitespace-nowrap">{item.bank}</TableCell>
-                  <TableCell className="whitespace-nowrap">{item.insurer}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-              </Table>
-            </div>
-          </div>
+        <CardContent className="p-6">
+          <Accordion type="single" collapsible className="w-full space-y-2">
+            {mockSeguroData.map((item) => (
+              <AccordionItem key={item.id} value={item.id} className="border rounded-lg">
+                <AccordionTrigger className="px-4 hover:no-underline hover:scale-[1.02] transition-transform duration-200">
+                  <div className="flex flex-col items-start text-left">
+                    <span className="font-medium">{item.clientName}</span>
+                    <span className="text-sm text-muted-foreground">{item.cpf}</span>
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent className="px-4 pb-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pt-4">
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Senha GOV</Label>
+                      <p className="text-sm">{item.govPassword}</p>
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Data Solicitação</Label>
+                      <p className="text-sm">{item.requestDate}</p>
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Data Reembolso</Label>
+                      <p className="text-sm">{item.refundDate}</p>
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Valor Reembolso</Label>
+                      <p className="text-sm">{item.refundValue}</p>
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Consultor</Label>
+                      <p className="text-sm">{item.consultantName}</p>
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Procuração</Label>
+                      <Select 
+                        value={editableProcuration[item.id] ? "sim" : "nao"}
+                        onValueChange={(value) => setEditableProcuration({...editableProcuration, [item.id]: value === "sim"})}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="sim">Sim</SelectItem>
+                          <SelectItem value="nao">Não</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Selfie</Label>
+                      <Select 
+                        value={editableSelfie[item.id] ? "sim" : "nao"}
+                        onValueChange={(value) => setEditableSelfie({...editableSelfie, [item.id]: value === "sim"})}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="sim">Sim</SelectItem>
+                          <SelectItem value="nao">Não</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Observações do Setor</Label>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => openNotesModal(item.id, editableNotes[item.id] || item.sectorNotes)}
+                        className="w-full justify-start h-auto py-2 text-left"
+                      >
+                        <span className="truncate">
+                          {(editableNotes[item.id] || item.sectorNotes)?.substring(0, 30) || "Adicionar..."}
+                          {(editableNotes[item.id] || item.sectorNotes)?.length > 30 && "..."}
+                        </span>
+                      </Button>
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Seguro</Label>
+                      <Select 
+                        value={editableInsurance[item.id] ? "sim" : "nao"}
+                        onValueChange={(value) => setEditableInsurance({...editableInsurance, [item.id]: value === "sim"})}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="sim">Sim</SelectItem>
+                          <SelectItem value="nao">Não</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Banco</Label>
+                      <p className="text-sm">{item.bank}</p>
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Seguradora</Label>
+                      <p className="text-sm">{item.insurer}</p>
+                    </div>
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
         </CardContent>
       </Card>
     </div>
@@ -362,88 +394,93 @@ export default function SetorAdministrativoGov() {
         </CardContent>
       </Card>
 
-      {/* Tabela com scroll horizontal */}
+      {/* Accordion */}
       <Card className="max-w-full">
-        <CardContent className="p-0">
-          <div className="overflow-x-auto">
-            <div className="p-6">
-              <Table className="min-w-max">
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="whitespace-nowrap">Nome do Cliente</TableHead>
-                    <TableHead className="whitespace-nowrap">CPF</TableHead>
-                    <TableHead className="whitespace-nowrap">Senha GOV</TableHead>
-                    <TableHead className="whitespace-nowrap">Data Solicitação</TableHead>
-                    <TableHead className="whitespace-nowrap">Prazo</TableHead>
-                    <TableHead className="whitespace-nowrap">Consultor</TableHead>
-                    <TableHead className="whitespace-nowrap">Procuração</TableHead>
-                    <TableHead className="whitespace-nowrap">Selfie</TableHead>
-                    <TableHead className="whitespace-nowrap min-w-[200px]">Observações</TableHead>
-                    <TableHead className="whitespace-nowrap">Banco</TableHead>
-                    <TableHead className="whitespace-nowrap">Seguradora</TableHead>
-                  </TableRow>
-                </TableHeader>
-            <TableBody>
-              {mockContratoData.map((item) => (
-                <TableRow key={item.id}>
-                  <TableCell className="font-medium whitespace-nowrap">{item.clientName}</TableCell>
-                  <TableCell className="whitespace-nowrap">{item.cpf}</TableCell>
-                  <TableCell className="whitespace-nowrap">{item.govPassword}</TableCell>
-                  <TableCell className="whitespace-nowrap">{item.requestDate}</TableCell>
-                  <TableCell className="whitespace-nowrap">{item.deadline}</TableCell>
-                  <TableCell className="whitespace-nowrap">{item.consultantName}</TableCell>
-                  <TableCell>
-                    <Select 
-                      value={editableProcuration[item.id] !== undefined ? (editableProcuration[item.id] ? "sim" : "nao") : (item.initialProcuration ? "sim" : "nao")}
-                      onValueChange={(value) => setEditableProcuration({...editableProcuration, [item.id]: value === "sim"})}
-                    >
-                      <SelectTrigger className="w-20">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="sim">Sim</SelectItem>
-                        <SelectItem value="nao">Não</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </TableCell>
-                  <TableCell>
-                    <Select 
-                      value={editableSelfie[item.id] !== undefined ? (editableSelfie[item.id] ? "sim" : "nao") : (item.selfieAttached ? "sim" : "nao")}
-                      onValueChange={(value) => setEditableSelfie({...editableSelfie, [item.id]: value === "sim"})}
-                    >
-                      <SelectTrigger className="w-20">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="sim">Sim</SelectItem>
-                        <SelectItem value="nao">Não</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </TableCell>
-                  <TableCell className="min-w-[200px]">
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Input
-                            value={editableNotes[item.id] || item.sectorNotes}
-                            onChange={(e) => setEditableNotes({...editableNotes, [item.id]: e.target.value})}
-                            className="w-full truncate"
-                          />
-                        </TooltipTrigger>
-                        <TooltipContent className="max-w-md">
-                          <p>{editableNotes[item.id] || item.sectorNotes}</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </TableCell>
-                  <TableCell className="whitespace-nowrap">{item.bank}</TableCell>
-                  <TableCell className="whitespace-nowrap">{item.insurer}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-              </Table>
-            </div>
-          </div>
+        <CardContent className="p-6">
+          <Accordion type="single" collapsible className="w-full space-y-2">
+            {mockContratoData.map((item) => (
+              <AccordionItem key={item.id} value={item.id} className="border rounded-lg">
+                <AccordionTrigger className="px-4 hover:no-underline hover:scale-[1.02] transition-transform duration-200">
+                  <div className="flex flex-col items-start text-left">
+                    <span className="font-medium">{item.clientName}</span>
+                    <span className="text-sm text-muted-foreground">{item.cpf}</span>
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent className="px-4 pb-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pt-4">
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Senha GOV</Label>
+                      <p className="text-sm">{item.govPassword}</p>
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Data Solicitação</Label>
+                      <p className="text-sm">{item.requestDate}</p>
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Prazo</Label>
+                      <p className="text-sm">{item.deadline}</p>
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Consultor</Label>
+                      <p className="text-sm">{item.consultantName}</p>
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Procuração</Label>
+                      <Select 
+                        value={editableProcuration[item.id] !== undefined ? (editableProcuration[item.id] ? "sim" : "nao") : (item.initialProcuration ? "sim" : "nao")}
+                        onValueChange={(value) => setEditableProcuration({...editableProcuration, [item.id]: value === "sim"})}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="sim">Sim</SelectItem>
+                          <SelectItem value="nao">Não</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Selfie</Label>
+                      <Select 
+                        value={editableSelfie[item.id] !== undefined ? (editableSelfie[item.id] ? "sim" : "nao") : (item.selfieAttached ? "sim" : "nao")}
+                        onValueChange={(value) => setEditableSelfie({...editableSelfie, [item.id]: value === "sim"})}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="sim">Sim</SelectItem>
+                          <SelectItem value="nao">Não</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Observações do Setor</Label>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => openNotesModal(item.id, editableNotes[item.id] || item.sectorNotes)}
+                        className="w-full justify-start h-auto py-2 text-left"
+                      >
+                        <span className="truncate">
+                          {(editableNotes[item.id] || item.sectorNotes)?.substring(0, 30) || "Adicionar..."}
+                          {(editableNotes[item.id] || item.sectorNotes)?.length > 30 && "..."}
+                        </span>
+                      </Button>
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Banco</Label>
+                      <p className="text-sm">{item.bank}</p>
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Seguradora</Label>
+                      <p className="text-sm">{item.insurer}</p>
+                    </div>
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
         </CardContent>
       </Card>
     </div>
@@ -495,88 +532,93 @@ export default function SetorAdministrativoGov() {
         </CardContent>
       </Card>
 
-      {/* Tabela com scroll horizontal */}
+      {/* Accordion */}
       <Card className="max-w-full">
-        <CardContent className="p-0">
-          <div className="overflow-x-auto">
-            <div className="p-6">
-              <Table className="min-w-max">
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="whitespace-nowrap">Nome do Cliente</TableHead>
-                    <TableHead className="whitespace-nowrap">CPF</TableHead>
-                    <TableHead className="whitespace-nowrap">Senha GOV</TableHead>
-                    <TableHead className="whitespace-nowrap">Data Solicitação</TableHead>
-                    <TableHead className="whitespace-nowrap">Prazo</TableHead>
-                    <TableHead className="whitespace-nowrap">Consultor</TableHead>
-                    <TableHead className="whitespace-nowrap">Procuração</TableHead>
-                    <TableHead className="whitespace-nowrap">Selfie</TableHead>
-                    <TableHead className="whitespace-nowrap min-w-[200px]">Observações</TableHead>
-                    <TableHead className="whitespace-nowrap">Banco</TableHead>
-                    <TableHead className="whitespace-nowrap">Seguradora</TableHead>
-                  </TableRow>
-                </TableHeader>
-            <TableBody>
-              {mockDebitoData.map((item) => (
-                <TableRow key={item.id}>
-                  <TableCell className="font-medium whitespace-nowrap">{item.clientName}</TableCell>
-                  <TableCell className="whitespace-nowrap">{item.cpf}</TableCell>
-                  <TableCell className="whitespace-nowrap">{item.govPassword}</TableCell>
-                  <TableCell className="whitespace-nowrap">{item.requestDate}</TableCell>
-                  <TableCell className="whitespace-nowrap">{item.deadline}</TableCell>
-                  <TableCell className="whitespace-nowrap">{item.consultantName}</TableCell>
-                  <TableCell>
-                    <Select 
-                      value={editableProcuration[item.id] !== undefined ? (editableProcuration[item.id] ? "sim" : "nao") : (item.initialProcuration ? "sim" : "nao")}
-                      onValueChange={(value) => setEditableProcuration({...editableProcuration, [item.id]: value === "sim"})}
-                    >
-                      <SelectTrigger className="w-20">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="sim">Sim</SelectItem>
-                        <SelectItem value="nao">Não</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </TableCell>
-                  <TableCell>
-                    <Select 
-                      value={editableSelfie[item.id] !== undefined ? (editableSelfie[item.id] ? "sim" : "nao") : (item.selfieAttached ? "sim" : "nao")}
-                      onValueChange={(value) => setEditableSelfie({...editableSelfie, [item.id]: value === "sim"})}
-                    >
-                      <SelectTrigger className="w-20">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="sim">Sim</SelectItem>
-                        <SelectItem value="nao">Não</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </TableCell>
-                  <TableCell className="min-w-[200px]">
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Input
-                            value={editableNotes[item.id] || item.sectorNotes}
-                            onChange={(e) => setEditableNotes({...editableNotes, [item.id]: e.target.value})}
-                            className="w-full truncate"
-                          />
-                        </TooltipTrigger>
-                        <TooltipContent className="max-w-md">
-                          <p>{editableNotes[item.id] || item.sectorNotes}</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </TableCell>
-                  <TableCell className="whitespace-nowrap">{item.bank}</TableCell>
-                  <TableCell className="whitespace-nowrap">{item.insurer}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-              </Table>
-            </div>
-          </div>
+        <CardContent className="p-6">
+          <Accordion type="single" collapsible className="w-full space-y-2">
+            {mockDebitoData.map((item) => (
+              <AccordionItem key={item.id} value={item.id} className="border rounded-lg">
+                <AccordionTrigger className="px-4 hover:no-underline hover:scale-[1.02] transition-transform duration-200">
+                  <div className="flex flex-col items-start text-left">
+                    <span className="font-medium">{item.clientName}</span>
+                    <span className="text-sm text-muted-foreground">{item.cpf}</span>
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent className="px-4 pb-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pt-4">
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Senha GOV</Label>
+                      <p className="text-sm">{item.govPassword}</p>
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Data Solicitação</Label>
+                      <p className="text-sm">{item.requestDate}</p>
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Prazo</Label>
+                      <p className="text-sm">{item.deadline}</p>
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Consultor</Label>
+                      <p className="text-sm">{item.consultantName}</p>
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Procuração</Label>
+                      <Select 
+                        value={editableProcuration[item.id] !== undefined ? (editableProcuration[item.id] ? "sim" : "nao") : (item.initialProcuration ? "sim" : "nao")}
+                        onValueChange={(value) => setEditableProcuration({...editableProcuration, [item.id]: value === "sim"})}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="sim">Sim</SelectItem>
+                          <SelectItem value="nao">Não</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Selfie</Label>
+                      <Select 
+                        value={editableSelfie[item.id] !== undefined ? (editableSelfie[item.id] ? "sim" : "nao") : (item.selfieAttached ? "sim" : "nao")}
+                        onValueChange={(value) => setEditableSelfie({...editableSelfie, [item.id]: value === "sim"})}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="sim">Sim</SelectItem>
+                          <SelectItem value="nao">Não</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Observações do Setor</Label>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => openNotesModal(item.id, editableNotes[item.id] || item.sectorNotes)}
+                        className="w-full justify-start h-auto py-2 text-left"
+                      >
+                        <span className="truncate">
+                          {(editableNotes[item.id] || item.sectorNotes)?.substring(0, 30) || "Adicionar..."}
+                          {(editableNotes[item.id] || item.sectorNotes)?.length > 30 && "..."}
+                        </span>
+                      </Button>
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Banco</Label>
+                      <p className="text-sm">{item.bank}</p>
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Seguradora</Label>
+                      <p className="text-sm">{item.insurer}</p>
+                    </div>
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
         </CardContent>
       </Card>
     </div>
@@ -628,90 +670,97 @@ export default function SetorAdministrativoGov() {
         </CardContent>
       </Card>
 
-      {/* Tabela com scroll horizontal */}
+      {/* Accordion */}
       <Card className="max-w-full">
-        <CardContent className="p-0">
-          <div className="overflow-x-auto">
-            <div className="p-6">
-              <Table className="min-w-max">
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="whitespace-nowrap">Nome do Cliente</TableHead>
-                    <TableHead className="whitespace-nowrap">CPF</TableHead>
-                    <TableHead className="whitespace-nowrap">Senha GOV</TableHead>
-                    <TableHead className="whitespace-nowrap">Data Solicitação</TableHead>
-                    <TableHead className="whitespace-nowrap">Data Reembolso</TableHead>
-                    <TableHead className="whitespace-nowrap">Valor Reembolso</TableHead>
-                    <TableHead className="whitespace-nowrap">Consultor</TableHead>
-                    <TableHead className="whitespace-nowrap">Procuração</TableHead>
-                    <TableHead className="whitespace-nowrap">Selfie</TableHead>
-                    <TableHead className="whitespace-nowrap min-w-[200px]">Observações</TableHead>
-                    <TableHead className="whitespace-nowrap">Banco</TableHead>
-                    <TableHead className="whitespace-nowrap">Seguradora</TableHead>
-                  </TableRow>
-                </TableHeader>
-            <TableBody>
-              {mockImoveisData.map((item) => (
-                <TableRow key={item.id}>
-                  <TableCell className="font-medium whitespace-nowrap">{item.clientName}</TableCell>
-                  <TableCell className="whitespace-nowrap">{item.cpf}</TableCell>
-                  <TableCell className="whitespace-nowrap">{item.govPassword}</TableCell>
-                  <TableCell className="whitespace-nowrap">{item.requestDate}</TableCell>
-                  <TableCell className="whitespace-nowrap">{item.refundDate}</TableCell>
-                  <TableCell className="whitespace-nowrap">{item.refundValue}</TableCell>
-                  <TableCell className="whitespace-nowrap">{item.consultantName}</TableCell>
-                  <TableCell>
-                    <Select 
-                      value={editableProcuration[item.id] !== undefined ? (editableProcuration[item.id] ? "sim" : "nao") : (item.initialProcuration ? "sim" : "nao")}
-                      onValueChange={(value) => setEditableProcuration({...editableProcuration, [item.id]: value === "sim"})}
-                    >
-                      <SelectTrigger className="w-20">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="sim">Sim</SelectItem>
-                        <SelectItem value="nao">Não</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </TableCell>
-                  <TableCell>
-                    <Select 
-                      value={editableSelfie[item.id] !== undefined ? (editableSelfie[item.id] ? "sim" : "nao") : (item.selfieAttached ? "sim" : "nao")}
-                      onValueChange={(value) => setEditableSelfie({...editableSelfie, [item.id]: value === "sim"})}
-                    >
-                      <SelectTrigger className="w-20">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="sim">Sim</SelectItem>
-                        <SelectItem value="nao">Não</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </TableCell>
-                  <TableCell className="min-w-[200px]">
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Input
-                            value={editableNotes[item.id] || item.sectorNotes}
-                            onChange={(e) => setEditableNotes({...editableNotes, [item.id]: e.target.value})}
-                            className="w-full truncate"
-                          />
-                        </TooltipTrigger>
-                        <TooltipContent className="max-w-md">
-                          <p>{editableNotes[item.id] || item.sectorNotes}</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </TableCell>
-                  <TableCell className="whitespace-nowrap">{item.bank}</TableCell>
-                  <TableCell className="whitespace-nowrap">{item.insurer}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-              </Table>
-            </div>
-          </div>
+        <CardContent className="p-6">
+          <Accordion type="single" collapsible className="w-full space-y-2">
+            {mockImoveisData.map((item) => (
+              <AccordionItem key={item.id} value={item.id} className="border rounded-lg">
+                <AccordionTrigger className="px-4 hover:no-underline hover:scale-[1.02] transition-transform duration-200">
+                  <div className="flex flex-col items-start text-left">
+                    <span className="font-medium">{item.clientName}</span>
+                    <span className="text-sm text-muted-foreground">{item.cpf}</span>
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent className="px-4 pb-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pt-4">
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Senha GOV</Label>
+                      <p className="text-sm">{item.govPassword}</p>
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Data Solicitação</Label>
+                      <p className="text-sm">{item.requestDate}</p>
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Data Reembolso</Label>
+                      <p className="text-sm">{item.refundDate}</p>
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Valor Reembolso</Label>
+                      <p className="text-sm">{item.refundValue}</p>
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Consultor</Label>
+                      <p className="text-sm">{item.consultantName}</p>
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Procuração</Label>
+                      <Select 
+                        value={editableProcuration[item.id] !== undefined ? (editableProcuration[item.id] ? "sim" : "nao") : (item.initialProcuration ? "sim" : "nao")}
+                        onValueChange={(value) => setEditableProcuration({...editableProcuration, [item.id]: value === "sim"})}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="sim">Sim</SelectItem>
+                          <SelectItem value="nao">Não</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Selfie</Label>
+                      <Select 
+                        value={editableSelfie[item.id] !== undefined ? (editableSelfie[item.id] ? "sim" : "nao") : (item.selfieAttached ? "sim" : "nao")}
+                        onValueChange={(value) => setEditableSelfie({...editableSelfie, [item.id]: value === "sim"})}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="sim">Sim</SelectItem>
+                          <SelectItem value="nao">Não</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Observações do Setor</Label>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => openNotesModal(item.id, editableNotes[item.id] || item.sectorNotes)}
+                        className="w-full justify-start h-auto py-2 text-left"
+                      >
+                        <span className="truncate">
+                          {(editableNotes[item.id] || item.sectorNotes)?.substring(0, 30) || "Adicionar..."}
+                          {(editableNotes[item.id] || item.sectorNotes)?.length > 30 && "..."}
+                        </span>
+                      </Button>
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Banco</Label>
+                      <p className="text-sm">{item.bank}</p>
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Seguradora</Label>
+                      <p className="text-sm">{item.insurer}</p>
+                    </div>
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
         </CardContent>
       </Card>
     </div>
@@ -735,6 +784,43 @@ export default function SetorAdministrativoGov() {
       {activeFilter === "contrato" && renderContratoTable()}
       {activeFilter === "debito-automatico" && renderDebitoTable()}
       {activeFilter === "imoveis" && renderImoveisTable()}
+
+      {/* Modal de Observações */}
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle>Observações do Setor</DialogTitle>
+            <DialogDescription>
+              Visualize ou edite as observações do setor abaixo.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <Label htmlFor="observations">Observações</Label>
+              <Textarea
+                id="observations"
+                value={modalNotes}
+                onChange={(e) => setModalNotes(e.target.value)}
+                placeholder="Digite as observações do setor..."
+                className="min-h-[200px] resize-none"
+              />
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setIsModalOpen(false)}
+            >
+              Cancelar
+            </Button>
+            <Button onClick={saveNotes}>
+              Salvar Alterações
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
