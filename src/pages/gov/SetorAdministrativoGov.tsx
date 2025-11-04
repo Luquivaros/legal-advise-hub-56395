@@ -810,7 +810,7 @@ export default function SetorAdministrativoGov() {
                   className="min-h-[200px] resize-none"
                 />
               ) : (
-                <div className="min-h-[200px] p-3 border rounded-md bg-muted/50 text-sm whitespace-pre-wrap">
+                <div className="min-h-[200px] max-w-full p-3 border rounded-md bg-muted/50 text-sm break-words overflow-wrap-anywhere">
                   {modalNotes || "Nenhuma observação registrada."}
                 </div>
               )}
