@@ -213,27 +213,28 @@ export default function SetorAdministrativoGov() {
       </Card>
 
       {/* Tabela com scroll horizontal */}
-      <Card className="w-full">
-        <div className="overflow-x-auto">
-          <CardContent className="p-6">
-            <Table className="min-w-max">
-            <TableHeader>
-              <TableRow>
-                <TableHead className="whitespace-nowrap">Nome do Cliente</TableHead>
-                <TableHead className="whitespace-nowrap">CPF</TableHead>
-                <TableHead className="whitespace-nowrap">Senha GOV</TableHead>
-                <TableHead className="whitespace-nowrap">Data Solicitação</TableHead>
-                <TableHead className="whitespace-nowrap">Data Reembolso</TableHead>
-                <TableHead className="whitespace-nowrap">Valor Reembolso</TableHead>
-                <TableHead className="whitespace-nowrap">Consultor</TableHead>
-                <TableHead className="whitespace-nowrap">Procuração</TableHead>
-                <TableHead className="whitespace-nowrap">Selfie</TableHead>
-                <TableHead className="whitespace-nowrap min-w-[200px]">Observações</TableHead>
-                <TableHead className="whitespace-nowrap">Seguro</TableHead>
-                <TableHead className="whitespace-nowrap">Banco</TableHead>
-                <TableHead className="whitespace-nowrap">Seguradora</TableHead>
-              </TableRow>
-            </TableHeader>
+      <Card className="max-w-full">
+        <CardContent className="p-0">
+          <div className="overflow-x-auto">
+            <div className="p-6">
+              <Table className="min-w-max">
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="whitespace-nowrap">Nome do Cliente</TableHead>
+                    <TableHead className="whitespace-nowrap">CPF</TableHead>
+                    <TableHead className="whitespace-nowrap">Senha GOV</TableHead>
+                    <TableHead className="whitespace-nowrap">Data Solicitação</TableHead>
+                    <TableHead className="whitespace-nowrap">Data Reembolso</TableHead>
+                    <TableHead className="whitespace-nowrap">Valor Reembolso</TableHead>
+                    <TableHead className="whitespace-nowrap">Consultor</TableHead>
+                    <TableHead className="whitespace-nowrap">Procuração</TableHead>
+                    <TableHead className="whitespace-nowrap">Selfie</TableHead>
+                    <TableHead className="whitespace-nowrap min-w-[200px]">Observações</TableHead>
+                    <TableHead className="whitespace-nowrap">Seguro</TableHead>
+                    <TableHead className="whitespace-nowrap">Banco</TableHead>
+                    <TableHead className="whitespace-nowrap">Seguradora</TableHead>
+                  </TableRow>
+                </TableHeader>
             <TableBody>
               {mockSeguroData.map((item) => (
                 <TableRow key={item.id}>
@@ -307,9 +308,10 @@ export default function SetorAdministrativoGov() {
                 </TableRow>
               ))}
             </TableBody>
-          </Table>
-          </CardContent>
-        </div>
+              </Table>
+            </div>
+          </div>
+        </CardContent>
       </Card>
     </div>
   );
@@ -361,25 +363,26 @@ export default function SetorAdministrativoGov() {
       </Card>
 
       {/* Tabela com scroll horizontal */}
-      <Card className="w-full">
-        <div className="overflow-x-auto">
-          <CardContent className="p-6">
-            <Table className="min-w-max">
-            <TableHeader>
-              <TableRow>
-                <TableHead className="whitespace-nowrap">Nome do Cliente</TableHead>
-                <TableHead className="whitespace-nowrap">CPF</TableHead>
-                <TableHead className="whitespace-nowrap">Senha GOV</TableHead>
-                <TableHead className="whitespace-nowrap">Data Solicitação</TableHead>
-                <TableHead className="whitespace-nowrap">Prazo</TableHead>
-                <TableHead className="whitespace-nowrap">Consultor</TableHead>
-                <TableHead className="whitespace-nowrap">Procuração</TableHead>
-                <TableHead className="whitespace-nowrap">Selfie</TableHead>
-                <TableHead className="whitespace-nowrap min-w-[200px]">Observações</TableHead>
-                <TableHead className="whitespace-nowrap">Banco</TableHead>
-                <TableHead className="whitespace-nowrap">Seguradora</TableHead>
-              </TableRow>
-            </TableHeader>
+      <Card className="max-w-full">
+        <CardContent className="p-0">
+          <div className="overflow-x-auto">
+            <div className="p-6">
+              <Table className="min-w-max">
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="whitespace-nowrap">Nome do Cliente</TableHead>
+                    <TableHead className="whitespace-nowrap">CPF</TableHead>
+                    <TableHead className="whitespace-nowrap">Senha GOV</TableHead>
+                    <TableHead className="whitespace-nowrap">Data Solicitação</TableHead>
+                    <TableHead className="whitespace-nowrap">Prazo</TableHead>
+                    <TableHead className="whitespace-nowrap">Consultor</TableHead>
+                    <TableHead className="whitespace-nowrap">Procuração</TableHead>
+                    <TableHead className="whitespace-nowrap">Selfie</TableHead>
+                    <TableHead className="whitespace-nowrap min-w-[200px]">Observações</TableHead>
+                    <TableHead className="whitespace-nowrap">Banco</TableHead>
+                    <TableHead className="whitespace-nowrap">Seguradora</TableHead>
+                  </TableRow>
+                </TableHeader>
             <TableBody>
               {mockContratoData.map((item) => (
                 <TableRow key={item.id}>
@@ -438,9 +441,10 @@ export default function SetorAdministrativoGov() {
                 </TableRow>
               ))}
             </TableBody>
-          </Table>
-          </CardContent>
-        </div>
+              </Table>
+            </div>
+          </div>
+        </CardContent>
       </Card>
     </div>
   );
@@ -492,25 +496,26 @@ export default function SetorAdministrativoGov() {
       </Card>
 
       {/* Tabela com scroll horizontal */}
-      <Card className="w-full">
-        <div className="overflow-x-auto">
-          <CardContent className="p-6">
-            <Table className="min-w-max">
-            <TableHeader>
-              <TableRow>
-                <TableHead className="whitespace-nowrap">Nome do Cliente</TableHead>
-                <TableHead className="whitespace-nowrap">CPF</TableHead>
-                <TableHead className="whitespace-nowrap">Senha GOV</TableHead>
-                <TableHead className="whitespace-nowrap">Data Solicitação</TableHead>
-                <TableHead className="whitespace-nowrap">Prazo</TableHead>
-                <TableHead className="whitespace-nowrap">Consultor</TableHead>
-                <TableHead className="whitespace-nowrap">Procuração</TableHead>
-                <TableHead className="whitespace-nowrap">Selfie</TableHead>
-                <TableHead className="whitespace-nowrap min-w-[200px]">Observações</TableHead>
-                <TableHead className="whitespace-nowrap">Banco</TableHead>
-                <TableHead className="whitespace-nowrap">Seguradora</TableHead>
-              </TableRow>
-            </TableHeader>
+      <Card className="max-w-full">
+        <CardContent className="p-0">
+          <div className="overflow-x-auto">
+            <div className="p-6">
+              <Table className="min-w-max">
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="whitespace-nowrap">Nome do Cliente</TableHead>
+                    <TableHead className="whitespace-nowrap">CPF</TableHead>
+                    <TableHead className="whitespace-nowrap">Senha GOV</TableHead>
+                    <TableHead className="whitespace-nowrap">Data Solicitação</TableHead>
+                    <TableHead className="whitespace-nowrap">Prazo</TableHead>
+                    <TableHead className="whitespace-nowrap">Consultor</TableHead>
+                    <TableHead className="whitespace-nowrap">Procuração</TableHead>
+                    <TableHead className="whitespace-nowrap">Selfie</TableHead>
+                    <TableHead className="whitespace-nowrap min-w-[200px]">Observações</TableHead>
+                    <TableHead className="whitespace-nowrap">Banco</TableHead>
+                    <TableHead className="whitespace-nowrap">Seguradora</TableHead>
+                  </TableRow>
+                </TableHeader>
             <TableBody>
               {mockDebitoData.map((item) => (
                 <TableRow key={item.id}>
@@ -569,9 +574,10 @@ export default function SetorAdministrativoGov() {
                 </TableRow>
               ))}
             </TableBody>
-          </Table>
-          </CardContent>
-        </div>
+              </Table>
+            </div>
+          </div>
+        </CardContent>
       </Card>
     </div>
   );
@@ -623,26 +629,27 @@ export default function SetorAdministrativoGov() {
       </Card>
 
       {/* Tabela com scroll horizontal */}
-      <Card className="w-full">
-        <div className="overflow-x-auto">
-          <CardContent className="p-6">
-            <Table className="min-w-max">
-            <TableHeader>
-              <TableRow>
-                <TableHead className="whitespace-nowrap">Nome do Cliente</TableHead>
-                <TableHead className="whitespace-nowrap">CPF</TableHead>
-                <TableHead className="whitespace-nowrap">Senha GOV</TableHead>
-                <TableHead className="whitespace-nowrap">Data Solicitação</TableHead>
-                <TableHead className="whitespace-nowrap">Data Reembolso</TableHead>
-                <TableHead className="whitespace-nowrap">Valor Reembolso</TableHead>
-                <TableHead className="whitespace-nowrap">Consultor</TableHead>
-                <TableHead className="whitespace-nowrap">Procuração</TableHead>
-                <TableHead className="whitespace-nowrap">Selfie</TableHead>
-                <TableHead className="whitespace-nowrap min-w-[200px]">Observações</TableHead>
-                <TableHead className="whitespace-nowrap">Banco</TableHead>
-                <TableHead className="whitespace-nowrap">Seguradora</TableHead>
-              </TableRow>
-            </TableHeader>
+      <Card className="max-w-full">
+        <CardContent className="p-0">
+          <div className="overflow-x-auto">
+            <div className="p-6">
+              <Table className="min-w-max">
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="whitespace-nowrap">Nome do Cliente</TableHead>
+                    <TableHead className="whitespace-nowrap">CPF</TableHead>
+                    <TableHead className="whitespace-nowrap">Senha GOV</TableHead>
+                    <TableHead className="whitespace-nowrap">Data Solicitação</TableHead>
+                    <TableHead className="whitespace-nowrap">Data Reembolso</TableHead>
+                    <TableHead className="whitespace-nowrap">Valor Reembolso</TableHead>
+                    <TableHead className="whitespace-nowrap">Consultor</TableHead>
+                    <TableHead className="whitespace-nowrap">Procuração</TableHead>
+                    <TableHead className="whitespace-nowrap">Selfie</TableHead>
+                    <TableHead className="whitespace-nowrap min-w-[200px]">Observações</TableHead>
+                    <TableHead className="whitespace-nowrap">Banco</TableHead>
+                    <TableHead className="whitespace-nowrap">Seguradora</TableHead>
+                  </TableRow>
+                </TableHeader>
             <TableBody>
               {mockImoveisData.map((item) => (
                 <TableRow key={item.id}>
@@ -702,9 +709,10 @@ export default function SetorAdministrativoGov() {
                 </TableRow>
               ))}
             </TableBody>
-          </Table>
-          </CardContent>
-        </div>
+              </Table>
+            </div>
+          </div>
+        </CardContent>
       </Card>
     </div>
   );
