@@ -112,6 +112,14 @@ export default function SetorAdministrativoGov() {
   const [editableInsurance, setEditableInsurance] = useState<{[key: string]: boolean}>({
     "1": true
   });
+  const [editableGovPassword, setEditableGovPassword] = useState<{[key: string]: string}>({});
+  const [editableRequestDate, setEditableRequestDate] = useState<{[key: string]: string}>({});
+  const [editableRefundDate, setEditableRefundDate] = useState<{[key: string]: string}>({});
+  const [editableRefundValue, setEditableRefundValue] = useState<{[key: string]: string}>({});
+  const [editableDeadline, setEditableDeadline] = useState<{[key: string]: string}>({});
+  const [editableConsultant, setEditableConsultant] = useState<{[key: string]: string}>({});
+  const [editableBank, setEditableBank] = useState<{[key: string]: string}>({});
+  const [editableInsurer, setEditableInsurer] = useState<{[key: string]: string}>({});
 
   // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -256,31 +264,61 @@ export default function SetorAdministrativoGov() {
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pt-4">
                     <div className="space-y-1">
                       <Label className="text-xs text-muted-foreground">Senha GOV</Label>
-                      <p className="text-sm">{item.govPassword}</p>
+                      <Input
+                        value={editableGovPassword[item.id] !== undefined ? editableGovPassword[item.id] : item.govPassword}
+                        onChange={(e) => setEditableGovPassword({...editableGovPassword, [item.id]: e.target.value})}
+                        className="text-sm"
+                      />
                     </div>
                     <div className="space-y-1">
                       <Label className="text-xs text-muted-foreground">Data Solicitação</Label>
-                      <p className="text-sm">{item.requestDate}</p>
+                      <Input
+                        type="date"
+                        value={editableRequestDate[item.id] !== undefined ? editableRequestDate[item.id] : item.requestDate}
+                        onChange={(e) => setEditableRequestDate({...editableRequestDate, [item.id]: e.target.value})}
+                        className="text-sm"
+                      />
                     </div>
                     <div className="space-y-1">
                       <Label className="text-xs text-muted-foreground">Data Reembolso</Label>
-                      <p className="text-sm">{item.refundDate}</p>
+                      <Input
+                        type="date"
+                        value={editableRefundDate[item.id] !== undefined ? editableRefundDate[item.id] : item.refundDate}
+                        onChange={(e) => setEditableRefundDate({...editableRefundDate, [item.id]: e.target.value})}
+                        className="text-sm"
+                      />
                     </div>
                     <div className="space-y-1">
                       <Label className="text-xs text-muted-foreground">Valor Reembolso</Label>
-                      <p className="text-sm">{item.refundValue}</p>
+                      <Input
+                        value={editableRefundValue[item.id] !== undefined ? editableRefundValue[item.id] : item.refundValue}
+                        onChange={(e) => setEditableRefundValue({...editableRefundValue, [item.id]: e.target.value})}
+                        className="text-sm"
+                      />
                     </div>
                     <div className="space-y-1">
                       <Label className="text-xs text-muted-foreground">Consultor</Label>
-                      <p className="text-sm">{item.consultantName}</p>
+                      <Input
+                        value={editableConsultant[item.id] !== undefined ? editableConsultant[item.id] : item.consultantName}
+                        onChange={(e) => setEditableConsultant({...editableConsultant, [item.id]: e.target.value})}
+                        className="text-sm"
+                      />
                     </div>
                     <div className="space-y-1">
                       <Label className="text-xs text-muted-foreground">Banco</Label>
-                      <p className="text-sm">{item.bank}</p>
+                      <Input
+                        value={editableBank[item.id] !== undefined ? editableBank[item.id] : item.bank}
+                        onChange={(e) => setEditableBank({...editableBank, [item.id]: e.target.value})}
+                        className="text-sm"
+                      />
                     </div>
                     <div className="space-y-1">
                       <Label className="text-xs text-muted-foreground">Seguradora</Label>
-                      <p className="text-sm">{item.insurer}</p>
+                      <Input
+                        value={editableInsurer[item.id] !== undefined ? editableInsurer[item.id] : item.insurer}
+                        onChange={(e) => setEditableInsurer({...editableInsurer, [item.id]: e.target.value})}
+                        className="text-sm"
+                      />
                     </div>
                     <div className="space-y-1">
                       <Label className="text-xs text-muted-foreground">Procuração</Label>
@@ -413,27 +451,52 @@ export default function SetorAdministrativoGov() {
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pt-4">
                     <div className="space-y-1">
                       <Label className="text-xs text-muted-foreground">Senha GOV</Label>
-                      <p className="text-sm">{item.govPassword}</p>
+                      <Input
+                        value={editableGovPassword[item.id] !== undefined ? editableGovPassword[item.id] : item.govPassword}
+                        onChange={(e) => setEditableGovPassword({...editableGovPassword, [item.id]: e.target.value})}
+                        className="text-sm"
+                      />
                     </div>
                     <div className="space-y-1">
                       <Label className="text-xs text-muted-foreground">Data Solicitação</Label>
-                      <p className="text-sm">{item.requestDate}</p>
+                      <Input
+                        type="date"
+                        value={editableRequestDate[item.id] !== undefined ? editableRequestDate[item.id] : item.requestDate}
+                        onChange={(e) => setEditableRequestDate({...editableRequestDate, [item.id]: e.target.value})}
+                        className="text-sm"
+                      />
                     </div>
                     <div className="space-y-1">
                       <Label className="text-xs text-muted-foreground">Prazo</Label>
-                      <p className="text-sm">{item.deadline}</p>
+                      <Input
+                        value={editableDeadline[item.id] !== undefined ? editableDeadline[item.id] : item.deadline}
+                        onChange={(e) => setEditableDeadline({...editableDeadline, [item.id]: e.target.value})}
+                        className="text-sm"
+                      />
                     </div>
                     <div className="space-y-1">
                       <Label className="text-xs text-muted-foreground">Consultor</Label>
-                      <p className="text-sm">{item.consultantName}</p>
+                      <Input
+                        value={editableConsultant[item.id] !== undefined ? editableConsultant[item.id] : item.consultantName}
+                        onChange={(e) => setEditableConsultant({...editableConsultant, [item.id]: e.target.value})}
+                        className="text-sm"
+                      />
                     </div>
                     <div className="space-y-1">
                       <Label className="text-xs text-muted-foreground">Banco</Label>
-                      <p className="text-sm">{item.bank}</p>
+                      <Input
+                        value={editableBank[item.id] !== undefined ? editableBank[item.id] : item.bank}
+                        onChange={(e) => setEditableBank({...editableBank, [item.id]: e.target.value})}
+                        className="text-sm"
+                      />
                     </div>
                     <div className="space-y-1">
                       <Label className="text-xs text-muted-foreground">Seguradora</Label>
-                      <p className="text-sm">{item.insurer}</p>
+                      <Input
+                        value={editableInsurer[item.id] !== undefined ? editableInsurer[item.id] : item.insurer}
+                        onChange={(e) => setEditableInsurer({...editableInsurer, [item.id]: e.target.value})}
+                        className="text-sm"
+                      />
                     </div>
                     <div className="space-y-1">
                       <Label className="text-xs text-muted-foreground">Procuração</Label>
@@ -551,27 +614,52 @@ export default function SetorAdministrativoGov() {
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pt-4">
                     <div className="space-y-1">
                       <Label className="text-xs text-muted-foreground">Senha GOV</Label>
-                      <p className="text-sm">{item.govPassword}</p>
+                      <Input
+                        value={editableGovPassword[item.id] !== undefined ? editableGovPassword[item.id] : item.govPassword}
+                        onChange={(e) => setEditableGovPassword({...editableGovPassword, [item.id]: e.target.value})}
+                        className="text-sm"
+                      />
                     </div>
                     <div className="space-y-1">
                       <Label className="text-xs text-muted-foreground">Data Solicitação</Label>
-                      <p className="text-sm">{item.requestDate}</p>
+                      <Input
+                        type="date"
+                        value={editableRequestDate[item.id] !== undefined ? editableRequestDate[item.id] : item.requestDate}
+                        onChange={(e) => setEditableRequestDate({...editableRequestDate, [item.id]: e.target.value})}
+                        className="text-sm"
+                      />
                     </div>
                     <div className="space-y-1">
                       <Label className="text-xs text-muted-foreground">Prazo</Label>
-                      <p className="text-sm">{item.deadline}</p>
+                      <Input
+                        value={editableDeadline[item.id] !== undefined ? editableDeadline[item.id] : item.deadline}
+                        onChange={(e) => setEditableDeadline({...editableDeadline, [item.id]: e.target.value})}
+                        className="text-sm"
+                      />
                     </div>
                     <div className="space-y-1">
                       <Label className="text-xs text-muted-foreground">Consultor</Label>
-                      <p className="text-sm">{item.consultantName}</p>
+                      <Input
+                        value={editableConsultant[item.id] !== undefined ? editableConsultant[item.id] : item.consultantName}
+                        onChange={(e) => setEditableConsultant({...editableConsultant, [item.id]: e.target.value})}
+                        className="text-sm"
+                      />
                     </div>
                     <div className="space-y-1">
                       <Label className="text-xs text-muted-foreground">Banco</Label>
-                      <p className="text-sm">{item.bank}</p>
+                      <Input
+                        value={editableBank[item.id] !== undefined ? editableBank[item.id] : item.bank}
+                        onChange={(e) => setEditableBank({...editableBank, [item.id]: e.target.value})}
+                        className="text-sm"
+                      />
                     </div>
                     <div className="space-y-1">
                       <Label className="text-xs text-muted-foreground">Seguradora</Label>
-                      <p className="text-sm">{item.insurer}</p>
+                      <Input
+                        value={editableInsurer[item.id] !== undefined ? editableInsurer[item.id] : item.insurer}
+                        onChange={(e) => setEditableInsurer({...editableInsurer, [item.id]: e.target.value})}
+                        className="text-sm"
+                      />
                     </div>
                     <div className="space-y-1">
                       <Label className="text-xs text-muted-foreground">Procuração</Label>
@@ -689,31 +777,61 @@ export default function SetorAdministrativoGov() {
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pt-4">
                     <div className="space-y-1">
                       <Label className="text-xs text-muted-foreground">Senha GOV</Label>
-                      <p className="text-sm">{item.govPassword}</p>
+                      <Input
+                        value={editableGovPassword[item.id] !== undefined ? editableGovPassword[item.id] : item.govPassword}
+                        onChange={(e) => setEditableGovPassword({...editableGovPassword, [item.id]: e.target.value})}
+                        className="text-sm"
+                      />
                     </div>
                     <div className="space-y-1">
                       <Label className="text-xs text-muted-foreground">Data Solicitação</Label>
-                      <p className="text-sm">{item.requestDate}</p>
+                      <Input
+                        type="date"
+                        value={editableRequestDate[item.id] !== undefined ? editableRequestDate[item.id] : item.requestDate}
+                        onChange={(e) => setEditableRequestDate({...editableRequestDate, [item.id]: e.target.value})}
+                        className="text-sm"
+                      />
                     </div>
                     <div className="space-y-1">
                       <Label className="text-xs text-muted-foreground">Data Reembolso</Label>
-                      <p className="text-sm">{item.refundDate}</p>
+                      <Input
+                        type="date"
+                        value={editableRefundDate[item.id] !== undefined ? editableRefundDate[item.id] : item.refundDate}
+                        onChange={(e) => setEditableRefundDate({...editableRefundDate, [item.id]: e.target.value})}
+                        className="text-sm"
+                      />
                     </div>
                     <div className="space-y-1">
                       <Label className="text-xs text-muted-foreground">Valor Reembolso</Label>
-                      <p className="text-sm">{item.refundValue}</p>
+                      <Input
+                        value={editableRefundValue[item.id] !== undefined ? editableRefundValue[item.id] : item.refundValue}
+                        onChange={(e) => setEditableRefundValue({...editableRefundValue, [item.id]: e.target.value})}
+                        className="text-sm"
+                      />
                     </div>
                     <div className="space-y-1">
                       <Label className="text-xs text-muted-foreground">Consultor</Label>
-                      <p className="text-sm">{item.consultantName}</p>
+                      <Input
+                        value={editableConsultant[item.id] !== undefined ? editableConsultant[item.id] : item.consultantName}
+                        onChange={(e) => setEditableConsultant({...editableConsultant, [item.id]: e.target.value})}
+                        className="text-sm"
+                      />
                     </div>
                     <div className="space-y-1">
                       <Label className="text-xs text-muted-foreground">Banco</Label>
-                      <p className="text-sm">{item.bank}</p>
+                      <Input
+                        value={editableBank[item.id] !== undefined ? editableBank[item.id] : item.bank}
+                        onChange={(e) => setEditableBank({...editableBank, [item.id]: e.target.value})}
+                        className="text-sm"
+                      />
                     </div>
                     <div className="space-y-1">
                       <Label className="text-xs text-muted-foreground">Seguradora</Label>
-                      <p className="text-sm">{item.insurer}</p>
+                      <Input
+                        value={editableInsurer[item.id] !== undefined ? editableInsurer[item.id] : item.insurer}
+                        onChange={(e) => setEditableInsurer({...editableInsurer, [item.id]: e.target.value})}
+                        className="text-sm"
+                      />
                     </div>
                     <div className="space-y-1">
                       <Label className="text-xs text-muted-foreground">Procuração</Label>
