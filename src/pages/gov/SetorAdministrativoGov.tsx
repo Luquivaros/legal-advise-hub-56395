@@ -3,7 +3,10 @@ import PageHeader from '@/components/PageHeader';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { GovFilterMenu, GovFilter } from '@/components/GovFilterMenu';
 import { Input } from '@/components/ui/input';
-import { Search } from 'lucide-react';
+import { Search, Filter, Building2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import {
   Table,
   TableBody,
@@ -12,7 +15,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { ScrollArea } from '@/components/ui/scroll-area';
 
 // Mock data
 const mockSeguroData = [
@@ -89,6 +91,20 @@ const mockImoveisData = [
 export default function SetorAdministrativoGov() {
   const [activeFilter, setActiveFilter] = useState<GovFilter>("seguro");
   const [searchTerm, setSearchTerm] = useState("");
+  
+  // Editable fields state
+  const [editableNotes, setEditableNotes] = useState<{[key: string]: string}>({
+    "1": "Documentação completa"
+  });
+  const [editableProcuration, setEditableProcuration] = useState<{[key: string]: boolean}>({
+    "1": true
+  });
+  const [editableSelfie, setEditableSelfie] = useState<{[key: string]: boolean}>({
+    "1": true
+  });
+  const [editableInsurance, setEditableInsurance] = useState<{[key: string]: boolean}>({
+    "1": true
+  });
 
   const renderMetricCards = () => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -151,227 +167,444 @@ export default function SetorAdministrativoGov() {
   );
 
   const renderSeguroTable = () => (
-    <Card>
-      <CardHeader>
-        <CardTitle>Seguros</CardTitle>
-        <div className="relative mt-4">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-          <Input
-            placeholder="Buscar cliente, CPF..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10"
-          />
-        </div>
+    <Card className="bg-card border-border">
+      <CardHeader className="flex flex-row items-center gap-4 space-y-0 pb-4">
+        <Building2 className="h-8 w-8 text-primary" />
+        <CardTitle className="text-2xl font-bold">Seguros</CardTitle>
       </CardHeader>
-      <CardContent>
-        <ScrollArea className="h-[600px]">
+      <CardContent className="space-y-4">
+        <div className="flex gap-2">
+          <div className="relative flex-1">
+            <Input
+              placeholder="Buscar por CPF ou nome do cliente"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pr-10"
+            />
+          </div>
+          <Button variant="default" size="default">
+            <Search className="h-4 w-4 mr-2" />
+            Buscar
+          </Button>
+          <Button variant="outline" size="default">
+            <Filter className="h-4 w-4" />
+          </Button>
+        </div>
+        
+        <div className="overflow-x-auto border rounded-lg">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Nome do Cliente</TableHead>
-                <TableHead>CPF</TableHead>
-                <TableHead>Senha GOV</TableHead>
-                <TableHead>Data Solicitação</TableHead>
-                <TableHead>Data Reembolso</TableHead>
-                <TableHead>Valor Reembolso</TableHead>
-                <TableHead>Consultor</TableHead>
-                <TableHead>Procuração</TableHead>
-                <TableHead>Selfie</TableHead>
-                <TableHead>Observações</TableHead>
-                <TableHead>Seguro</TableHead>
-                <TableHead>Banco</TableHead>
-                <TableHead>Seguradora</TableHead>
+                <TableHead className="whitespace-nowrap">Nome do Cliente</TableHead>
+                <TableHead className="whitespace-nowrap">CPF</TableHead>
+                <TableHead className="whitespace-nowrap">Senha GOV</TableHead>
+                <TableHead className="whitespace-nowrap">Data Solicitação</TableHead>
+                <TableHead className="whitespace-nowrap">Data Reembolso</TableHead>
+                <TableHead className="whitespace-nowrap">Valor Reembolso</TableHead>
+                <TableHead className="whitespace-nowrap">Consultor</TableHead>
+                <TableHead className="whitespace-nowrap">Procuração</TableHead>
+                <TableHead className="whitespace-nowrap">Selfie</TableHead>
+                <TableHead className="whitespace-nowrap min-w-[200px]">Observações</TableHead>
+                <TableHead className="whitespace-nowrap">Seguro</TableHead>
+                <TableHead className="whitespace-nowrap">Banco</TableHead>
+                <TableHead className="whitespace-nowrap">Seguradora</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {mockSeguroData.map((item) => (
                 <TableRow key={item.id}>
-                  <TableCell className="font-medium">{item.clientName}</TableCell>
-                  <TableCell>{item.cpf}</TableCell>
-                  <TableCell>{item.govPassword}</TableCell>
-                  <TableCell>{item.requestDate}</TableCell>
-                  <TableCell>{item.refundDate}</TableCell>
-                  <TableCell>{item.refundValue}</TableCell>
-                  <TableCell>{item.consultantName}</TableCell>
-                  <TableCell>{item.initialProcuration ? "Sim" : "Não"}</TableCell>
-                  <TableCell>{item.selfieAttached ? "Sim" : "Não"}</TableCell>
-                  <TableCell>{item.sectorNotes}</TableCell>
-                  <TableCell>{item.hasInsurance ? "Sim" : "Não"}</TableCell>
-                  <TableCell>{item.bank}</TableCell>
-                  <TableCell>{item.insurer}</TableCell>
+                  <TableCell className="font-medium whitespace-nowrap">{item.clientName}</TableCell>
+                  <TableCell className="whitespace-nowrap">{item.cpf}</TableCell>
+                  <TableCell className="whitespace-nowrap">{item.govPassword}</TableCell>
+                  <TableCell className="whitespace-nowrap">{item.requestDate}</TableCell>
+                  <TableCell className="whitespace-nowrap">{item.refundDate}</TableCell>
+                  <TableCell className="whitespace-nowrap">{item.refundValue}</TableCell>
+                  <TableCell className="whitespace-nowrap">{item.consultantName}</TableCell>
+                  <TableCell>
+                    <Select 
+                      value={editableProcuration[item.id] ? "sim" : "nao"}
+                      onValueChange={(value) => setEditableProcuration({...editableProcuration, [item.id]: value === "sim"})}
+                    >
+                      <SelectTrigger className="w-20">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="sim">Sim</SelectItem>
+                        <SelectItem value="nao">Não</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </TableCell>
+                  <TableCell>
+                    <Select 
+                      value={editableSelfie[item.id] ? "sim" : "nao"}
+                      onValueChange={(value) => setEditableSelfie({...editableSelfie, [item.id]: value === "sim"})}
+                    >
+                      <SelectTrigger className="w-20">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="sim">Sim</SelectItem>
+                        <SelectItem value="nao">Não</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </TableCell>
+                  <TableCell className="min-w-[200px]">
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Input
+                            value={editableNotes[item.id] || item.sectorNotes}
+                            onChange={(e) => setEditableNotes({...editableNotes, [item.id]: e.target.value})}
+                            className="w-full truncate"
+                          />
+                        </TooltipTrigger>
+                        <TooltipContent className="max-w-md">
+                          <p>{editableNotes[item.id] || item.sectorNotes}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </TableCell>
+                  <TableCell>
+                    <Select 
+                      value={editableInsurance[item.id] ? "sim" : "nao"}
+                      onValueChange={(value) => setEditableInsurance({...editableInsurance, [item.id]: value === "sim"})}
+                    >
+                      <SelectTrigger className="w-20">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="sim">Sim</SelectItem>
+                        <SelectItem value="nao">Não</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </TableCell>
+                  <TableCell className="whitespace-nowrap">{item.bank}</TableCell>
+                  <TableCell className="whitespace-nowrap">{item.insurer}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
-        </ScrollArea>
+        </div>
       </CardContent>
     </Card>
   );
 
   const renderContratoTable = () => (
-    <Card>
-      <CardHeader>
-        <CardTitle>Contratos</CardTitle>
-        <div className="relative mt-4">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-          <Input
-            placeholder="Buscar cliente, CPF..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10"
-          />
-        </div>
+    <Card className="bg-card border-border">
+      <CardHeader className="flex flex-row items-center gap-4 space-y-0 pb-4">
+        <Building2 className="h-8 w-8 text-primary" />
+        <CardTitle className="text-2xl font-bold">Contratos</CardTitle>
       </CardHeader>
-      <CardContent>
-        <ScrollArea className="h-[600px]">
+      <CardContent className="space-y-4">
+        <div className="flex gap-2">
+          <div className="relative flex-1">
+            <Input
+              placeholder="Buscar por CPF ou nome do cliente"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pr-10"
+            />
+          </div>
+          <Button variant="default" size="default">
+            <Search className="h-4 w-4 mr-2" />
+            Buscar
+          </Button>
+          <Button variant="outline" size="default">
+            <Filter className="h-4 w-4" />
+          </Button>
+        </div>
+        
+        <div className="overflow-x-auto border rounded-lg">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Nome do Cliente</TableHead>
-                <TableHead>CPF</TableHead>
-                <TableHead>Senha GOV</TableHead>
-                <TableHead>Data Solicitação</TableHead>
-                <TableHead>Prazo</TableHead>
-                <TableHead>Consultor</TableHead>
-                <TableHead>Procuração</TableHead>
-                <TableHead>Selfie</TableHead>
-                <TableHead>Observações</TableHead>
-                <TableHead>Banco</TableHead>
-                <TableHead>Seguradora</TableHead>
+                <TableHead className="whitespace-nowrap">Nome do Cliente</TableHead>
+                <TableHead className="whitespace-nowrap">CPF</TableHead>
+                <TableHead className="whitespace-nowrap">Senha GOV</TableHead>
+                <TableHead className="whitespace-nowrap">Data Solicitação</TableHead>
+                <TableHead className="whitespace-nowrap">Prazo</TableHead>
+                <TableHead className="whitespace-nowrap">Consultor</TableHead>
+                <TableHead className="whitespace-nowrap">Procuração</TableHead>
+                <TableHead className="whitespace-nowrap">Selfie</TableHead>
+                <TableHead className="whitespace-nowrap min-w-[200px]">Observações</TableHead>
+                <TableHead className="whitespace-nowrap">Banco</TableHead>
+                <TableHead className="whitespace-nowrap">Seguradora</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {mockContratoData.map((item) => (
                 <TableRow key={item.id}>
-                  <TableCell className="font-medium">{item.clientName}</TableCell>
-                  <TableCell>{item.cpf}</TableCell>
-                  <TableCell>{item.govPassword}</TableCell>
-                  <TableCell>{item.requestDate}</TableCell>
-                  <TableCell>{item.deadline}</TableCell>
-                  <TableCell>{item.consultantName}</TableCell>
-                  <TableCell>{item.initialProcuration ? "Sim" : "Não"}</TableCell>
-                  <TableCell>{item.selfieAttached ? "Sim" : "Não"}</TableCell>
-                  <TableCell>{item.sectorNotes}</TableCell>
-                  <TableCell>{item.bank}</TableCell>
-                  <TableCell>{item.insurer}</TableCell>
+                  <TableCell className="font-medium whitespace-nowrap">{item.clientName}</TableCell>
+                  <TableCell className="whitespace-nowrap">{item.cpf}</TableCell>
+                  <TableCell className="whitespace-nowrap">{item.govPassword}</TableCell>
+                  <TableCell className="whitespace-nowrap">{item.requestDate}</TableCell>
+                  <TableCell className="whitespace-nowrap">{item.deadline}</TableCell>
+                  <TableCell className="whitespace-nowrap">{item.consultantName}</TableCell>
+                  <TableCell>
+                    <Select 
+                      value={editableProcuration[item.id] !== undefined ? (editableProcuration[item.id] ? "sim" : "nao") : (item.initialProcuration ? "sim" : "nao")}
+                      onValueChange={(value) => setEditableProcuration({...editableProcuration, [item.id]: value === "sim"})}
+                    >
+                      <SelectTrigger className="w-20">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="sim">Sim</SelectItem>
+                        <SelectItem value="nao">Não</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </TableCell>
+                  <TableCell>
+                    <Select 
+                      value={editableSelfie[item.id] !== undefined ? (editableSelfie[item.id] ? "sim" : "nao") : (item.selfieAttached ? "sim" : "nao")}
+                      onValueChange={(value) => setEditableSelfie({...editableSelfie, [item.id]: value === "sim"})}
+                    >
+                      <SelectTrigger className="w-20">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="sim">Sim</SelectItem>
+                        <SelectItem value="nao">Não</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </TableCell>
+                  <TableCell className="min-w-[200px]">
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Input
+                            value={editableNotes[item.id] || item.sectorNotes}
+                            onChange={(e) => setEditableNotes({...editableNotes, [item.id]: e.target.value})}
+                            className="w-full truncate"
+                          />
+                        </TooltipTrigger>
+                        <TooltipContent className="max-w-md">
+                          <p>{editableNotes[item.id] || item.sectorNotes}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </TableCell>
+                  <TableCell className="whitespace-nowrap">{item.bank}</TableCell>
+                  <TableCell className="whitespace-nowrap">{item.insurer}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
-        </ScrollArea>
+        </div>
       </CardContent>
     </Card>
   );
 
   const renderDebitoTable = () => (
-    <Card>
-      <CardHeader>
-        <CardTitle>Débito Automático</CardTitle>
-        <div className="relative mt-4">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-          <Input
-            placeholder="Buscar cliente, CPF..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10"
-          />
-        </div>
+    <Card className="bg-card border-border">
+      <CardHeader className="flex flex-row items-center gap-4 space-y-0 pb-4">
+        <Building2 className="h-8 w-8 text-primary" />
+        <CardTitle className="text-2xl font-bold">Débito Automático</CardTitle>
       </CardHeader>
-      <CardContent>
-        <ScrollArea className="h-[600px]">
+      <CardContent className="space-y-4">
+        <div className="flex gap-2">
+          <div className="relative flex-1">
+            <Input
+              placeholder="Buscar por CPF ou nome do cliente"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pr-10"
+            />
+          </div>
+          <Button variant="default" size="default">
+            <Search className="h-4 w-4 mr-2" />
+            Buscar
+          </Button>
+          <Button variant="outline" size="default">
+            <Filter className="h-4 w-4" />
+          </Button>
+        </div>
+        
+        <div className="overflow-x-auto border rounded-lg">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Nome do Cliente</TableHead>
-                <TableHead>CPF</TableHead>
-                <TableHead>Senha GOV</TableHead>
-                <TableHead>Data Solicitação</TableHead>
-                <TableHead>Prazo</TableHead>
-                <TableHead>Consultor</TableHead>
-                <TableHead>Procuração</TableHead>
-                <TableHead>Selfie</TableHead>
-                <TableHead>Observações</TableHead>
-                <TableHead>Banco</TableHead>
-                <TableHead>Seguradora</TableHead>
+                <TableHead className="whitespace-nowrap">Nome do Cliente</TableHead>
+                <TableHead className="whitespace-nowrap">CPF</TableHead>
+                <TableHead className="whitespace-nowrap">Senha GOV</TableHead>
+                <TableHead className="whitespace-nowrap">Data Solicitação</TableHead>
+                <TableHead className="whitespace-nowrap">Prazo</TableHead>
+                <TableHead className="whitespace-nowrap">Consultor</TableHead>
+                <TableHead className="whitespace-nowrap">Procuração</TableHead>
+                <TableHead className="whitespace-nowrap">Selfie</TableHead>
+                <TableHead className="whitespace-nowrap min-w-[200px]">Observações</TableHead>
+                <TableHead className="whitespace-nowrap">Banco</TableHead>
+                <TableHead className="whitespace-nowrap">Seguradora</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {mockDebitoData.map((item) => (
                 <TableRow key={item.id}>
-                  <TableCell className="font-medium">{item.clientName}</TableCell>
-                  <TableCell>{item.cpf}</TableCell>
-                  <TableCell>{item.govPassword}</TableCell>
-                  <TableCell>{item.requestDate}</TableCell>
-                  <TableCell>{item.deadline}</TableCell>
-                  <TableCell>{item.consultantName}</TableCell>
-                  <TableCell>{item.initialProcuration ? "Sim" : "Não"}</TableCell>
-                  <TableCell>{item.selfieAttached ? "Sim" : "Não"}</TableCell>
-                  <TableCell>{item.sectorNotes}</TableCell>
-                  <TableCell>{item.bank}</TableCell>
-                  <TableCell>{item.insurer}</TableCell>
+                  <TableCell className="font-medium whitespace-nowrap">{item.clientName}</TableCell>
+                  <TableCell className="whitespace-nowrap">{item.cpf}</TableCell>
+                  <TableCell className="whitespace-nowrap">{item.govPassword}</TableCell>
+                  <TableCell className="whitespace-nowrap">{item.requestDate}</TableCell>
+                  <TableCell className="whitespace-nowrap">{item.deadline}</TableCell>
+                  <TableCell className="whitespace-nowrap">{item.consultantName}</TableCell>
+                  <TableCell>
+                    <Select 
+                      value={editableProcuration[item.id] !== undefined ? (editableProcuration[item.id] ? "sim" : "nao") : (item.initialProcuration ? "sim" : "nao")}
+                      onValueChange={(value) => setEditableProcuration({...editableProcuration, [item.id]: value === "sim"})}
+                    >
+                      <SelectTrigger className="w-20">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="sim">Sim</SelectItem>
+                        <SelectItem value="nao">Não</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </TableCell>
+                  <TableCell>
+                    <Select 
+                      value={editableSelfie[item.id] !== undefined ? (editableSelfie[item.id] ? "sim" : "nao") : (item.selfieAttached ? "sim" : "nao")}
+                      onValueChange={(value) => setEditableSelfie({...editableSelfie, [item.id]: value === "sim"})}
+                    >
+                      <SelectTrigger className="w-20">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="sim">Sim</SelectItem>
+                        <SelectItem value="nao">Não</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </TableCell>
+                  <TableCell className="min-w-[200px]">
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Input
+                            value={editableNotes[item.id] || item.sectorNotes}
+                            onChange={(e) => setEditableNotes({...editableNotes, [item.id]: e.target.value})}
+                            className="w-full truncate"
+                          />
+                        </TooltipTrigger>
+                        <TooltipContent className="max-w-md">
+                          <p>{editableNotes[item.id] || item.sectorNotes}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </TableCell>
+                  <TableCell className="whitespace-nowrap">{item.bank}</TableCell>
+                  <TableCell className="whitespace-nowrap">{item.insurer}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
-        </ScrollArea>
+        </div>
       </CardContent>
     </Card>
   );
 
   const renderImoveisTable = () => (
-    <Card>
-      <CardHeader>
-        <CardTitle>Imóveis</CardTitle>
-        <div className="relative mt-4">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-          <Input
-            placeholder="Buscar cliente, CPF..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10"
-          />
-        </div>
+    <Card className="bg-card border-border">
+      <CardHeader className="flex flex-row items-center gap-4 space-y-0 pb-4">
+        <Building2 className="h-8 w-8 text-primary" />
+        <CardTitle className="text-2xl font-bold">Imóveis</CardTitle>
       </CardHeader>
-      <CardContent>
-        <ScrollArea className="h-[600px]">
+      <CardContent className="space-y-4">
+        <div className="flex gap-2">
+          <div className="relative flex-1">
+            <Input
+              placeholder="Buscar por CPF ou nome do cliente"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pr-10"
+            />
+          </div>
+          <Button variant="default" size="default">
+            <Search className="h-4 w-4 mr-2" />
+            Buscar
+          </Button>
+          <Button variant="outline" size="default">
+            <Filter className="h-4 w-4" />
+          </Button>
+        </div>
+        
+        <div className="overflow-x-auto border rounded-lg">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Nome do Cliente</TableHead>
-                <TableHead>CPF</TableHead>
-                <TableHead>Senha GOV</TableHead>
-                <TableHead>Data Solicitação</TableHead>
-                <TableHead>Data Reembolso</TableHead>
-                <TableHead>Valor Reembolso</TableHead>
-                <TableHead>Consultor</TableHead>
-                <TableHead>Procuração</TableHead>
-                <TableHead>Selfie</TableHead>
-                <TableHead>Observações</TableHead>
-                <TableHead>Banco</TableHead>
-                <TableHead>Seguradora</TableHead>
+                <TableHead className="whitespace-nowrap">Nome do Cliente</TableHead>
+                <TableHead className="whitespace-nowrap">CPF</TableHead>
+                <TableHead className="whitespace-nowrap">Senha GOV</TableHead>
+                <TableHead className="whitespace-nowrap">Data Solicitação</TableHead>
+                <TableHead className="whitespace-nowrap">Data Reembolso</TableHead>
+                <TableHead className="whitespace-nowrap">Valor Reembolso</TableHead>
+                <TableHead className="whitespace-nowrap">Consultor</TableHead>
+                <TableHead className="whitespace-nowrap">Procuração</TableHead>
+                <TableHead className="whitespace-nowrap">Selfie</TableHead>
+                <TableHead className="whitespace-nowrap min-w-[200px]">Observações</TableHead>
+                <TableHead className="whitespace-nowrap">Banco</TableHead>
+                <TableHead className="whitespace-nowrap">Seguradora</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {mockImoveisData.map((item) => (
                 <TableRow key={item.id}>
-                  <TableCell className="font-medium">{item.clientName}</TableCell>
-                  <TableCell>{item.cpf}</TableCell>
-                  <TableCell>{item.govPassword}</TableCell>
-                  <TableCell>{item.requestDate}</TableCell>
-                  <TableCell>{item.refundDate}</TableCell>
-                  <TableCell>{item.refundValue}</TableCell>
-                  <TableCell>{item.consultantName}</TableCell>
-                  <TableCell>{item.initialProcuration ? "Sim" : "Não"}</TableCell>
-                  <TableCell>{item.selfieAttached ? "Sim" : "Não"}</TableCell>
-                  <TableCell>{item.sectorNotes}</TableCell>
-                  <TableCell>{item.bank}</TableCell>
-                  <TableCell>{item.insurer}</TableCell>
+                  <TableCell className="font-medium whitespace-nowrap">{item.clientName}</TableCell>
+                  <TableCell className="whitespace-nowrap">{item.cpf}</TableCell>
+                  <TableCell className="whitespace-nowrap">{item.govPassword}</TableCell>
+                  <TableCell className="whitespace-nowrap">{item.requestDate}</TableCell>
+                  <TableCell className="whitespace-nowrap">{item.refundDate}</TableCell>
+                  <TableCell className="whitespace-nowrap">{item.refundValue}</TableCell>
+                  <TableCell className="whitespace-nowrap">{item.consultantName}</TableCell>
+                  <TableCell>
+                    <Select 
+                      value={editableProcuration[item.id] !== undefined ? (editableProcuration[item.id] ? "sim" : "nao") : (item.initialProcuration ? "sim" : "nao")}
+                      onValueChange={(value) => setEditableProcuration({...editableProcuration, [item.id]: value === "sim"})}
+                    >
+                      <SelectTrigger className="w-20">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="sim">Sim</SelectItem>
+                        <SelectItem value="nao">Não</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </TableCell>
+                  <TableCell>
+                    <Select 
+                      value={editableSelfie[item.id] !== undefined ? (editableSelfie[item.id] ? "sim" : "nao") : (item.selfieAttached ? "sim" : "nao")}
+                      onValueChange={(value) => setEditableSelfie({...editableSelfie, [item.id]: value === "sim"})}
+                    >
+                      <SelectTrigger className="w-20">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="sim">Sim</SelectItem>
+                        <SelectItem value="nao">Não</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </TableCell>
+                  <TableCell className="min-w-[200px]">
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Input
+                            value={editableNotes[item.id] || item.sectorNotes}
+                            onChange={(e) => setEditableNotes({...editableNotes, [item.id]: e.target.value})}
+                            className="w-full truncate"
+                          />
+                        </TooltipTrigger>
+                        <TooltipContent className="max-w-md">
+                          <p>{editableNotes[item.id] || item.sectorNotes}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </TableCell>
+                  <TableCell className="whitespace-nowrap">{item.bank}</TableCell>
+                  <TableCell className="whitespace-nowrap">{item.insurer}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
-        </ScrollArea>
+        </div>
       </CardContent>
     </Card>
   );
