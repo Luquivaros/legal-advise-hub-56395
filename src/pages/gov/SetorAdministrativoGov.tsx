@@ -117,10 +117,12 @@ export default function SetorAdministrativoGov() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentEditId, setCurrentEditId] = useState<string | null>(null);
   const [modalNotes, setModalNotes] = useState("");
+  const [isEditingNotes, setIsEditingNotes] = useState(false);
 
   const openNotesModal = (id: string, notes: string) => {
     setCurrentEditId(id);
     setModalNotes(notes || "");
+    setIsEditingNotes(false);
     setIsModalOpen(true);
   };
 
@@ -128,6 +130,7 @@ export default function SetorAdministrativoGov() {
     if (currentEditId) {
       setEditableNotes({ ...editableNotes, [currentEditId]: modalNotes });
     }
+    setIsEditingNotes(false);
     setIsModalOpen(false);
   };
 
@@ -243,10 +246,10 @@ export default function SetorAdministrativoGov() {
           <Accordion type="single" collapsible className="w-full space-y-2">
             {mockSeguroData.map((item) => (
               <AccordionItem key={item.id} value={item.id} className="border rounded-lg">
-                <AccordionTrigger className="px-4 hover:no-underline hover:scale-[1.02] transition-transform duration-200">
+                <AccordionTrigger className="px-4 hover:no-underline hover:scale-[1.01] transition-transform duration-200">
                   <div className="flex flex-col items-start text-left">
                     <span className="font-medium">{item.clientName}</span>
-                    <span className="text-sm text-muted-foreground">{item.cpf}</span>
+                    <span className="text-xs text-muted-foreground">{item.cpf}</span>
                   </div>
                 </AccordionTrigger>
                 <AccordionContent className="px-4 pb-4">
@@ -270,6 +273,14 @@ export default function SetorAdministrativoGov() {
                     <div className="space-y-1">
                       <Label className="text-xs text-muted-foreground">Consultor</Label>
                       <p className="text-sm">{item.consultantName}</p>
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Banco</Label>
+                      <p className="text-sm">{item.bank}</p>
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Seguradora</Label>
+                      <p className="text-sm">{item.insurer}</p>
                     </div>
                     <div className="space-y-1">
                       <Label className="text-xs text-muted-foreground">Procuração</Label>
@@ -329,14 +340,6 @@ export default function SetorAdministrativoGov() {
                           <SelectItem value="nao">Não</SelectItem>
                         </SelectContent>
                       </Select>
-                    </div>
-                    <div className="space-y-1">
-                      <Label className="text-xs text-muted-foreground">Banco</Label>
-                      <p className="text-sm">{item.bank}</p>
-                    </div>
-                    <div className="space-y-1">
-                      <Label className="text-xs text-muted-foreground">Seguradora</Label>
-                      <p className="text-sm">{item.insurer}</p>
                     </div>
                   </div>
                 </AccordionContent>
@@ -400,10 +403,10 @@ export default function SetorAdministrativoGov() {
           <Accordion type="single" collapsible className="w-full space-y-2">
             {mockContratoData.map((item) => (
               <AccordionItem key={item.id} value={item.id} className="border rounded-lg">
-                <AccordionTrigger className="px-4 hover:no-underline hover:scale-[1.02] transition-transform duration-200">
+                <AccordionTrigger className="px-4 hover:no-underline hover:scale-[1.01] transition-transform duration-200">
                   <div className="flex flex-col items-start text-left">
                     <span className="font-medium">{item.clientName}</span>
-                    <span className="text-sm text-muted-foreground">{item.cpf}</span>
+                    <span className="text-xs text-muted-foreground">{item.cpf}</span>
                   </div>
                 </AccordionTrigger>
                 <AccordionContent className="px-4 pb-4">
@@ -423,6 +426,14 @@ export default function SetorAdministrativoGov() {
                     <div className="space-y-1">
                       <Label className="text-xs text-muted-foreground">Consultor</Label>
                       <p className="text-sm">{item.consultantName}</p>
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Banco</Label>
+                      <p className="text-sm">{item.bank}</p>
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Seguradora</Label>
+                      <p className="text-sm">{item.insurer}</p>
                     </div>
                     <div className="space-y-1">
                       <Label className="text-xs text-muted-foreground">Procuração</Label>
@@ -467,14 +478,6 @@ export default function SetorAdministrativoGov() {
                           {(editableNotes[item.id] || item.sectorNotes)?.length > 30 && "..."}
                         </span>
                       </Button>
-                    </div>
-                    <div className="space-y-1">
-                      <Label className="text-xs text-muted-foreground">Banco</Label>
-                      <p className="text-sm">{item.bank}</p>
-                    </div>
-                    <div className="space-y-1">
-                      <Label className="text-xs text-muted-foreground">Seguradora</Label>
-                      <p className="text-sm">{item.insurer}</p>
                     </div>
                   </div>
                 </AccordionContent>
@@ -538,10 +541,10 @@ export default function SetorAdministrativoGov() {
           <Accordion type="single" collapsible className="w-full space-y-2">
             {mockDebitoData.map((item) => (
               <AccordionItem key={item.id} value={item.id} className="border rounded-lg">
-                <AccordionTrigger className="px-4 hover:no-underline hover:scale-[1.02] transition-transform duration-200">
+                <AccordionTrigger className="px-4 hover:no-underline hover:scale-[1.01] transition-transform duration-200">
                   <div className="flex flex-col items-start text-left">
                     <span className="font-medium">{item.clientName}</span>
-                    <span className="text-sm text-muted-foreground">{item.cpf}</span>
+                    <span className="text-xs text-muted-foreground">{item.cpf}</span>
                   </div>
                 </AccordionTrigger>
                 <AccordionContent className="px-4 pb-4">
@@ -561,6 +564,14 @@ export default function SetorAdministrativoGov() {
                     <div className="space-y-1">
                       <Label className="text-xs text-muted-foreground">Consultor</Label>
                       <p className="text-sm">{item.consultantName}</p>
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Banco</Label>
+                      <p className="text-sm">{item.bank}</p>
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Seguradora</Label>
+                      <p className="text-sm">{item.insurer}</p>
                     </div>
                     <div className="space-y-1">
                       <Label className="text-xs text-muted-foreground">Procuração</Label>
@@ -605,14 +616,6 @@ export default function SetorAdministrativoGov() {
                           {(editableNotes[item.id] || item.sectorNotes)?.length > 30 && "..."}
                         </span>
                       </Button>
-                    </div>
-                    <div className="space-y-1">
-                      <Label className="text-xs text-muted-foreground">Banco</Label>
-                      <p className="text-sm">{item.bank}</p>
-                    </div>
-                    <div className="space-y-1">
-                      <Label className="text-xs text-muted-foreground">Seguradora</Label>
-                      <p className="text-sm">{item.insurer}</p>
                     </div>
                   </div>
                 </AccordionContent>
@@ -676,10 +679,10 @@ export default function SetorAdministrativoGov() {
           <Accordion type="single" collapsible className="w-full space-y-2">
             {mockImoveisData.map((item) => (
               <AccordionItem key={item.id} value={item.id} className="border rounded-lg">
-                <AccordionTrigger className="px-4 hover:no-underline hover:scale-[1.02] transition-transform duration-200">
+                <AccordionTrigger className="px-4 hover:no-underline hover:scale-[1.01] transition-transform duration-200">
                   <div className="flex flex-col items-start text-left">
                     <span className="font-medium">{item.clientName}</span>
-                    <span className="text-sm text-muted-foreground">{item.cpf}</span>
+                    <span className="text-xs text-muted-foreground">{item.cpf}</span>
                   </div>
                 </AccordionTrigger>
                 <AccordionContent className="px-4 pb-4">
@@ -703,6 +706,14 @@ export default function SetorAdministrativoGov() {
                     <div className="space-y-1">
                       <Label className="text-xs text-muted-foreground">Consultor</Label>
                       <p className="text-sm">{item.consultantName}</p>
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Banco</Label>
+                      <p className="text-sm">{item.bank}</p>
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Seguradora</Label>
+                      <p className="text-sm">{item.insurer}</p>
                     </div>
                     <div className="space-y-1">
                       <Label className="text-xs text-muted-foreground">Procuração</Label>
@@ -748,14 +759,6 @@ export default function SetorAdministrativoGov() {
                         </span>
                       </Button>
                     </div>
-                    <div className="space-y-1">
-                      <Label className="text-xs text-muted-foreground">Banco</Label>
-                      <p className="text-sm">{item.bank}</p>
-                    </div>
-                    <div className="space-y-1">
-                      <Label className="text-xs text-muted-foreground">Seguradora</Label>
-                      <p className="text-sm">{item.insurer}</p>
-                    </div>
                   </div>
                 </AccordionContent>
               </AccordionItem>
@@ -791,33 +794,58 @@ export default function SetorAdministrativoGov() {
           <DialogHeader>
             <DialogTitle>Observações do Setor</DialogTitle>
             <DialogDescription>
-              Visualize ou edite as observações do setor abaixo.
+              {isEditingNotes ? "Edite as observações do setor abaixo." : "Visualize as observações do setor."}
             </DialogDescription>
           </DialogHeader>
           
           <div className="grid gap-4 py-4">
             <div className="grid gap-2">
               <Label htmlFor="observations">Observações</Label>
-              <Textarea
-                id="observations"
-                value={modalNotes}
-                onChange={(e) => setModalNotes(e.target.value)}
-                placeholder="Digite as observações do setor..."
-                className="min-h-[200px] resize-none"
-              />
+              {isEditingNotes ? (
+                <Textarea
+                  id="observations"
+                  value={modalNotes}
+                  onChange={(e) => setModalNotes(e.target.value)}
+                  placeholder="Digite as observações do setor..."
+                  className="min-h-[200px] resize-none"
+                />
+              ) : (
+                <div className="min-h-[200px] p-3 border rounded-md bg-muted/50 text-sm whitespace-pre-wrap">
+                  {modalNotes || "Nenhuma observação registrada."}
+                </div>
+              )}
             </div>
           </div>
 
           <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setIsModalOpen(false)}
-            >
-              Cancelar
-            </Button>
-            <Button onClick={saveNotes}>
-              Salvar Alterações
-            </Button>
+            {isEditingNotes ? (
+              <>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setIsEditingNotes(false);
+                    setModalNotes(currentEditId ? (editableNotes[currentEditId] || "") : "");
+                  }}
+                >
+                  Cancelar
+                </Button>
+                <Button onClick={saveNotes}>
+                  Salvar Alterações
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button
+                  variant="outline"
+                  onClick={() => setIsModalOpen(false)}
+                >
+                  Fechar
+                </Button>
+                <Button onClick={() => setIsEditingNotes(true)}>
+                  Editar
+                </Button>
+              </>
+            )}
           </DialogFooter>
         </DialogContent>
       </Dialog>
