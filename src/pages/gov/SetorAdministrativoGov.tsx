@@ -3,7 +3,7 @@ import PageHeader from '@/components/PageHeader';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { GovFilterMenu, GovFilter } from '@/components/GovFilterMenu';
 import { Input } from '@/components/ui/input';
-import { Search, Filter, Building2, FileText, Edit3, Save, X } from 'lucide-react';
+import { Search, Filter, Building2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
@@ -908,98 +908,63 @@ export default function SetorAdministrativoGov() {
 
       {/* Modal de Observações */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="sm:max-w-[700px] p-0 gap-0 overflow-hidden">
-          {/* Header with gradient */}
-          <div className="relative bg-gradient-to-r from-primary to-primary/80 text-primary-foreground px-6 py-6">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-white/20 rounded-lg backdrop-blur-sm">
-                <FileText className="w-5 h-5" />
-              </div>
-              <div>
-                <DialogTitle className="text-xl font-semibold text-primary-foreground">
-                  Observações do Setor
-                </DialogTitle>
-                <DialogDescription className="text-primary-foreground/80 mt-1">
-                  {isEditingNotes ? "Edite as observações conforme necessário" : "Visualize as observações registradas"}
-                </DialogDescription>
-              </div>
-            </div>
-          </div>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle>Observações do Setor</DialogTitle>
+            <DialogDescription>
+              {isEditingNotes ? "Edite as observações do setor abaixo." : "Visualize as observações do setor."}
+            </DialogDescription>
+          </DialogHeader>
           
-          {/* Content */}
-          <div className="p-6">
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="observations" className="text-sm font-medium flex items-center gap-2">
-                  <span className="w-1 h-4 bg-primary rounded-full"></span>
-                  Conteúdo
-                </Label>
-                {!isEditingNotes && modalNotes && (
-                  <span className="text-xs text-muted-foreground">
-                    {modalNotes.length} caracteres
-                  </span>
-                )}
-              </div>
-              
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <Label htmlFor="observations">Observações</Label>
               {isEditingNotes ? (
                 <Textarea
                   id="observations"
                   value={modalNotes}
                   onChange={(e) => setModalNotes(e.target.value)}
                   placeholder="Digite as observações do setor..."
-                  className="min-h-[250px] resize-none border-2 focus:border-primary transition-colors"
+                  className="min-h-[200px] resize-none"
                 />
               ) : (
-                <div className="min-h-[250px] max-w-full p-4 rounded-lg border-2 bg-muted/30 text-sm break-words overflow-wrap-anywhere leading-relaxed">
-                  {modalNotes || (
-                    <span className="text-muted-foreground italic">
-                      Nenhuma observação registrada.
-                    </span>
-                  )}
+                <div className="min-h-[200px] max-w-full p-3 border rounded-md bg-muted/50 text-sm break-words overflow-wrap-anywhere">
+                  {modalNotes || "Nenhuma observação registrada."}
                 </div>
               )}
             </div>
           </div>
 
-          {/* Footer */}
-          <div className="border-t bg-muted/20 px-6 py-4">
-            <DialogFooter>
-              {isEditingNotes ? (
-                <>
-                  <Button
-                    variant="outline"
-                    onClick={() => {
-                      setIsEditingNotes(false);
-                      setModalNotes(currentEditId ? (editableNotes[currentEditId] || "") : "");
-                    }}
-                    className="gap-2"
-                  >
-                    <X className="w-4 h-4" />
-                    Cancelar
-                  </Button>
-                  <Button onClick={saveNotes} className="gap-2">
-                    <Save className="w-4 h-4" />
-                    Salvar Alterações
-                  </Button>
-                </>
-              ) : (
-                <>
-                  <Button
-                    variant="outline"
-                    onClick={() => setIsModalOpen(false)}
-                    className="gap-2"
-                  >
-                    <X className="w-4 h-4" />
-                    Fechar
-                  </Button>
-                  <Button onClick={() => setIsEditingNotes(true)} className="gap-2">
-                    <Edit3 className="w-4 h-4" />
-                    Editar
-                  </Button>
-                </>
-              )}
-            </DialogFooter>
-          </div>
+          <DialogFooter>
+            {isEditingNotes ? (
+              <>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setIsEditingNotes(false);
+                    setModalNotes(currentEditId ? (editableNotes[currentEditId] || "") : "");
+                  }}
+                >
+                  Cancelar
+                </Button>
+                <Button onClick={saveNotes}>
+                  Salvar Alterações
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button
+                  variant="outline"
+                  onClick={() => setIsModalOpen(false)}
+                >
+                  Fechar
+                </Button>
+                <Button onClick={() => setIsEditingNotes(true)}>
+                  Editar
+                </Button>
+              </>
+            )}
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>
