@@ -107,7 +107,7 @@ export default function SetorAdministrativoGov() {
   });
 
   const renderMetricCards = () => (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-full">
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">
@@ -167,9 +167,9 @@ export default function SetorAdministrativoGov() {
   );
 
   const renderSeguroTable = () => (
-    <div className="space-y-4">
+    <div className="space-y-4 max-w-full">
       {/* Card de Busca */}
-      <Card className="bg-gradient-to-br from-card to-card/95 border border-gray-200">
+      <Card className="bg-gradient-to-br from-card to-card/95 border border-gray-200 max-w-full">
         <CardContent className="p-6">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div className="flex items-center gap-2">
@@ -317,9 +317,9 @@ export default function SetorAdministrativoGov() {
   );
 
   const renderContratoTable = () => (
-    <div className="space-y-4">
+    <div className="space-y-4 max-w-full">
       {/* Card de Busca */}
-      <Card className="bg-gradient-to-br from-card to-card/95 border border-gray-200">
+      <Card className="bg-gradient-to-br from-card to-card/95 border border-gray-200 max-w-full">
         <CardContent className="p-6">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div className="flex items-center gap-2">
@@ -450,9 +450,9 @@ export default function SetorAdministrativoGov() {
   );
 
   const renderDebitoTable = () => (
-    <div className="space-y-4">
+    <div className="space-y-4 max-w-full">
       {/* Card de Busca */}
-      <Card className="bg-gradient-to-br from-card to-card/95 border border-gray-200">
+      <Card className="bg-gradient-to-br from-card to-card/95 border border-gray-200 max-w-full">
         <CardContent className="p-6">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div className="flex items-center gap-2">
@@ -583,9 +583,9 @@ export default function SetorAdministrativoGov() {
   );
 
   const renderImoveisTable = () => (
-    <div className="space-y-4">
+    <div className="space-y-4 max-w-full">
       {/* Card de Busca */}
-      <Card className="bg-gradient-to-br from-card to-card/95 border border-gray-200">
+      <Card className="bg-gradient-to-br from-card to-card/95 border border-gray-200 max-w-full">
         <CardContent className="p-6">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div className="flex items-center gap-2">
@@ -718,7 +718,7 @@ export default function SetorAdministrativoGov() {
   );
 
   return (
-    <div className="space-y-6 overflow-x-hidden">
+    <div className="space-y-6 overflow-x-hidden max-w-full">
       <PageHeader 
         title="GOV" 
         subtitle="Gestão Operacional de Valores"
