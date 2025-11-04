@@ -7,7 +7,8 @@ import {
   MessageSquare,
   Scale,
   LogOut,
-  MessagesSquare
+  MessagesSquare,
+  Building2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -58,6 +59,12 @@ const menuItems: MenuItem[] = [
     label: "Feedback",
     path: "/app/feedback",
     roles: ['consultor-comercial', 'consultor-juridico', 'supervisor-comercial', 'supervisor-juridico', 'setor-administrativo', 'gerencia']
+  },
+  {
+    icon: Building2,
+    label: "GOV",
+    path: "/app/gov",
+    roles: ['setor-administrativo']
   }
 ];
 
