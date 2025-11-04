@@ -213,10 +213,10 @@ export default function SetorAdministrativoGov() {
       </Card>
 
       {/* Tabela com scroll horizontal */}
-      <Card>
-        <CardContent className="p-6">
-          <div className="overflow-x-auto">
-            <Table>
+      <Card className="w-full">
+        <div className="overflow-x-auto">
+          <CardContent className="p-6">
+            <Table className="min-w-max">
             <TableHeader>
               <TableRow>
                 <TableHead className="whitespace-nowrap">Nome do Cliente</TableHead>
@@ -308,8 +308,8 @@ export default function SetorAdministrativoGov() {
               ))}
             </TableBody>
           </Table>
-          </div>
-        </CardContent>
+          </CardContent>
+        </div>
       </Card>
     </div>
   );
@@ -361,10 +361,10 @@ export default function SetorAdministrativoGov() {
       </Card>
 
       {/* Tabela com scroll horizontal */}
-      <Card>
-        <CardContent className="p-6">
-          <div className="overflow-x-auto">
-            <Table>
+      <Card className="w-full">
+        <div className="overflow-x-auto">
+          <CardContent className="p-6">
+            <Table className="min-w-max">
             <TableHeader>
               <TableRow>
                 <TableHead className="whitespace-nowrap">Nome do Cliente</TableHead>
@@ -439,8 +439,8 @@ export default function SetorAdministrativoGov() {
               ))}
             </TableBody>
           </Table>
-          </div>
-        </CardContent>
+          </CardContent>
+        </div>
       </Card>
     </div>
   );
@@ -492,10 +492,10 @@ export default function SetorAdministrativoGov() {
       </Card>
 
       {/* Tabela com scroll horizontal */}
-      <Card>
-        <CardContent className="p-6">
-          <div className="overflow-x-auto">
-            <Table>
+      <Card className="w-full">
+        <div className="overflow-x-auto">
+          <CardContent className="p-6">
+            <Table className="min-w-max">
             <TableHeader>
               <TableRow>
                 <TableHead className="whitespace-nowrap">Nome do Cliente</TableHead>
@@ -570,8 +570,8 @@ export default function SetorAdministrativoGov() {
               ))}
             </TableBody>
           </Table>
-          </div>
-        </CardContent>
+          </CardContent>
+        </div>
       </Card>
     </div>
   );
@@ -623,10 +623,10 @@ export default function SetorAdministrativoGov() {
       </Card>
 
       {/* Tabela com scroll horizontal */}
-      <Card>
-        <CardContent className="p-6">
-          <div className="overflow-x-auto">
-            <Table>
+      <Card className="w-full">
+        <div className="overflow-x-auto">
+          <CardContent className="p-6">
+            <Table className="min-w-max">
             <TableHeader>
               <TableRow>
                 <TableHead className="whitespace-nowrap">Nome do Cliente</TableHead>
@@ -701,16 +701,16 @@ export default function SetorAdministrativoGov() {
                   <TableCell className="whitespace-nowrap">{item.insurer}</TableCell>
                 </TableRow>
               ))}
-             </TableBody>
+            </TableBody>
           </Table>
-          </div>
-        </CardContent>
+          </CardContent>
+        </div>
       </Card>
     </div>
   );
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 overflow-x-hidden">
       <PageHeader 
         title="GOV" 
         subtitle="Gestão Operacional de Valores"
