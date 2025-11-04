@@ -167,32 +167,56 @@ export default function SetorAdministrativoGov() {
   );
 
   const renderSeguroTable = () => (
-    <Card className="bg-card border-border">
-      <CardHeader className="flex flex-row items-center gap-4 space-y-0 pb-4">
-        <Building2 className="h-8 w-8 text-primary" />
-        <CardTitle className="text-2xl font-bold">Seguros</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="flex gap-2">
-          <div className="relative flex-1">
-            <Input
-              placeholder="Buscar por CPF ou nome do cliente"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pr-10"
-            />
+    <div className="space-y-4">
+      {/* Card de Busca */}
+      <Card className="bg-gradient-to-br from-card to-card/95 border border-gray-200">
+        <CardContent className="p-6">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div className="flex items-center gap-2">
+              <Building2 className="w-6 h-6 text-primary" />
+              <h3 className="text-2xl font-semibold">Seguro</h3>
+            </div>
+            
+            <div className="flex items-center gap-4 w-full md:w-auto">
+              <div className="relative bg-background w-full md:w-auto md:min-w-sm md:max-w-md flex flex-col md:flex-row items-center justify-center border border-border py-2 px-2 rounded-2xl gap-2 focus-within:border-primary/50 transition-colors">
+                <Input
+                  placeholder="Buscar por CPF ou nome do cliente..."
+                  className="px-6 py-2 w-full rounded-md flex-1 outline-none bg-background border-0 focus-visible:ring-0"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+                <Button
+                  onClick={() => console.log("Buscar:", searchTerm)}
+                  className="w-full md:w-auto px-6 py-3 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground hover:from-primary/90 hover:to-primary/70 active:scale-95 duration-100 will-change-transform overflow-hidden relative rounded-xl transition-all shadow-lg hover:shadow-xl"
+                >
+                  <div className="relative">
+                    <div className="flex items-center">
+                      <Search className="w-4 h-4 mr-2" />
+                      <span className="text-sm font-semibold whitespace-nowrap truncate">
+                        Buscar
+                      </span>
+                    </div>
+                  </div>
+                </Button>
+              </div>
+              
+              <Button 
+                variant="outline" 
+                className="w-full md:w-auto px-6 py-3"
+              >
+                <Filter className="w-4 h-4 mr-2" />
+                Filtros
+              </Button>
+            </div>
           </div>
-          <Button variant="default" size="default">
-            <Search className="h-4 w-4 mr-2" />
-            Buscar
-          </Button>
-          <Button variant="outline" size="default">
-            <Filter className="h-4 w-4" />
-          </Button>
-        </div>
-        
-        <div className="overflow-x-auto border rounded-lg">
-          <Table>
+        </CardContent>
+      </Card>
+
+      {/* Tabela com scroll horizontal */}
+      <Card>
+        <CardContent className="p-6">
+          <div className="overflow-x-auto">
+            <Table>
             <TableHeader>
               <TableRow>
                 <TableHead className="whitespace-nowrap">Nome do Cliente</TableHead>
@@ -284,38 +308,63 @@ export default function SetorAdministrativoGov() {
               ))}
             </TableBody>
           </Table>
-        </div>
-      </CardContent>
-    </Card>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   );
 
   const renderContratoTable = () => (
-    <Card className="bg-card border-border">
-      <CardHeader className="flex flex-row items-center gap-4 space-y-0 pb-4">
-        <Building2 className="h-8 w-8 text-primary" />
-        <CardTitle className="text-2xl font-bold">Contratos</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="flex gap-2">
-          <div className="relative flex-1">
-            <Input
-              placeholder="Buscar por CPF ou nome do cliente"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pr-10"
-            />
+    <div className="space-y-4">
+      {/* Card de Busca */}
+      <Card className="bg-gradient-to-br from-card to-card/95 border border-gray-200">
+        <CardContent className="p-6">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div className="flex items-center gap-2">
+              <Building2 className="w-6 h-6 text-primary" />
+              <h3 className="text-2xl font-semibold">Contrato</h3>
+            </div>
+            
+            <div className="flex items-center gap-4 w-full md:w-auto">
+              <div className="relative bg-background w-full md:w-auto md:min-w-sm md:max-w-md flex flex-col md:flex-row items-center justify-center border border-border py-2 px-2 rounded-2xl gap-2 focus-within:border-primary/50 transition-colors">
+                <Input
+                  placeholder="Buscar por CPF ou nome do cliente..."
+                  className="px-6 py-2 w-full rounded-md flex-1 outline-none bg-background border-0 focus-visible:ring-0"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+                <Button
+                  onClick={() => console.log("Buscar:", searchTerm)}
+                  className="w-full md:w-auto px-6 py-3 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground hover:from-primary/90 hover:to-primary/70 active:scale-95 duration-100 will-change-transform overflow-hidden relative rounded-xl transition-all shadow-lg hover:shadow-xl"
+                >
+                  <div className="relative">
+                    <div className="flex items-center">
+                      <Search className="w-4 h-4 mr-2" />
+                      <span className="text-sm font-semibold whitespace-nowrap truncate">
+                        Buscar
+                      </span>
+                    </div>
+                  </div>
+                </Button>
+              </div>
+              
+              <Button 
+                variant="outline" 
+                className="w-full md:w-auto px-6 py-3"
+              >
+                <Filter className="w-4 h-4 mr-2" />
+                Filtros
+              </Button>
+            </div>
           </div>
-          <Button variant="default" size="default">
-            <Search className="h-4 w-4 mr-2" />
-            Buscar
-          </Button>
-          <Button variant="outline" size="default">
-            <Filter className="h-4 w-4" />
-          </Button>
-        </div>
-        
-        <div className="overflow-x-auto border rounded-lg">
-          <Table>
+        </CardContent>
+      </Card>
+
+      {/* Tabela com scroll horizontal */}
+      <Card>
+        <CardContent className="p-6">
+          <div className="overflow-x-auto">
+            <Table>
             <TableHeader>
               <TableRow>
                 <TableHead className="whitespace-nowrap">Nome do Cliente</TableHead>
@@ -390,38 +439,63 @@ export default function SetorAdministrativoGov() {
               ))}
             </TableBody>
           </Table>
-        </div>
-      </CardContent>
-    </Card>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   );
 
   const renderDebitoTable = () => (
-    <Card className="bg-card border-border">
-      <CardHeader className="flex flex-row items-center gap-4 space-y-0 pb-4">
-        <Building2 className="h-8 w-8 text-primary" />
-        <CardTitle className="text-2xl font-bold">Débito Automático</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="flex gap-2">
-          <div className="relative flex-1">
-            <Input
-              placeholder="Buscar por CPF ou nome do cliente"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pr-10"
-            />
+    <div className="space-y-4">
+      {/* Card de Busca */}
+      <Card className="bg-gradient-to-br from-card to-card/95 border border-gray-200">
+        <CardContent className="p-6">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div className="flex items-center gap-2">
+              <Building2 className="w-6 h-6 text-primary" />
+              <h3 className="text-2xl font-semibold">Débito Automático</h3>
+            </div>
+            
+            <div className="flex items-center gap-4 w-full md:w-auto">
+              <div className="relative bg-background w-full md:w-auto md:min-w-sm md:max-w-md flex flex-col md:flex-row items-center justify-center border border-border py-2 px-2 rounded-2xl gap-2 focus-within:border-primary/50 transition-colors">
+                <Input
+                  placeholder="Buscar por CPF ou nome do cliente..."
+                  className="px-6 py-2 w-full rounded-md flex-1 outline-none bg-background border-0 focus-visible:ring-0"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+                <Button
+                  onClick={() => console.log("Buscar:", searchTerm)}
+                  className="w-full md:w-auto px-6 py-3 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground hover:from-primary/90 hover:to-primary/70 active:scale-95 duration-100 will-change-transform overflow-hidden relative rounded-xl transition-all shadow-lg hover:shadow-xl"
+                >
+                  <div className="relative">
+                    <div className="flex items-center">
+                      <Search className="w-4 h-4 mr-2" />
+                      <span className="text-sm font-semibold whitespace-nowrap truncate">
+                        Buscar
+                      </span>
+                    </div>
+                  </div>
+                </Button>
+              </div>
+              
+              <Button 
+                variant="outline" 
+                className="w-full md:w-auto px-6 py-3"
+              >
+                <Filter className="w-4 h-4 mr-2" />
+                Filtros
+              </Button>
+            </div>
           </div>
-          <Button variant="default" size="default">
-            <Search className="h-4 w-4 mr-2" />
-            Buscar
-          </Button>
-          <Button variant="outline" size="default">
-            <Filter className="h-4 w-4" />
-          </Button>
-        </div>
-        
-        <div className="overflow-x-auto border rounded-lg">
-          <Table>
+        </CardContent>
+      </Card>
+
+      {/* Tabela com scroll horizontal */}
+      <Card>
+        <CardContent className="p-6">
+          <div className="overflow-x-auto">
+            <Table>
             <TableHeader>
               <TableRow>
                 <TableHead className="whitespace-nowrap">Nome do Cliente</TableHead>
@@ -496,38 +570,63 @@ export default function SetorAdministrativoGov() {
               ))}
             </TableBody>
           </Table>
-        </div>
-      </CardContent>
-    </Card>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   );
 
   const renderImoveisTable = () => (
-    <Card className="bg-card border-border">
-      <CardHeader className="flex flex-row items-center gap-4 space-y-0 pb-4">
-        <Building2 className="h-8 w-8 text-primary" />
-        <CardTitle className="text-2xl font-bold">Imóveis</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="flex gap-2">
-          <div className="relative flex-1">
-            <Input
-              placeholder="Buscar por CPF ou nome do cliente"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pr-10"
-            />
+    <div className="space-y-4">
+      {/* Card de Busca */}
+      <Card className="bg-gradient-to-br from-card to-card/95 border border-gray-200">
+        <CardContent className="p-6">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div className="flex items-center gap-2">
+              <Building2 className="w-6 h-6 text-primary" />
+              <h3 className="text-2xl font-semibold">Imóveis</h3>
+            </div>
+            
+            <div className="flex items-center gap-4 w-full md:w-auto">
+              <div className="relative bg-background w-full md:w-auto md:min-w-sm md:max-w-md flex flex-col md:flex-row items-center justify-center border border-border py-2 px-2 rounded-2xl gap-2 focus-within:border-primary/50 transition-colors">
+                <Input
+                  placeholder="Buscar por CPF ou nome do cliente..."
+                  className="px-6 py-2 w-full rounded-md flex-1 outline-none bg-background border-0 focus-visible:ring-0"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+                <Button
+                  onClick={() => console.log("Buscar:", searchTerm)}
+                  className="w-full md:w-auto px-6 py-3 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground hover:from-primary/90 hover:to-primary/70 active:scale-95 duration-100 will-change-transform overflow-hidden relative rounded-xl transition-all shadow-lg hover:shadow-xl"
+                >
+                  <div className="relative">
+                    <div className="flex items-center">
+                      <Search className="w-4 h-4 mr-2" />
+                      <span className="text-sm font-semibold whitespace-nowrap truncate">
+                        Buscar
+                      </span>
+                    </div>
+                  </div>
+                </Button>
+              </div>
+              
+              <Button 
+                variant="outline" 
+                className="w-full md:w-auto px-6 py-3"
+              >
+                <Filter className="w-4 h-4 mr-2" />
+                Filtros
+              </Button>
+            </div>
           </div>
-          <Button variant="default" size="default">
-            <Search className="h-4 w-4 mr-2" />
-            Buscar
-          </Button>
-          <Button variant="outline" size="default">
-            <Filter className="h-4 w-4" />
-          </Button>
-        </div>
-        
-        <div className="overflow-x-auto border rounded-lg">
-          <Table>
+        </CardContent>
+      </Card>
+
+      {/* Tabela com scroll horizontal */}
+      <Card>
+        <CardContent className="p-6">
+          <div className="overflow-x-auto">
+            <Table>
             <TableHeader>
               <TableRow>
                 <TableHead className="whitespace-nowrap">Nome do Cliente</TableHead>
@@ -602,11 +701,12 @@ export default function SetorAdministrativoGov() {
                   <TableCell className="whitespace-nowrap">{item.insurer}</TableCell>
                 </TableRow>
               ))}
-            </TableBody>
+             </TableBody>
           </Table>
-        </div>
-      </CardContent>
-    </Card>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   );
 
   return (
