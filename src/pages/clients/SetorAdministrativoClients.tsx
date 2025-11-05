@@ -490,6 +490,11 @@ export default function SetorAdministrativoClients() {
           <CardTitle className="flex items-center gap-2">
             <ClipboardCheck className="w-5 h-5 text-primary" />
             Solicitações
+            {pendingRequests.length > 0 && (
+              <span className="ml-auto px-2 py-0.5 bg-primary text-primary-foreground text-xs rounded-full">
+                {pendingRequests.length}
+              </span>
+            )}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -497,11 +502,6 @@ export default function SetorAdministrativoClients() {
             <AccordionItem value="pending">
               <AccordionTrigger className="text-base font-medium hover:no-underline">
                 Pendências
-                {pendingRequests.length > 0 && (
-                  <span className="ml-2 px-2 py-0.5 bg-primary text-primary-foreground text-xs rounded-full">
-                    {pendingRequests.length}
-                  </span>
-                )}
               </AccordionTrigger>
               <AccordionContent>
                 {pendingRequests.length === 0 ? (

@@ -151,7 +151,7 @@ export function ClientCard({ client }: ClientCardProps) {
         {/* Botões Accordion */}
         <Accordion type="multiple" className="w-full">
           <AccordionItem value="historico">
-            <AccordionTrigger className="text-black hover:text-black hover:no-underline [&>svg]:text-black transition-transform hover:scale-[1.02]">
+            <AccordionTrigger className="text-black hover:text-black hover:no-underline [&>svg]:text-black transition-transform hover:scale-[1.005]">
               <div className="flex items-center gap-2">
                 Histórico
                 {hasHistoryUpdate && <AlertCircle className="w-4 h-4 text-orange-500" />}
@@ -171,7 +171,7 @@ export function ClientCard({ client }: ClientCardProps) {
           </AccordionItem>
 
           <AccordionItem value="movimentacoes">
-            <AccordionTrigger className="text-black hover:text-black hover:no-underline [&>svg]:text-black transition-transform hover:scale-[1.02]">
+            <AccordionTrigger className="text-black hover:text-black hover:no-underline [&>svg]:text-black transition-transform hover:scale-[1.005]">
               <div className="flex items-center gap-2">
                 Movimentações
                 {hasMovementUpdate && <AlertCircle className="w-4 h-4 text-orange-500" />}
@@ -191,7 +191,7 @@ export function ClientCard({ client }: ClientCardProps) {
           </AccordionItem>
 
           <AccordionItem value="servico">
-            <AccordionTrigger className="text-black hover:text-black hover:no-underline [&>svg]:text-black transition-transform hover:scale-[1.02]">
+            <AccordionTrigger className="text-black hover:text-black hover:no-underline [&>svg]:text-black transition-transform hover:scale-[1.005]">
               <div className="flex items-center gap-2">
                 Serviço
                 {hasServiceUpdate && <AlertCircle className="w-4 h-4 text-orange-500" />}
@@ -211,7 +211,7 @@ export function ClientCard({ client }: ClientCardProps) {
           </AccordionItem>
 
           <AccordionItem value="govbr">
-            <AccordionTrigger className="text-black hover:text-black hover:no-underline [&>svg]:text-black transition-transform hover:scale-[1.02]">
+            <AccordionTrigger className="text-black hover:text-black hover:no-underline [&>svg]:text-black transition-transform hover:scale-[1.005]">
               <div className="flex items-center gap-2">
                 Gov.br
                 {hasGovUpdate && <AlertCircle className="w-4 h-4 text-orange-500" />}
@@ -275,7 +275,7 @@ export function ClientCard({ client }: ClientCardProps) {
           </AccordionItem>
 
           <AccordionItem value="documentos">
-            <AccordionTrigger className="text-black hover:text-black hover:no-underline [&>svg]:text-black transition-transform hover:scale-[1.02]">
+            <AccordionTrigger className="text-black hover:text-black hover:no-underline [&>svg]:text-black transition-transform hover:scale-[1.005]">
               <div className="flex items-center gap-2">
                 Documentos
                 {hasDocumentUpdate && <AlertCircle className="w-4 h-4 text-orange-500" />}
