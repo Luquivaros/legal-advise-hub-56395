@@ -372,6 +372,14 @@ export default function GerenciaDashboard() {
                     className="mt-1"
                   />
                 </div>
+                <div>
+                  <Label htmlFor="metaGov" className="text-sm font-medium text-foreground">Meta Setor Gov.br (R$)</Label>
+                  <Input 
+                    id="metaGov" 
+                    placeholder="Ex: 850.000"
+                    className="mt-1"
+                  />
+                </div>
               </div>
 
               <Button className="w-full">
