@@ -120,6 +120,9 @@ export default function SetorAdministrativoGov() {
   const [editableConsultant, setEditableConsultant] = useState<{[key: string]: string}>({});
   const [editableBank, setEditableBank] = useState<{[key: string]: string}>({});
   const [editableInsurer, setEditableInsurer] = useState<{[key: string]: string}>({});
+  const [editableStatus, setEditableStatus] = useState<{[key: string]: string}>({
+    "1": "em-andamento"
+  });
 
   // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -379,6 +382,22 @@ export default function SetorAdministrativoGov() {
                         </SelectContent>
                       </Select>
                     </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Status da Operação</Label>
+                      <Select 
+                        value={editableStatus[item.id] || "em-andamento"}
+                        onValueChange={(value) => setEditableStatus({...editableStatus, [item.id]: value})}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="em-andamento">Em andamento</SelectItem>
+                          <SelectItem value="finalizado">Finalizado</SelectItem>
+                          <SelectItem value="pendente">Pendente</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
                 </AccordionContent>
               </AccordionItem>
@@ -542,6 +561,22 @@ export default function SetorAdministrativoGov() {
                         </span>
                       </Button>
                     </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Status da Operação</Label>
+                      <Select 
+                        value={editableStatus[item.id] || "em-andamento"}
+                        onValueChange={(value) => setEditableStatus({...editableStatus, [item.id]: value})}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="em-andamento">Em andamento</SelectItem>
+                          <SelectItem value="finalizado">Finalizado</SelectItem>
+                          <SelectItem value="pendente">Pendente</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
                 </AccordionContent>
               </AccordionItem>
@@ -704,6 +739,22 @@ export default function SetorAdministrativoGov() {
                           {(editableNotes[item.id] || item.sectorNotes)?.length > 30 && "..."}
                         </span>
                       </Button>
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Status da Operação</Label>
+                      <Select 
+                        value={editableStatus[item.id] || "em-andamento"}
+                        onValueChange={(value) => setEditableStatus({...editableStatus, [item.id]: value})}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="em-andamento">Em andamento</SelectItem>
+                          <SelectItem value="finalizado">Finalizado</SelectItem>
+                          <SelectItem value="pendente">Pendente</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
                 </AccordionContent>
@@ -876,6 +927,22 @@ export default function SetorAdministrativoGov() {
                           {(editableNotes[item.id] || item.sectorNotes)?.length > 30 && "..."}
                         </span>
                       </Button>
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Status da Operação</Label>
+                      <Select 
+                        value={editableStatus[item.id] || "em-andamento"}
+                        onValueChange={(value) => setEditableStatus({...editableStatus, [item.id]: value})}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="em-andamento">Em andamento</SelectItem>
+                          <SelectItem value="finalizado">Finalizado</SelectItem>
+                          <SelectItem value="pendente">Pendente</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
                 </AccordionContent>

@@ -2,7 +2,24 @@ import { useState } from "react";
 import PageHeader from "@/components/PageHeader";
 import { ClientFilterMenu, ClientFilter } from "@/components/ClientFilterMenu";
 import { UniversalCard, DocumentList, DataGrid, NotesList } from "@/components/reusable/UniversalCard";
-import { FileText, User, History, Scale, Package, Paperclip, CreditCard, Search, UserPlus, Users, ClipboardCheck, Tag, Phone } from "lucide-react";
+import { FileText, User, History, Scale, Package, Paperclip, CreditCard, Search, UserPlus, Users, ClipboardCheck, Tag, Phone, Check, X } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
@@ -398,6 +415,15 @@ export default function SetorAdministrativoClients() {
   const [editedRegistrationDateLeads, setEditedRegistrationDateLeads] = useState("2024-02-01T10:00:00Z");
   const [editedOriginLeads, setEditedOriginLeads] = useState("google");
 
+  // Pending document requests state
+  const [pendingRequests, setPendingRequests] = useState([
+    { id: "1", clientName: "Roberto da Silva", document: "Solicitação de Doc (Ata)", requestDate: "2024-01-15" },
+    { id: "2", clientName: "Maria Santos", document: "Procuração e Hipo", requestDate: "2024-01-16" },
+    { id: "3", clientName: "João Pereira", document: "Laudo", requestDate: "2024-01-17" },
+  ]);
+  const [isConfirmCheckOpen, setIsConfirmCheckOpen] = useState(false);
+  const [selectedRequestId, setSelectedRequestId] = useState<string | null>(null);
+
   // Leads Recebidos handlers
   const handleAddClientLeads = () => {
     console.log("Adicionar cliente leads:", { 
@@ -437,6 +463,20 @@ export default function SetorAdministrativoClients() {
     setIsEditOriginLeadsOpen(false);
   };
 
+  const handleConfirmCheck = () => {
+    if (selectedRequestId) {
+      setPendingRequests(pendingRequests.filter(req => req.id !== selectedRequestId));
+      console.log("Solicitação concluída:", selectedRequestId);
+    }
+    setIsConfirmCheckOpen(false);
+    setSelectedRequestId(null);
+  };
+
+  const openCheckConfirmation = (requestId: string) => {
+    setSelectedRequestId(requestId);
+    setIsConfirmCheckOpen(true);
+  };
+
   return (
     <div className="space-y-6">
       <PageHeader 
@@ -444,6 +484,63 @@ export default function SetorAdministrativoClients() {
         subtitle="Gestão e acompanhamento de clientes administrativos" 
       />
       
+      {/* Card de Solicitações */}
+      <Card className="bg-gradient-to-br from-card to-card/95 border border-gray-200">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <ClipboardCheck className="w-5 h-5 text-primary" />
+            Solicitações
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Accordion type="single" collapsible className="w-full">
+            <AccordionItem value="pending">
+              <AccordionTrigger className="text-base font-medium hover:no-underline">
+                Pendências
+                {pendingRequests.length > 0 && (
+                  <span className="ml-2 px-2 py-0.5 bg-primary text-primary-foreground text-xs rounded-full">
+                    {pendingRequests.length}
+                  </span>
+                )}
+              </AccordionTrigger>
+              <AccordionContent>
+                {pendingRequests.length === 0 ? (
+                  <p className="text-muted-foreground text-sm py-4">Nenhuma solicitação pendente</p>
+                ) : (
+                  <div className="space-y-3 pt-2">
+                    {pendingRequests.map((request) => (
+                      <div 
+                        key={request.id} 
+                        className="flex items-center justify-between p-4 border rounded-lg bg-background hover:bg-muted/50 transition-colors"
+                      >
+                        <div className="flex-1">
+                          <p className="font-medium text-sm">{request.clientName}</p>
+                          <p className="text-xs text-muted-foreground">
+                            Documento: {request.document}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            Solicitado em: {new Date(request.requestDate).toLocaleDateString('pt-BR')}
+                          </p>
+                        </div>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => openCheckConfirmation(request.id)}
+                          className="ml-4 hover:bg-primary hover:text-primary-foreground transition-colors"
+                        >
+                          <Check className="w-4 h-4 mr-1" />
+                          Feito
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+        </CardContent>
+      </Card>
+
       {/* Card de Filtros */}
       <ClientFilterMenu 
         activeFilter={activeFilter}
@@ -2572,6 +2669,27 @@ export default function SetorAdministrativoClients() {
           </Dialog>
         </div>
       )}
+
+      {/* AlertDialog para Confirmar Check */}
+      <AlertDialog open={isConfirmCheckOpen} onOpenChange={setIsConfirmCheckOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirmar Conclusão</AlertDialogTitle>
+            <AlertDialogDescription>
+              Tem certeza que deseja marcar esta solicitação como concluída? 
+              Esta ação removerá o item da lista de pendências.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setSelectedRequestId(null)}>
+              Cancelar
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirmCheck}>
+              Confirmar
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
