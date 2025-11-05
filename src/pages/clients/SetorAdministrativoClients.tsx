@@ -568,7 +568,7 @@ export default function SetorAdministrativoClients() {
       />
       
       {/* Card de Solicitações */}
-      <Card className="bg-gradient-to-br from-card to-card/95 border border-gray-200 hover:scale-[1.01] transition-transform duration-200">
+      <Card className="bg-gradient-to-br from-card to-card/95 border border-gray-200">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <ClipboardCheck className="w-5 h-5 text-primary" />
