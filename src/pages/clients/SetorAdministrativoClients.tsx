@@ -2,7 +2,7 @@ import { useState } from "react";
 import PageHeader from "@/components/PageHeader";
 import { ClientFilterMenu, ClientFilter } from "@/components/ClientFilterMenu";
 import { UniversalCard, DocumentList, DataGrid, NotesList } from "@/components/reusable/UniversalCard";
-import { FileText, User, History, Scale, Package, Paperclip, CreditCard, Search, UserPlus, Users, ClipboardCheck, Tag, Phone, Check, X, MessageSquare } from "lucide-react";
+import { FileText, User, History, Scale, Package, Paperclip, CreditCard, Search, UserPlus, Users, ClipboardCheck, Tag, Phone, Check, X, MessageSquare, Send } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Accordion,
@@ -478,6 +478,8 @@ export default function SetorAdministrativoClients() {
     telefone: "",
     email: ""
   });
+  const [isSendRequestOpen, setIsSendRequestOpen] = useState(false);
+  const [selectedSendRequestId, setSelectedSendRequestId] = useState<string | null>(null);
 
   const handleConfirmCheck = () => {
     if (selectedRequestId) {
@@ -545,6 +547,19 @@ export default function SetorAdministrativoClients() {
     return pendingRequests.filter(req => req.category === category);
   };
 
+  const handleSendRequest = () => {
+    if (selectedSendRequestId) {
+      console.log("Enviando pedido:", selectedSendRequestId);
+    }
+    setIsSendRequestOpen(false);
+    setSelectedSendRequestId(null);
+  };
+
+  const openSendRequestConfirmation = (requestId: string) => {
+    setSelectedSendRequestId(requestId);
+    setIsSendRequestOpen(true);
+  };
+
   return (
     <div className="space-y-6">
       <PageHeader 
@@ -568,7 +583,7 @@ export default function SetorAdministrativoClients() {
         <CardContent>
           <Accordion type="multiple" className="w-full space-y-2">
             {/* Laudo */}
-            <AccordionItem value="laudo" className="border rounded-lg">
+            <AccordionItem value="laudo" className="border-b">
               <AccordionTrigger className="px-4 text-base font-medium hover:no-underline">
                 Laudo
               </AccordionTrigger>
@@ -622,7 +637,7 @@ export default function SetorAdministrativoClients() {
             </AccordionItem>
 
             {/* Audiência */}
-            <AccordionItem value="audiencia" className="border rounded-lg">
+            <AccordionItem value="audiencia" className="border-b">
               <AccordionTrigger className="px-4 text-base font-medium hover:no-underline">
                 Audiência
               </AccordionTrigger>
@@ -667,6 +682,14 @@ export default function SetorAdministrativoClients() {
                           >
                             <MessageSquare className="w-4 h-4" />
                           </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => openSendRequestConfirmation(request.id)}
+                            title="Enviar Pedido"
+                          >
+                            <Send className="w-4 h-4" />
+                          </Button>
                         </div>
                       </div>
                     ))}
@@ -676,7 +699,7 @@ export default function SetorAdministrativoClients() {
             </AccordionItem>
 
             {/* Homologação */}
-            <AccordionItem value="homologacao" className="border rounded-lg">
+            <AccordionItem value="homologacao" className="border-b">
               <AccordionTrigger className="px-4 text-base font-medium hover:no-underline">
                 Homologação
               </AccordionTrigger>
@@ -730,7 +753,7 @@ export default function SetorAdministrativoClients() {
             </AccordionItem>
 
             {/* Outros Documentos */}
-            <AccordionItem value="outros" className="border rounded-lg">
+            <AccordionItem value="outros" className="border-b">
               <AccordionTrigger className="px-4 text-base font-medium hover:no-underline">
                 Outros Documentos
               </AccordionTrigger>
@@ -3073,6 +3096,26 @@ export default function SetorAdministrativoClients() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* AlertDialog para Enviar Pedido */}
+      <AlertDialog open={isSendRequestOpen} onOpenChange={setIsSendRequestOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirmar Envio</AlertDialogTitle>
+            <AlertDialogDescription>
+              Tem certeza que deseja enviar este pedido?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setSelectedSendRequestId(null)}>
+              Cancelar
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={handleSendRequest}>
+              Enviar
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {/* AlertDialog para Confirmar Check */}
       <AlertDialog open={isConfirmCheckOpen} onOpenChange={setIsConfirmCheckOpen}>
