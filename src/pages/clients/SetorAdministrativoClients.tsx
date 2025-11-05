@@ -584,7 +584,7 @@ export default function SetorAdministrativoClients() {
           <Accordion type="multiple" className="w-full space-y-2">
             {/* Laudo */}
             <AccordionItem value="laudo" className="border-b">
-              <AccordionTrigger className="px-4 text-base font-medium hover:no-underline">
+              <AccordionTrigger className="px-4 text-base font-medium hover:no-underline hover:scale-[1.02] transition-transform duration-200">
                 Laudo
               </AccordionTrigger>
               <AccordionContent>
@@ -638,7 +638,7 @@ export default function SetorAdministrativoClients() {
 
             {/* Audiência */}
             <AccordionItem value="audiencia" className="border-b">
-              <AccordionTrigger className="px-4 text-base font-medium hover:no-underline">
+              <AccordionTrigger className="px-4 text-base font-medium hover:no-underline hover:scale-[1.02] transition-transform duration-200">
                 Audiência
               </AccordionTrigger>
               <AccordionContent>
@@ -700,7 +700,7 @@ export default function SetorAdministrativoClients() {
 
             {/* Homologação */}
             <AccordionItem value="homologacao" className="border-b">
-              <AccordionTrigger className="px-4 text-base font-medium hover:no-underline">
+              <AccordionTrigger className="px-4 text-base font-medium hover:no-underline hover:scale-[1.02] transition-transform duration-200">
                 Homologação
               </AccordionTrigger>
               <AccordionContent>
@@ -754,7 +754,7 @@ export default function SetorAdministrativoClients() {
 
             {/* Outros Documentos */}
             <AccordionItem value="outros" className="border-b">
-              <AccordionTrigger className="px-4 text-base font-medium hover:no-underline">
+              <AccordionTrigger className="px-4 text-base font-medium hover:no-underline hover:scale-[1.02] transition-transform duration-200">
                 Outros Documentos
               </AccordionTrigger>
               <AccordionContent>
