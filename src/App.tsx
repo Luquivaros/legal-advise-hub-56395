@@ -13,6 +13,8 @@ import Chargebacks from "./pages/Chargebacks";
 import Conversas from "./pages/Conversas";
 import Feedback from "./pages/Feedback";
 import Gov from "./pages/Gov";
+import EscritorioAudiencias from "./pages/escritorio/EscritorioAudiencias";
+import EscritorioProcessual from "./pages/escritorio/EscritorioProcessual";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 
@@ -40,6 +42,9 @@ const App = () => (
               <Route path="conversas" element={<Conversas />} />
               <Route path="feedback" element={<Feedback />} />
               <Route path="gov" element={<Gov />} />
+              <Route path="escritorio/audiencias" element={<EscritorioAudiencias />} />
+              <Route path="escritorio/processual" element={<EscritorioProcessual />} />
+              <Route path="escritorio/feedback" element={<Feedback />} />
             </Route>
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />

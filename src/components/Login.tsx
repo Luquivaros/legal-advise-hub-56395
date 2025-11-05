@@ -28,6 +28,7 @@ const Login = () => {
     { value: "setor-administrativo", label: "Setor Administrativo", icon: Building },
     { value: "consultor-comercial", label: "Consultor Comercial", icon: User },
     { value: "gerencia", label: "Gerência", icon: Crown },
+    { value: "escritorio", label: "Escritório", icon: Building },
   ];
 
   const handleSubmit = async (e: React.FormEvent) => {

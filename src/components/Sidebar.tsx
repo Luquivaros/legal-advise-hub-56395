@@ -65,6 +65,24 @@ const menuItems: MenuItem[] = [
     label: "GOV",
     path: "/app/gov",
     roles: ['setor-administrativo']
+  },
+  {
+    icon: Scale,
+    label: "Audiências",
+    path: "/app/escritorio/audiencias",
+    roles: ['escritorio']
+  },
+  {
+    icon: Briefcase,
+    label: "Processual",
+    path: "/app/escritorio/processual",
+    roles: ['escritorio']
+  },
+  {
+    icon: MessageSquare,
+    label: "Feedback",
+    path: "/app/escritorio/feedback",
+    roles: ['escritorio']
   }
 ];
 
