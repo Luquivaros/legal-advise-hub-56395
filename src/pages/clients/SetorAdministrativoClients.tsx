@@ -2,7 +2,7 @@ import { useState } from "react";
 import PageHeader from "@/components/PageHeader";
 import { ClientFilterMenu, ClientFilter } from "@/components/ClientFilterMenu";
 import { UniversalCard, DocumentList, DataGrid, NotesList } from "@/components/reusable/UniversalCard";
-import { FileText, User, History, Scale, Package, Paperclip, CreditCard, Search, UserPlus, Users, ClipboardCheck, Tag, Phone, Check, X } from "lucide-react";
+import { FileText, User, History, Scale, Package, Paperclip, CreditCard, Search, UserPlus, Users, ClipboardCheck, Tag, Phone, Check, X, MessageSquare } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Accordion,
@@ -25,6 +25,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 
 export default function SetorAdministrativoClients() {
   const [activeFilter, setActiveFilter] = useState<ClientFilter>("protocolados");
@@ -181,9 +182,7 @@ export default function SetorAdministrativoClients() {
   };
 
   const handleGenerateDocuments = () => {
-    console.log("Gerar documento:", selectedGenDocType);
-    setIsGenerateDocsOpen(false);
-    setSelectedGenDocType("");
+    handleGenerateDocumentsWithInfo();
   };
 
   const handleChargebackSubmit = () => {
@@ -415,15 +414,6 @@ export default function SetorAdministrativoClients() {
   const [editedRegistrationDateLeads, setEditedRegistrationDateLeads] = useState("2024-02-01T10:00:00Z");
   const [editedOriginLeads, setEditedOriginLeads] = useState("google");
 
-  // Pending document requests state
-  const [pendingRequests, setPendingRequests] = useState([
-    { id: "1", clientName: "Roberto da Silva", document: "Solicitação de Doc (Ata)", requestDate: "2024-01-15" },
-    { id: "2", clientName: "Maria Santos", document: "Procuração e Hipo", requestDate: "2024-01-16" },
-    { id: "3", clientName: "João Pereira", document: "Laudo", requestDate: "2024-01-17" },
-  ]);
-  const [isConfirmCheckOpen, setIsConfirmCheckOpen] = useState(false);
-  const [selectedRequestId, setSelectedRequestId] = useState<string | null>(null);
-
   // Leads Recebidos handlers
   const handleAddClientLeads = () => {
     console.log("Adicionar cliente leads:", { 
@@ -463,6 +453,32 @@ export default function SetorAdministrativoClients() {
     setIsEditOriginLeadsOpen(false);
   };
 
+  // Pending requests states
+  const [pendingRequests, setPendingRequests] = useState([
+    { id: "1", clientName: "João Silva", document: "Laudo", requestDate: "2024-01-15T10:00:00Z", status: "aguardando", category: "laudo" },
+    { id: "2", clientName: "Maria Santos", document: "Certidão Negativa", requestDate: "2024-01-16T14:30:00Z", status: "pendencia", category: "outros" },
+    { id: "3", clientName: "Carlos Oliveira", document: "Homologação", requestDate: "2024-01-17T09:15:00Z", status: "aguardando", category: "homologacao" },
+    { id: "4", clientName: "Ana Costa", document: "Audiência", requestDate: "2024-01-18T11:00:00Z", status: "aguardando", category: "audiencia" },
+  ]);
+  const [isConfirmCheckOpen, setIsConfirmCheckOpen] = useState(false);
+  const [selectedRequestId, setSelectedRequestId] = useState<string | null>(null);
+  const [isObservationsModalOpen, setIsObservationsModalOpen] = useState(false);
+  const [currentObservationId, setCurrentObservationId] = useState<string | null>(null);
+  const [observationText, setObservationText] = useState("");
+  const [isEditingObservation, setIsEditingObservation] = useState(false);
+  const [requestObservations, setRequestObservations] = useState<{[key: string]: string}>({});
+  const [isDocumentInfoModalOpen, setIsDocumentInfoModalOpen] = useState(false);
+  const [documentInfo, setDocumentInfo] = useState({
+    nome: "",
+    cpf: "",
+    rg: "",
+    banco: "",
+    veiculo: "",
+    endereco: "",
+    telefone: "",
+    email: ""
+  });
+
   const handleConfirmCheck = () => {
     if (selectedRequestId) {
       setPendingRequests(pendingRequests.filter(req => req.id !== selectedRequestId));
@@ -475,6 +491,58 @@ export default function SetorAdministrativoClients() {
   const openCheckConfirmation = (requestId: string) => {
     setSelectedRequestId(requestId);
     setIsConfirmCheckOpen(true);
+  };
+
+  const handleStatusChange = (id: string, newStatus: string) => {
+    if (newStatus === "concluido") {
+      setSelectedRequestId(id);
+      setIsConfirmCheckOpen(true);
+    } else {
+      setPendingRequests(pendingRequests.map(req => 
+        req.id === id ? { ...req, status: newStatus } : req
+      ));
+    }
+  };
+
+  const openObservationsModal = (id: string) => {
+    setCurrentObservationId(id);
+    setObservationText(requestObservations[id] || "");
+    setIsEditingObservation(false);
+    setIsObservationsModalOpen(true);
+  };
+
+  const saveObservations = () => {
+    if (currentObservationId) {
+      setRequestObservations({ ...requestObservations, [currentObservationId]: observationText });
+    }
+    setIsEditingObservation(false);
+    setIsObservationsModalOpen(false);
+  };
+
+  const handleGenerateDocumentsWithInfo = () => {
+    console.log("Gerar documento:", selectedGenDocType);
+    setIsGenerateDocsOpen(false);
+    setIsDocumentInfoModalOpen(true);
+  };
+
+  const handleConfirmDocumentGeneration = () => {
+    console.log("Gerando documento com informações:", documentInfo);
+    setIsDocumentInfoModalOpen(false);
+    setDocumentInfo({
+      nome: "",
+      cpf: "",
+      rg: "",
+      banco: "",
+      veiculo: "",
+      endereco: "",
+      telefone: "",
+      email: ""
+    });
+    setSelectedGenDocType("");
+  };
+
+  const filterRequestsByCategory = (category: string) => {
+    return pendingRequests.filter(req => req.category === category);
   };
 
   return (
@@ -498,20 +566,21 @@ export default function SetorAdministrativoClients() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <Accordion type="single" collapsible className="w-full">
-            <AccordionItem value="pending">
-              <AccordionTrigger className="text-base font-medium hover:no-underline">
-                Pendências
+          <Accordion type="multiple" className="w-full space-y-2">
+            {/* Laudo */}
+            <AccordionItem value="laudo" className="border rounded-lg">
+              <AccordionTrigger className="px-4 text-base font-medium hover:no-underline">
+                Laudo
               </AccordionTrigger>
               <AccordionContent>
-                {pendingRequests.length === 0 ? (
-                  <p className="text-muted-foreground text-sm py-4">Nenhuma solicitação pendente</p>
+                {filterRequestsByCategory("laudo").length === 0 ? (
+                  <p className="text-muted-foreground text-sm py-4 px-4">Nenhuma solicitação de laudo</p>
                 ) : (
-                  <div className="space-y-3 pt-2">
-                    {pendingRequests.map((request) => (
+                  <div className="space-y-3 pt-2 px-4 pb-4">
+                    {filterRequestsByCategory("laudo").map((request) => (
                       <div 
                         key={request.id} 
-                        className="flex items-center justify-between p-4 border rounded-lg bg-background hover:bg-muted/50 transition-colors"
+                        className="flex items-center justify-between p-4 border rounded-lg bg-background"
                       >
                         <div className="flex-1">
                           <p className="font-medium text-sm">{request.clientName}</p>
@@ -522,15 +591,191 @@ export default function SetorAdministrativoClients() {
                             Solicitado em: {new Date(request.requestDate).toLocaleDateString('pt-BR')}
                           </p>
                         </div>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => openCheckConfirmation(request.id)}
-                          className="ml-4 hover:bg-primary hover:text-primary-foreground transition-colors"
-                        >
-                          <Check className="w-4 h-4 mr-1" />
-                          Feito
-                        </Button>
+                        <div className="flex items-center gap-2 ml-4">
+                          <Select
+                            value={request.status}
+                            onValueChange={(value) => handleStatusChange(request.id, value)}
+                          >
+                            <SelectTrigger className="w-[140px]">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="aguardando">Aguardando</SelectItem>
+                              <SelectItem value="pendencia">Pendência</SelectItem>
+                              <SelectItem value="concluido">Concluído</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => openObservationsModal(request.id)}
+                            title="Observações do Setor"
+                          >
+                            <MessageSquare className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </AccordionContent>
+            </AccordionItem>
+
+            {/* Audiência */}
+            <AccordionItem value="audiencia" className="border rounded-lg">
+              <AccordionTrigger className="px-4 text-base font-medium hover:no-underline">
+                Audiência
+              </AccordionTrigger>
+              <AccordionContent>
+                {filterRequestsByCategory("audiencia").length === 0 ? (
+                  <p className="text-muted-foreground text-sm py-4 px-4">Nenhuma solicitação de audiência</p>
+                ) : (
+                  <div className="space-y-3 pt-2 px-4 pb-4">
+                    {filterRequestsByCategory("audiencia").map((request) => (
+                      <div 
+                        key={request.id} 
+                        className="flex items-center justify-between p-4 border rounded-lg bg-background"
+                      >
+                        <div className="flex-1">
+                          <p className="font-medium text-sm">{request.clientName}</p>
+                          <p className="text-xs text-muted-foreground">
+                            Documento: {request.document}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            Solicitado em: {new Date(request.requestDate).toLocaleDateString('pt-BR')}
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-2 ml-4">
+                          <Select
+                            value={request.status}
+                            onValueChange={(value) => handleStatusChange(request.id, value)}
+                          >
+                            <SelectTrigger className="w-[140px]">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="aguardando">Aguardando</SelectItem>
+                              <SelectItem value="pendencia">Pendência</SelectItem>
+                              <SelectItem value="concluido">Concluído</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => openObservationsModal(request.id)}
+                            title="Observações do Setor"
+                          >
+                            <MessageSquare className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </AccordionContent>
+            </AccordionItem>
+
+            {/* Homologação */}
+            <AccordionItem value="homologacao" className="border rounded-lg">
+              <AccordionTrigger className="px-4 text-base font-medium hover:no-underline">
+                Homologação
+              </AccordionTrigger>
+              <AccordionContent>
+                {filterRequestsByCategory("homologacao").length === 0 ? (
+                  <p className="text-muted-foreground text-sm py-4 px-4">Nenhuma solicitação de homologação</p>
+                ) : (
+                  <div className="space-y-3 pt-2 px-4 pb-4">
+                    {filterRequestsByCategory("homologacao").map((request) => (
+                      <div 
+                        key={request.id} 
+                        className="flex items-center justify-between p-4 border rounded-lg bg-background"
+                      >
+                        <div className="flex-1">
+                          <p className="font-medium text-sm">{request.clientName}</p>
+                          <p className="text-xs text-muted-foreground">
+                            Documento: {request.document}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            Solicitado em: {new Date(request.requestDate).toLocaleDateString('pt-BR')}
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-2 ml-4">
+                          <Select
+                            value={request.status}
+                            onValueChange={(value) => handleStatusChange(request.id, value)}
+                          >
+                            <SelectTrigger className="w-[140px]">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="aguardando">Aguardando</SelectItem>
+                              <SelectItem value="pendencia">Pendência</SelectItem>
+                              <SelectItem value="concluido">Concluído</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => openObservationsModal(request.id)}
+                            title="Observações do Setor"
+                          >
+                            <MessageSquare className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </AccordionContent>
+            </AccordionItem>
+
+            {/* Outros Documentos */}
+            <AccordionItem value="outros" className="border rounded-lg">
+              <AccordionTrigger className="px-4 text-base font-medium hover:no-underline">
+                Outros Documentos
+              </AccordionTrigger>
+              <AccordionContent>
+                {filterRequestsByCategory("outros").length === 0 ? (
+                  <p className="text-muted-foreground text-sm py-4 px-4">Nenhuma solicitação de outros documentos</p>
+                ) : (
+                  <div className="space-y-3 pt-2 px-4 pb-4">
+                    {filterRequestsByCategory("outros").map((request) => (
+                      <div 
+                        key={request.id} 
+                        className="flex items-center justify-between p-4 border rounded-lg bg-background"
+                      >
+                        <div className="flex-1">
+                          <p className="font-medium text-sm">{request.clientName}</p>
+                          <p className="text-xs text-muted-foreground">
+                            Documento: {request.document}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            Solicitado em: {new Date(request.requestDate).toLocaleDateString('pt-BR')}
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-2 ml-4">
+                          <Select
+                            value={request.status}
+                            onValueChange={(value) => handleStatusChange(request.id, value)}
+                          >
+                            <SelectTrigger className="w-[140px]">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="aguardando">Aguardando</SelectItem>
+                              <SelectItem value="pendencia">Pendência</SelectItem>
+                              <SelectItem value="concluido">Concluído</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => openObservationsModal(request.id)}
+                            title="Observações do Setor"
+                          >
+                            <MessageSquare className="w-4 h-4" />
+                          </Button>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -2669,6 +2914,165 @@ export default function SetorAdministrativoClients() {
           </Dialog>
         </div>
       )}
+
+      {/* Modal de Observações do Setor */}
+      <Dialog open={isObservationsModalOpen} onOpenChange={setIsObservationsModalOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Observações do Setor</DialogTitle>
+            <DialogDescription>
+              Adicione ou visualize observações sobre esta solicitação
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            {!isEditingObservation ? (
+              <div className="min-h-[200px] p-4 border rounded-md bg-muted/50">
+                <p className="text-sm whitespace-pre-wrap">
+                  {observationText || "Nenhuma observação adicionada"}
+                </p>
+              </div>
+            ) : (
+              <Textarea
+                value={observationText}
+                onChange={(e) => setObservationText(e.target.value)}
+                placeholder="Digite suas observações..."
+                className="min-h-[200px]"
+              />
+            )}
+          </div>
+          <DialogFooter>
+            {!isEditingObservation ? (
+              <>
+                <Button variant="outline" onClick={() => setIsObservationsModalOpen(false)}>
+                  Fechar
+                </Button>
+                <Button onClick={() => setIsEditingObservation(true)}>
+                  Editar
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button variant="outline" onClick={() => {
+                  setIsEditingObservation(false);
+                  setObservationText(currentObservationId ? requestObservations[currentObservationId] || "" : "");
+                }}>
+                  Cancelar
+                </Button>
+                <Button onClick={saveObservations}>
+                  Salvar
+                </Button>
+              </>
+            )}
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Modal de Informações do Documento */}
+      <Dialog open={isDocumentInfoModalOpen} onOpenChange={setIsDocumentInfoModalOpen}>
+        <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Informações para Preenchimento Automático</DialogTitle>
+            <DialogDescription>
+              Preencha as informações que serão utilizadas no documento: {selectedGenDocType}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="doc-nome">Nome Completo</Label>
+              <Input
+                id="doc-nome"
+                value={documentInfo.nome}
+                onChange={(e) => setDocumentInfo({...documentInfo, nome: e.target.value})}
+                placeholder="Digite o nome completo"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="doc-cpf">CPF</Label>
+              <Input
+                id="doc-cpf"
+                value={documentInfo.cpf}
+                onChange={(e) => setDocumentInfo({...documentInfo, cpf: e.target.value})}
+                placeholder="000.000.000-00"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="doc-rg">RG</Label>
+              <Input
+                id="doc-rg"
+                value={documentInfo.rg}
+                onChange={(e) => setDocumentInfo({...documentInfo, rg: e.target.value})}
+                placeholder="00.000.000-0"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="doc-banco">Banco</Label>
+              <Input
+                id="doc-banco"
+                value={documentInfo.banco}
+                onChange={(e) => setDocumentInfo({...documentInfo, banco: e.target.value})}
+                placeholder="Nome do banco"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="doc-veiculo">Veículo</Label>
+              <Input
+                id="doc-veiculo"
+                value={documentInfo.veiculo}
+                onChange={(e) => setDocumentInfo({...documentInfo, veiculo: e.target.value})}
+                placeholder="Marca/Modelo do veículo"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="doc-telefone">Telefone</Label>
+              <Input
+                id="doc-telefone"
+                value={documentInfo.telefone}
+                onChange={(e) => setDocumentInfo({...documentInfo, telefone: e.target.value})}
+                placeholder="(00) 00000-0000"
+              />
+            </div>
+            <div className="space-y-2 md:col-span-2">
+              <Label htmlFor="doc-endereco">Endereço Completo</Label>
+              <Input
+                id="doc-endereco"
+                value={documentInfo.endereco}
+                onChange={(e) => setDocumentInfo({...documentInfo, endereco: e.target.value})}
+                placeholder="Rua, número, bairro, cidade, estado"
+              />
+            </div>
+            <div className="space-y-2 md:col-span-2">
+              <Label htmlFor="doc-email">E-mail</Label>
+              <Input
+                id="doc-email"
+                type="email"
+                value={documentInfo.email}
+                onChange={(e) => setDocumentInfo({...documentInfo, email: e.target.value})}
+                placeholder="email@exemplo.com"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => {
+              setIsDocumentInfoModalOpen(false);
+              setDocumentInfo({
+                nome: "",
+                cpf: "",
+                rg: "",
+                banco: "",
+                veiculo: "",
+                endereco: "",
+                telefone: "",
+                email: ""
+              });
+            }}>
+              Cancelar
+            </Button>
+            <Button onClick={handleConfirmDocumentGeneration}>
+              Gerar Documento
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* AlertDialog para Confirmar Check */}
       <AlertDialog open={isConfirmCheckOpen} onOpenChange={setIsConfirmCheckOpen}>

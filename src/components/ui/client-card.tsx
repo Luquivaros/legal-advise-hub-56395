@@ -283,6 +283,18 @@ export function ClientCard({ client }: ClientCardProps) {
             </AccordionTrigger>
             <AccordionContent>
               <div className="p-4 bg-muted/50 rounded-lg space-y-4">
+                {/* Informativo sobre solicitações */}
+                <div className="p-3 bg-primary/10 border border-primary/20 rounded-md">
+                  <p className="text-sm font-medium text-primary mb-1">Solicitações Abertas</p>
+                  <p className="text-xs text-muted-foreground">
+                    Você possui <span className="font-semibold">2 solicitações</span> em andamento no setor administrativo.
+                  </p>
+                  <ul className="mt-2 space-y-1 text-xs text-muted-foreground">
+                    <li>• Laudo - <span className="text-orange-600 font-medium">Aguardando</span></li>
+                    <li>• Certidão Negativa - <span className="text-orange-600 font-medium">Pendência</span></li>
+                  </ul>
+                </div>
+
                 <div>
                   <p className="text-sm text-muted-foreground mb-3">Documentos disponíveis para download:</p>
                   <div className="space-y-2">
