@@ -12,7 +12,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
-import { Calculator, User, Phone, CreditCard, Trash2, CheckCircle2, CalendarIcon, DollarSign, AlertTriangle, Clock } from 'lucide-react';
+import { Calculator, User, Phone, CreditCard, Trash2, CheckCircle2, CalendarIcon, DollarSign, AlertTriangle, Clock, AlertCircle, FileText, Download, Send } from 'lucide-react';
 
 interface ClientCardProps {
   client: {
@@ -45,6 +45,12 @@ export function ClientCard({ client }: ClientCardProps) {
   const [paymentType, setPaymentType] = useState<'total' | 'partial'>('total');
   const [entryValue, setEntryValue] = useState('');
   const [paymentDate, setPaymentDate] = useState<Date>();
+  const [requestedDocument, setRequestedDocument] = useState('');
+  const [hasHistoryUpdate, setHasHistoryUpdate] = useState(false);
+  const [hasMovementUpdate, setHasMovementUpdate] = useState(true);
+  const [hasServiceUpdate, setHasServiceUpdate] = useState(false);
+  const [hasGovUpdate, setHasGovUpdate] = useState(true);
+  const [hasDocumentUpdate, setHasDocumentUpdate] = useState(false);
   const [calculationData, setCalculationData] = useState<CalculationFormData>({
     originalInstallment: 0,
     currentInstallment: 0,
@@ -145,7 +151,12 @@ export function ClientCard({ client }: ClientCardProps) {
         {/* Botões Accordion */}
         <Accordion type="multiple" className="w-full">
           <AccordionItem value="historico">
-            <AccordionTrigger className="text-primary hover:text-primary hover:no-underline [&>svg]:text-primary uppercase">HISTÓRICO</AccordionTrigger>
+            <AccordionTrigger className="text-black hover:text-black hover:no-underline [&>svg]:text-black transition-transform hover:scale-[1.02]">
+              <div className="flex items-center gap-2">
+                Histórico
+                {hasHistoryUpdate && <AlertCircle className="w-4 h-4 text-orange-500" />}
+              </div>
+            </AccordionTrigger>
             <AccordionContent>
               <div className="p-4 bg-muted/50 rounded-lg">
                 <p className="text-sm text-muted-foreground mb-2">Histórico de pagamentos e interações:</p>
@@ -160,7 +171,12 @@ export function ClientCard({ client }: ClientCardProps) {
           </AccordionItem>
 
           <AccordionItem value="movimentacoes">
-            <AccordionTrigger className="text-primary hover:text-primary hover:no-underline [&>svg]:text-primary uppercase">MOVIMENTAÇÕES</AccordionTrigger>
+            <AccordionTrigger className="text-black hover:text-black hover:no-underline [&>svg]:text-black transition-transform hover:scale-[1.02]">
+              <div className="flex items-center gap-2">
+                Movimentações
+                {hasMovementUpdate && <AlertCircle className="w-4 h-4 text-orange-500" />}
+              </div>
+            </AccordionTrigger>
             <AccordionContent>
               <div className="p-4 bg-muted/50 rounded-lg">
                 <p className="text-sm text-muted-foreground mb-2">Últimas movimentações processuais:</p>
@@ -175,7 +191,12 @@ export function ClientCard({ client }: ClientCardProps) {
           </AccordionItem>
 
           <AccordionItem value="servico">
-            <AccordionTrigger className="text-primary hover:text-primary hover:no-underline [&>svg]:text-primary uppercase">SERVIÇO</AccordionTrigger>
+            <AccordionTrigger className="text-black hover:text-black hover:no-underline [&>svg]:text-black transition-transform hover:scale-[1.02]">
+              <div className="flex items-center gap-2">
+                Serviço
+                {hasServiceUpdate && <AlertCircle className="w-4 h-4 text-orange-500" />}
+              </div>
+            </AccordionTrigger>
             <AccordionContent>
               <div className="p-4 bg-muted/50 rounded-lg">
                 <p className="text-sm text-muted-foreground mb-2">Serviço indicado baseado nas movimentações:</p>
@@ -184,6 +205,142 @@ export function ClientCard({ client }: ClientCardProps) {
                   <p className="text-sm text-muted-foreground">
                     Recomendado laudo técnico para análise de taxas contratuais
                   </p>
+                </div>
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+
+          <AccordionItem value="govbr">
+            <AccordionTrigger className="text-black hover:text-black hover:no-underline [&>svg]:text-black transition-transform hover:scale-[1.02]">
+              <div className="flex items-center gap-2">
+                Gov.br
+                {hasGovUpdate && <AlertCircle className="w-4 h-4 text-orange-500" />}
+              </div>
+            </AccordionTrigger>
+            <AccordionContent>
+              <div className="p-4 bg-muted/50 rounded-lg space-y-4">
+                <div>
+                  <p className="text-sm text-muted-foreground mb-2">Informações atualizadas pelo setor GOV:</p>
+                  <ul className="space-y-1 text-sm">
+                    <li>• Procuração: Aprovada</li>
+                    <li>• Selfie: Enviada</li>
+                    <li>• Senha GOV: Atualizada em 20/08/2024</li>
+                    <li>• Última atualização: 22/08/2024</li>
+                  </ul>
+                </div>
+                
+                <div className="pt-4 border-t border-border">
+                  <p className="text-sm font-medium mb-3">Notificar Setor Administrativo:</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      className="w-full justify-start"
+                      onClick={() => console.log('Solicitando cancelamento de seguro')}
+                    >
+                      <AlertTriangle className="w-4 h-4 mr-2" />
+                      Cancelamento de Seguro
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      className="w-full justify-start"
+                      onClick={() => console.log('Solicitando contrato')}
+                    >
+                      <FileText className="w-4 h-4 mr-2" />
+                      Solicitação de Contrato
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      className="w-full justify-start"
+                      onClick={() => console.log('Solicitando cancelamento de débito automático')}
+                    >
+                      <CreditCard className="w-4 h-4 mr-2" />
+                      Cancelamento de Débito Automático
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      className="w-full justify-start"
+                      onClick={() => console.log('Solicitando informações de imóvel')}
+                    >
+                      <AlertTriangle className="w-4 h-4 mr-2" />
+                      Imóvel
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+
+          <AccordionItem value="documentos">
+            <AccordionTrigger className="text-black hover:text-black hover:no-underline [&>svg]:text-black transition-transform hover:scale-[1.02]">
+              <div className="flex items-center gap-2">
+                Documentos
+                {hasDocumentUpdate && <AlertCircle className="w-4 h-4 text-orange-500" />}
+              </div>
+            </AccordionTrigger>
+            <AccordionContent>
+              <div className="p-4 bg-muted/50 rounded-lg space-y-4">
+                <div>
+                  <p className="text-sm text-muted-foreground mb-3">Documentos disponíveis para download:</p>
+                  <div className="space-y-2">
+                    {[
+                      'Contrato Assinado',
+                      'Comprovante de Residência',
+                      'Documento de Identidade',
+                      'Procuração',
+                    ].map((doc) => (
+                      <Button
+                        key={doc}
+                        variant="outline"
+                        size="sm"
+                        className="w-full justify-between"
+                        onClick={() => console.log('Baixando:', doc)}
+                      >
+                        <span className="flex items-center gap-2">
+                          <FileText className="w-4 h-4" />
+                          {doc}
+                        </span>
+                        <Download className="w-4 h-4" />
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="pt-4 border-t border-border">
+                  <p className="text-sm font-medium mb-3">Solicitar Documento:</p>
+                  <div className="flex gap-2">
+                    <Select value={requestedDocument} onValueChange={setRequestedDocument}>
+                      <SelectTrigger className="flex-1">
+                        <SelectValue placeholder="Selecione o documento" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="doc-ata">Solicitação de Doc (Ata)</SelectItem>
+                        <SelectItem value="negociacao-quitacao">Negociação de Quitação (Ata)</SelectItem>
+                        <SelectItem value="procuracao-hipo">Procuração e Hipo</SelectItem>
+                        <SelectItem value="citacao">Citação</SelectItem>
+                        <SelectItem value="termo-ciencia">Termo de Ciência</SelectItem>
+                        <SelectItem value="laudo">Laudo</SelectItem>
+                        <SelectItem value="certidao-negativa">Certidão Negativa</SelectItem>
+                        <SelectItem value="certidao-atualizacao">Certidão Atualização de Valores</SelectItem>
+                        <SelectItem value="homologacao">Homologação</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <Button
+                      size="sm"
+                      className="bg-gradient-to-r from-orange-light to-orange-lighter hover:from-orange-light-hover hover:to-orange-light"
+                      onClick={() => {
+                        console.log('Solicitando documento:', requestedDocument);
+                        setRequestedDocument('');
+                      }}
+                      disabled={!requestedDocument}
+                    >
+                      <Send className="w-4 h-4 mr-2" />
+                      Enviar Pedido
+                    </Button>
+                  </div>
                 </div>
               </div>
             </AccordionContent>
