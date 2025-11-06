@@ -136,9 +136,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         
         if (roleError) throw roleError;
         
+        // Set user and setor immediately
+        setUser(data.user);
+        setSetor(setor);
+        
         toast({
           title: "Cadastro realizado com sucesso!",
-          description: "Você já pode fazer login com suas credenciais",
+          description: "Redirecionando para o dashboard...",
         });
         
         return true;
