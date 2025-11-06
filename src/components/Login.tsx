@@ -156,33 +156,35 @@ const Login = () => {
                 />
               </div>
 
-              {/* Role Selection */}
-              <div className="space-y-3">
-                <Label className="text-sm font-medium text-foreground">Função</Label>
-                <RadioGroup value={role} onValueChange={(value) => setRole(value as UserRole)} className="space-y-3" required>
-                  <div className="grid grid-cols-2 gap-3">
-                    {roles.map((roleOption) => {
-                      const IconComponent = roleOption.icon;
-                      return (
-                        <div key={roleOption.value} className="flex items-center space-x-2">
-                          <RadioGroupItem 
-                            value={roleOption.value} 
-                            id={roleOption.value}
-                            className="text-primary"
-                          />
-                          <Label 
-                            htmlFor={roleOption.value} 
-                            className="text-sm cursor-pointer flex items-center gap-2"
-                          >
-                            <IconComponent className="w-4 h-4" />
-                            {roleOption.label}
-                          </Label>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </RadioGroup>
-              </div>
+              {/* Role Selection - Esconder para usuários master */}
+              {email !== 'master@empresa.com' && (
+                <div className="space-y-3">
+                  <Label className="text-sm font-medium text-foreground">Função</Label>
+                  <RadioGroup value={role} onValueChange={(value) => setRole(value as UserRole)} className="space-y-3" required>
+                    <div className="grid grid-cols-2 gap-3">
+                      {roles.map((roleOption) => {
+                        const IconComponent = roleOption.icon;
+                        return (
+                          <div key={roleOption.value} className="flex items-center space-x-2">
+                            <RadioGroupItem 
+                              value={roleOption.value} 
+                              id={roleOption.value}
+                              className="text-primary"
+                            />
+                            <Label 
+                              htmlFor={roleOption.value} 
+                              className="text-sm cursor-pointer flex items-center gap-2"
+                            >
+                              <IconComponent className="w-4 h-4" />
+                              {roleOption.label}
+                            </Label>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </RadioGroup>
+                </div>
+              )}
 
               {/* Remember Me and Forgot Password */}
               <div className="flex items-center justify-between">
