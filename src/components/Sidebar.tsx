@@ -94,7 +94,7 @@ export function Sidebar({
   userRole
 }: SidebarProps) {
   const location = useLocation();
-  const { user, signOut } = useAuth();
+  const { user, logout } = useAuth();
   
   const filteredMenuItems = menuItems.filter(item => 
     item.roles.includes(userRole)
@@ -150,7 +150,7 @@ export function Sidebar({
         
         {/* Logout Button */}
         <button
-          onClick={signOut}
+          onClick={logout}
           className={cn(
             "w-full flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 text-sm",
             "text-orange-50 hover:bg-red-500/20 hover:text-white",
