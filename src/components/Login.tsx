@@ -54,12 +54,10 @@ const Login = () => {
       const success = await signup(email, password, name, setor as SetorType);
       
       if (success) {
-        // Após cadastro bem-sucedido, fazer login automaticamente
-        const loginSuccess = await login(email, password);
-        
-        if (loginSuccess) {
+        // Redirecionar após signup bem-sucedido
+        setTimeout(() => {
           navigate('/app/dashboard');
-        }
+        }, 1000);
       }
     } else {
       const success = await login(email, password);

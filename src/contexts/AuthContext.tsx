@@ -112,7 +112,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       setLoading(true);
       
-      const { data, error } = await supabase.auth.signUp({
+      // 1. Criar o usuário
+      const { data: signupData, error: signupError } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -123,33 +124,61 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         },
       });
       
-      if (error) throw error;
+      if (signupError) throw signupError;
       
-      if (data.user) {
-        // Insert user role
-        const { error: roleError } = await supabase
-          .from('user_roles')
-          .insert({
-            user_id: data.user.id,
-            setor: setor,
-          });
-        
-        if (roleError) throw roleError;
-        
-        // Set user and setor immediately
-        setUser(data.user);
-        setSetor(setor);
-        
-        toast({
-          title: "Cadastro realizado com sucesso!",
-          description: "Redirecionando para o dashboard...",
-        });
-        
-        return true;
+      if (!signupData.user) {
+        throw new Error('Usuário não foi criado');
       }
       
-      return false;
+      // 2. Fazer login para garantir que auth.uid() está disponível
+      const { data: loginData, error: loginError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      
+      if (loginError) throw loginError;
+      
+      if (!loginData.user) {
+        throw new Error('Não foi possível fazer login');
+      }
+      
+      // 3. Agora que estamos autenticados, inserir o setor
+      const { error: roleError } = await supabase
+        .from('user_roles')
+        .insert({
+          user_id: loginData.user.id,
+          setor: setor,
+        });
+      
+      if (roleError) {
+        console.error('Error inserting role:', roleError);
+        throw new Error(`Não foi possível atribuir o setor: ${roleError.message}`);
+      }
+      
+      // 4. Verificar se o insert foi bem-sucedido
+      const { data: roleData, error: roleCheckError } = await supabase
+        .from('user_roles')
+        .select('setor')
+        .eq('user_id', loginData.user.id)
+        .single();
+      
+      if (roleCheckError || !roleData) {
+        console.error('Role check error:', roleCheckError);
+        throw new Error('Setor não foi salvo corretamente');
+      }
+      
+      // 5. Definir estado
+      setUser(loginData.user);
+      setSetor(roleData.setor);
+      
+      toast({
+        title: "Cadastro realizado com sucesso!",
+        description: "Redirecionando para o dashboard...",
+      });
+      
+      return true;
     } catch (error: any) {
+      console.error('Signup error:', error);
       toast({
         title: "Erro no cadastro",
         description: error.message || "Não foi possível criar sua conta",
