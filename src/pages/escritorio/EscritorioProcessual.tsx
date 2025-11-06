@@ -7,11 +7,33 @@ import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Users, FileCheck, Clock, Download, X, Check, Scale } from "lucide-react";
+import { Users, FileCheck, Clock, Download, X, Check, Scale, Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
+type ClienteStatus = 'solicitacao' | 'pendente' | 'protocolado';
+
+interface Documento {
+  id: string;
+  nome: string;
+  verificado: boolean;
+}
+
+interface Cliente {
+  id: string;
+  nome: string;
+  cpf: string;
+  rg: string;
+  endereco: string;
+  email: string;
+  dataProtocolo: string;
+  documentos: Documento[];
+  status: ClienteStatus;
+  prazoRetorno?: number;
+  observacoes?: string;
+}
+
 // Mock data
-const mockClientes = [
+const mockClientes: Cliente[] = [
   {
     id: "1",
     nome: "Ana Paula Ferreira",
@@ -20,6 +42,7 @@ const mockClientes = [
     endereco: "Rua dos Lírios, 456 - São Paulo/SP",
     email: "ana.ferreira@email.com",
     dataProtocolo: "",
+    status: 'solicitacao' as ClienteStatus,
     documentos: [
       { id: "d1", nome: "RG", verificado: false },
       { id: "d2", nome: "CPF", verificado: false },
@@ -36,6 +59,7 @@ const mockClientes = [
     endereco: "Av. Brasil, 2000 - Rio de Janeiro/RJ",
     email: "carlos.mendes@email.com",
     dataProtocolo: "",
+    status: 'solicitacao' as ClienteStatus,
     documentos: [
       { id: "d1", nome: "RG", verificado: false },
       { id: "d2", nome: "CPF", verificado: false },
@@ -52,6 +76,7 @@ const mockClientes = [
     endereco: "Rua das Acácias, 789 - Belo Horizonte/MG",
     email: "juliana.lima@email.com",
     dataProtocolo: "",
+    status: 'solicitacao' as ClienteStatus,
     documentos: [
       { id: "d1", nome: "RG", verificado: false },
       { id: "d2", nome: "CPF", verificado: false },
@@ -75,6 +100,19 @@ export default function EscritorioProcessual() {
   const [clienteAtual, setClienteAtual] = useState<string>("");
   const [prazoRetorno, setPrazoRetorno] = useState("");
   const [observacoesRejeicao, setObservacoesRejeicao] = useState("");
+  
+  // Estados para o card Pendências
+  const [observacoesModalOpen, setObservacoesModalOpen] = useState(false);
+  const [observacoesPendencia, setObservacoesPendencia] = useState("");
+  const [redefinirPrazoModalOpen, setRedefinirPrazoModalOpen] = useState(false);
+  const [novoPrazo, setNovoPrazo] = useState("");
+  const [motivoMudanca, setMotivoMudanca] = useState("");
+  const [protocoladoModalOpen, setProtocoladoModalOpen] = useState(false);
+
+  // Filtrar clientes por status
+  const clientesSolicitacao = clientes.filter(c => c.status === 'solicitacao');
+  const clientesPendentes = clientes.filter(c => c.status === 'pendente');
+  const clientesProtocolados = clientes.filter(c => c.status === 'protocolado');
 
   const handleAbrirModalVerificacao = (clienteId: string, docId: string, aprovado: boolean) => {
     setDocumentoAtual({ clienteId, docId, aprovado });
@@ -149,6 +187,12 @@ export default function EscritorioProcessual() {
       return;
     }
 
+    setClientes(prev => prev.map(cliente => 
+      cliente.id === clienteAtual 
+        ? { ...cliente, status: 'pendente' as ClienteStatus, prazoRetorno: Number(prazoRetorno) }
+        : cliente
+    ));
+
     toast({
       title: "Solicitação aceita",
       description: `Prazo de ${prazoRetorno} dias definido com sucesso.`,
@@ -160,6 +204,8 @@ export default function EscritorioProcessual() {
   };
 
   const handleRecusarSolicitacao = () => {
+    setClientes(prev => prev.filter(cliente => cliente.id !== clienteAtual));
+
     toast({
       title: "Solicitação recusada",
       description: "A solicitação foi recusada com sucesso.",
@@ -168,6 +214,66 @@ export default function EscritorioProcessual() {
     setRecusarModalOpen(false);
     setClienteAtual("");
     setObservacoesRejeicao("");
+  };
+
+  const handleSalvarObservacoes = () => {
+    setClientes(prev => prev.map(cliente => 
+      cliente.id === clienteAtual 
+        ? { ...cliente, observacoes: observacoesPendencia }
+        : cliente
+    ));
+
+    toast({
+      title: "Observações salvas",
+      description: "As observações foram registradas com sucesso.",
+    });
+
+    setObservacoesModalOpen(false);
+    setClienteAtual("");
+    setObservacoesPendencia("");
+  };
+
+  const handleRedefinirPrazo = () => {
+    if (!novoPrazo || !motivoMudanca) {
+      toast({
+        title: "Erro",
+        description: "Por favor, preencha todos os campos obrigatórios.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setClientes(prev => prev.map(cliente => 
+      cliente.id === clienteAtual 
+        ? { ...cliente, prazoRetorno: Number(novoPrazo) }
+        : cliente
+    ));
+
+    toast({
+      title: "Prazo redefinido",
+      description: `Novo prazo de ${novoPrazo} dias definido. Motivo: ${motivoMudanca}`,
+    });
+
+    setRedefinirPrazoModalOpen(false);
+    setClienteAtual("");
+    setNovoPrazo("");
+    setMotivoMudanca("");
+  };
+
+  const handleClienteProtocolado = () => {
+    setClientes(prev => prev.map(cliente => 
+      cliente.id === clienteAtual 
+        ? { ...cliente, status: 'protocolado' as ClienteStatus }
+        : cliente
+    ));
+
+    toast({
+      title: "Cliente protocolado",
+      description: "O processo foi protocolado com sucesso.",
+    });
+
+    setProtocoladoModalOpen(false);
+    setClienteAtual("");
   };
 
   return (
@@ -187,7 +293,7 @@ export default function EscritorioProcessual() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-bold text-black">15</p>
+            <p className="text-3xl font-bold text-black">{clientesSolicitacao.length}</p>
             <p className="text-sm text-gray-400 mt-1">Para protocolo</p>
           </CardContent>
         </Card>
@@ -200,7 +306,7 @@ export default function EscritorioProcessual() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-bold text-black">10</p>
+            <p className="text-3xl font-bold text-black">{clientesProtocolados.length}</p>
             <p className="text-sm text-gray-400 mt-1">Concluídos</p>
           </CardContent>
         </Card>
@@ -213,7 +319,7 @@ export default function EscritorioProcessual() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-bold text-black">5</p>
+            <p className="text-3xl font-bold text-black">{clientesPendentes.length}</p>
             <p className="text-sm text-gray-400 mt-1">Aguardando protocolo</p>
           </CardContent>
         </Card>
@@ -229,7 +335,7 @@ export default function EscritorioProcessual() {
         </CardHeader>
         <CardContent>
           <Accordion type="single" collapsible className="w-full">
-            {clientes.map((cliente) => (
+            {clientesSolicitacao.map((cliente) => (
               <AccordionItem key={cliente.id} value={cliente.id} className="border-b border-gray-200 last:border-b-0">
                 <AccordionTrigger className="hover:no-underline hover:scale-[1.01] transition-transform duration-200 px-4">
                   <div className="flex items-center gap-2">
@@ -326,6 +432,130 @@ export default function EscritorioProcessual() {
           </Accordion>
         </CardContent>
       </Card>
+
+      {/* Card de Pendências */}
+      {clientesPendentes.length > 0 && (
+        <Card className="bg-gradient-to-br from-card to-card/95 border border-gray-200">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Clock className="w-5 h-5 text-primary" />
+              Pendências
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Accordion type="single" collapsible className="w-full">
+              {clientesPendentes.map((cliente) => (
+                <AccordionItem key={cliente.id} value={cliente.id} className="border-b border-gray-200 last:border-b-0">
+                  <AccordionTrigger className="hover:no-underline hover:scale-[1.01] transition-transform duration-200 px-4">
+                    <div className="flex items-center gap-2">
+                      <span className="font-semibold">{cliente.nome}</span>
+                      {cliente.prazoRetorno && (
+                        <span className="text-xs text-muted-foreground">
+                          (Prazo: {cliente.prazoRetorno} dias)
+                        </span>
+                      )}
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="space-y-4 pt-4 px-4 pb-4">
+                    {/* Informações do Cliente */}
+                    <div className="bg-muted/50 rounded-lg p-4 space-y-2">
+                      <h4 className="font-semibold text-sm mb-3">Informações do Cliente</h4>
+                      <div className="grid grid-cols-2 gap-3 text-sm">
+                        <div>
+                          <span className="text-muted-foreground">CPF:</span>
+                          <p className="font-medium">{cliente.cpf}</p>
+                        </div>
+                        <div>
+                          <span className="text-muted-foreground">RG:</span>
+                          <p className="font-medium">{cliente.rg}</p>
+                        </div>
+                        <div className="col-span-2">
+                          <span className="text-muted-foreground">Endereço:</span>
+                          <p className="font-medium">{cliente.endereco}</p>
+                        </div>
+                        <div className="col-span-2">
+                          <span className="text-muted-foreground">E-mail:</span>
+                          <p className="font-medium">{cliente.email}</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Documentos */}
+                    <div>
+                      <h4 className="font-semibold text-sm mb-3">Documentos para Protocolo</h4>
+                      <div className="space-y-2">
+                        {cliente.documentos.map((doc) => (
+                          <div key={doc.id} className="flex items-center justify-between bg-background border rounded-lg p-3">
+                            <span className="text-sm font-medium">{doc.nome}</span>
+                            <div className="flex items-center gap-2">
+                              <Button
+                                size="sm"
+                                variant={doc.verificado ? "default" : "outline"}
+                                onClick={() => handleAbrirModalVerificacao(cliente.id, doc.id, true)}
+                                className="h-8"
+                              >
+                                <Check className="w-4 h-4" />
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => handleAbrirModalVerificacao(cliente.id, doc.id, false)}
+                                className="h-8"
+                              >
+                                <X className="w-4 h-4" />
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => handleDownloadDocumento(doc.nome)}
+                                className="h-8"
+                              >
+                                <Download className="w-4 h-4" />
+                              </Button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Botões de Ação */}
+                    <div className="flex flex-col gap-3">
+                      <Button 
+                        variant="outline"
+                        onClick={() => {
+                          setClienteAtual(cliente.id);
+                          setObservacoesPendencia(cliente.observacoes || "");
+                          setObservacoesModalOpen(true);
+                        }}
+                      >
+                        Observações do Escritório
+                      </Button>
+                      <Button 
+                        variant="outline"
+                        onClick={() => {
+                          setClienteAtual(cliente.id);
+                          setRedefinirPrazoModalOpen(true);
+                        }}
+                      >
+                        Redefinir Prazo
+                      </Button>
+                      <Button 
+                        className="w-full"
+                        onClick={() => {
+                          setClienteAtual(cliente.id);
+                          setProtocoladoModalOpen(true);
+                        }}
+                      >
+                        Cliente Protocolado
+                      </Button>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Modal de Verificação de Documento */}
       <Dialog open={verificarModalOpen} onOpenChange={setVerificarModalOpen}>
@@ -425,6 +655,115 @@ export default function EscritorioProcessual() {
               </Button>
               <Button onClick={handleRecusarSolicitacao} className="flex-1">
                 Confirmar Recusa
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Modal de Observações do Escritório (Pendências) */}
+      <Dialog open={observacoesModalOpen} onOpenChange={setObservacoesModalOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Observações do Escritório</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div>
+              <label className="text-sm font-semibold mb-2 block">
+                Observações
+              </label>
+              <Textarea
+                placeholder="Digite as observações importantes sobre a solicitação..."
+                value={observacoesPendencia}
+                onChange={(e) => setObservacoesPendencia(e.target.value)}
+                rows={4}
+              />
+            </div>
+            <div className="flex gap-3 pt-4">
+              <Button variant="outline" onClick={() => setObservacoesModalOpen(false)} className="flex-1">
+                Cancelar
+              </Button>
+              <Button onClick={handleSalvarObservacoes} className="flex-1">
+                Salvar
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Modal de Redefinir Prazo */}
+      <Dialog open={redefinirPrazoModalOpen} onOpenChange={setRedefinirPrazoModalOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Redefinir Prazo</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div>
+              <label className="text-sm font-semibold mb-2 block">
+                Novo Prazo (dias) *
+              </label>
+              <Input
+                type="number"
+                placeholder="Ex: 20"
+                value={novoPrazo}
+                onChange={(e) => setNovoPrazo(e.target.value)}
+                min="1"
+              />
+            </div>
+            <div>
+              <label className="text-sm font-semibold mb-2 block">
+                Motivo da Mudança *
+              </label>
+              <Textarea
+                placeholder="Explique o motivo da mudança de prazo..."
+                value={motivoMudanca}
+                onChange={(e) => setMotivoMudanca(e.target.value)}
+                rows={3}
+              />
+            </div>
+            <div className="flex gap-3 pt-4">
+              <Button variant="outline" onClick={() => setRedefinirPrazoModalOpen(false)} className="flex-1">
+                Cancelar
+              </Button>
+              <Button onClick={handleRedefinirPrazo} className="flex-1">
+                Confirmar
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Modal de Cliente Protocolado */}
+      <Dialog open={protocoladoModalOpen} onOpenChange={setProtocoladoModalOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Cliente Protocolado</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div>
+              <label className="text-sm font-semibold mb-2 block">
+                Documento de Protocolo *
+              </label>
+              <div className="flex items-center gap-2">
+                <Input
+                  type="file"
+                  accept=".pdf,.doc,.docx"
+                  className="flex-1"
+                />
+                <Button size="sm" variant="outline">
+                  <Upload className="w-4 h-4" />
+                </Button>
+              </div>
+              <p className="text-xs text-muted-foreground mt-2">
+                Anexe o documento que comprova o protocolo
+              </p>
+            </div>
+            <div className="flex gap-3 pt-4">
+              <Button variant="outline" onClick={() => setProtocoladoModalOpen(false)} className="flex-1">
+                Cancelar
+              </Button>
+              <Button onClick={handleClienteProtocolado} className="flex-1">
+                Confirmar Protocolo
               </Button>
             </div>
           </div>
