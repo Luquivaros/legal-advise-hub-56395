@@ -413,7 +413,7 @@ export default function SetorAdministrativoClients() {
   const [isEditRegistrationDateLeadsOpen, setIsEditRegistrationDateLeadsOpen] = useState(false);
   const [isEditOriginLeadsOpen, setIsEditOriginLeadsOpen] = useState(false);
   const [editedPhoneLeads, setEditedPhoneLeads] = useState("(11) 95555-5555");
-  const [editedContractTypeLeads, setEditedContractTypeLeads] = useState("veiculo");
+  const [editedContractTypeLeads, setEditedContractTypeLeads] = useState("financiamento_veiculo");
   const [editedRegistrationDateLeads, setEditedRegistrationDateLeads] = useState("2024-02-01T10:00:00Z");
   const [editedOriginLeads, setEditedOriginLeads] = useState("google");
 
@@ -2710,8 +2710,8 @@ export default function SetorAdministrativoClients() {
                 content: <DataGrid data={[
                   { 
                     label: "Tipo de Contrato", 
-                    value: editedContractTypeLeads === "veiculo" ? "Financiamento de Veículo" :
-                           editedContractTypeLeads === "imovel" ? "Financiamento de Imóvel" : "Empréstimo"
+                    value: editedContractTypeLeads === "financiamento_veiculo" ? "Financiamento de Veículo" :
+                           editedContractTypeLeads === "financiamento_imovel" ? "Financiamento de Imóvel" : "Empréstimo"
                   }
                 ]} />,
                 onEdit: () => setIsEditContractTypeLeadsOpen(true)
@@ -2735,8 +2735,7 @@ export default function SetorAdministrativoClients() {
                     value: editedOriginLeads === "facebook" ? "Facebook" :
                            editedOriginLeads === "tv" ? "TV" :
                            editedOriginLeads === "google" ? "Google" :
-                           editedOriginLeads === "instagram" ? "Instagram" :
-                           editedOriginLeads === "indicacao" ? "Indicação" : "Outros"
+                           editedOriginLeads === "instagram" ? "Instagram" : "Outros"
                   }
                 ]} />,
                 onEdit: () => setIsEditOriginLeadsOpen(true)
@@ -2792,8 +2791,8 @@ export default function SetorAdministrativoClients() {
                       <SelectValue placeholder="Selecione o tipo de contrato" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="veiculo">Financiamento de Veículo</SelectItem>
-                      <SelectItem value="imovel">Financiamento de Imóvel</SelectItem>
+                      <SelectItem value="financiamento_veiculo">Financiamento de Veículo</SelectItem>
+                      <SelectItem value="financiamento_imovel">Financiamento de Imóvel</SelectItem>
                       <SelectItem value="emprestimo">Empréstimo</SelectItem>
                     </SelectContent>
                   </Select>
@@ -2814,12 +2813,10 @@ export default function SetorAdministrativoClients() {
                       <SelectValue placeholder="Selecione a origem" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="repique">Repique</SelectItem>
                       <SelectItem value="facebook">Facebook</SelectItem>
-                      <SelectItem value="tv">TV</SelectItem>
                       <SelectItem value="google">Google</SelectItem>
-                      <SelectItem value="indicacao">Indicação</SelectItem>
                       <SelectItem value="instagram">Instagram</SelectItem>
+                      <SelectItem value="tv">TV</SelectItem>
                       <SelectItem value="outros">Outros</SelectItem>
                     </SelectContent>
                   </Select>
@@ -2829,7 +2826,7 @@ export default function SetorAdministrativoClients() {
                 <Button variant="outline" onClick={() => setIsAddClientLeadsOpen(false)}>
                   Cancelar
                 </Button>
-                <Button onClick={handleAddClientLeads} disabled={!newClientNameLeads || !newClientPhoneLeads || !newClientCPFLeads || !newClientContractTypeLeads || !newClientRegistrationDateLeads || !newClientOriginLeads}>
+                <Button onClick={handleAddClientLeads} disabled={!newClientNameLeads || !newClientPhoneLeads || !newClientCPFLeads || !newClientContractTypeLeads || !newClientOriginLeads}>
                   Adicionar
                 </Button>
               </DialogFooter>
@@ -2884,8 +2881,8 @@ export default function SetorAdministrativoClients() {
                       <SelectValue placeholder="Selecione o tipo de contrato" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="veiculo">Financiamento de Veículo</SelectItem>
-                      <SelectItem value="imovel">Financiamento de Imóvel</SelectItem>
+                      <SelectItem value="financiamento_veiculo">Financiamento de Veículo</SelectItem>
+                      <SelectItem value="financiamento_imovel">Financiamento de Imóvel</SelectItem>
                       <SelectItem value="emprestimo">Empréstimo</SelectItem>
                     </SelectContent>
                   </Select>
@@ -2951,10 +2948,9 @@ export default function SetorAdministrativoClients() {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="facebook">Facebook</SelectItem>
-                      <SelectItem value="tv">TV</SelectItem>
                       <SelectItem value="google">Google</SelectItem>
                       <SelectItem value="instagram">Instagram</SelectItem>
-                      <SelectItem value="indicacao">Indicação</SelectItem>
+                      <SelectItem value="tv">TV</SelectItem>
                       <SelectItem value="outros">Outros</SelectItem>
                     </SelectContent>
                   </Select>
