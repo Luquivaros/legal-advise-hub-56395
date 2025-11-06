@@ -18,7 +18,7 @@ const Login = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   
-  const { login } = useAuth();
+  const { login, signUp } = useAuth();
   const navigate = useNavigate();
 
   const roles: { value: UserRole; label: string; icon: any }[] = [
@@ -41,6 +41,27 @@ const Login = () => {
     setIsLoading(true);
     
     const success = await login({
+      email,
+      password,
+      role: role as UserRole,
+      rememberMe
+    });
+    
+    if (success) {
+      navigate('/app/dashboard');
+    }
+    
+    setIsLoading(false);
+  };
+
+  const handleSignUp = async () => {
+    if (!email || !password || !role) {
+      return;
+    }
+    
+    setIsLoading(true);
+    
+    const success = await signUp({
       email,
       password,
       role: role as UserRole,
@@ -178,6 +199,8 @@ const Login = () => {
                   type="button" 
                   variant="outline" 
                   className="w-full h-12 border-primary text-primary hover:bg-primary/5 hover:text-primary"
+                  onClick={handleSignUp}
+                  disabled={isLoading || !email || !password || !role}
                 >
                   Cadastrar-me
                 </Button>

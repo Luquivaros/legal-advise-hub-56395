@@ -8,6 +8,7 @@ interface AuthContextType {
   loading: boolean;
   login: (data: LoginData) => Promise<boolean>;
   logout: () => void;
+  signUp: (data: LoginData) => Promise<boolean>;
   isAuthenticated: boolean;
 }
 
@@ -87,11 +88,48 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const signUp = async (data: LoginData): Promise<boolean> => {
+    try {
+      setLoading(true);
+      const response = await AuthService.signUp(data);
+      
+      if (response.success && response.data) {
+        setUser(response.data.user);
+        localStorage.setItem('currentUser', JSON.stringify(response.data.user));
+        localStorage.setItem('authToken', response.data.token);
+        
+        toast({
+          title: "Cadastro realizado com sucesso!",
+          description: `Bem-vindo(a), ${response.data.user.name}`,
+        });
+        
+        return true;
+      } else {
+        toast({
+          title: "Erro no cadastro",
+          description: response.error || "Não foi possível realizar o cadastro",
+          variant: "destructive",
+        });
+        return false;
+      }
+    } catch (error) {
+      toast({
+        title: "Erro no cadastro",
+        description: "Erro interno do servidor",
+        variant: "destructive",
+      });
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const value = {
     user,
     loading,
     login,
     logout,
+    signUp,
     isAuthenticated: !!user,
   };
 
