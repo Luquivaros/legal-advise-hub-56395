@@ -2,14 +2,15 @@ import { useAuth } from '@/contexts/AuthContext';
 import SetorAdministrativoGov from './gov/SetorAdministrativoGov';
 
 export default function Gov() {
-  const { user } = useAuth();
+  const { setor, loading } = useAuth();
 
-  if (!user) {
-    return null;
+  if (loading) {
+    return <div>Carregando...</div>;
   }
 
-  switch (user.role) {
-    case 'setor-administrativo':
+  switch (setor) {
+    case 'administrativo':
+    case 'master':
       return <SetorAdministrativoGov />;
     default:
       return (

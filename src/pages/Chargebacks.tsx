@@ -5,22 +5,23 @@ import SetorAdministrativoChargebacks from './chargebacks/SetorAdministrativoCha
 import GerenciaChargebacks from './chargebacks/GerenciaChargebacks';
 
 export default function Chargebacks() {
-  const { user } = useAuth();
+  const { setor, loading } = useAuth();
 
-  if (!user) {
+  if (loading) {
     return <div>Carregando...</div>;
   }
 
-  switch (user.role) {
-    case 'supervisor-juridico':
+  switch (setor) {
+    case 'supervisao_juridico':
       return <SupervisorJuridicoChargebacks />;
-    case 'supervisor-comercial':
+    case 'supervisao_comercial':
       return <SupervisorComercialChargebacks />;
-    case 'setor-administrativo':
+    case 'administrativo':
       return <SetorAdministrativoChargebacks />;
     case 'gerencia':
+    case 'master':
       return <GerenciaChargebacks />;
     default:
-      return <div>Acesso não autorizado para chargebacks</div>;
+      return <div className="text-center p-8">Acesso não autorizado para chargebacks.</div>;
   }
 }

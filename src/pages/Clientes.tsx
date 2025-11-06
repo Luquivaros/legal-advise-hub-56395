@@ -7,19 +7,19 @@ import SetorAdministrativoClients from "./clients/SetorAdministrativoClients";
 import PageHeader from "@/components/PageHeader";
 
 export default function Clientes() {
-  const { user } = useAuth();
+  const { setor } = useAuth();
 
-  // Redirecionar baseado no role do usuário
-  switch (user?.role) {
-    case 'consultor-juridico':
+  // Redirecionar baseado no setor do usuário
+  switch (setor) {
+    case 'juridico':
       return <ConsultorJuridicoClients />;
-    case 'consultor-comercial':
+    case 'comercial':
       return <ConsultorComercialClients />;
-    case 'supervisor-juridico':
+    case 'supervisao_juridico':
       return <SupervisorJuridicoClients />;
-    case 'supervisor-comercial':
+    case 'supervisao_comercial':
       return <SupervisorComercialClients />;
-    case 'setor-administrativo':
+    case 'administrativo':
       return <SetorAdministrativoClients />;
     default:
       return (
@@ -28,7 +28,7 @@ export default function Clientes() {
             title="Clientes" 
             subtitle="Gerencie e acompanhe seus clientes e prospects" 
           />
-          <p className="text-muted-foreground">Página de clientes em desenvolvimento...</p>
+          <p className="text-muted-foreground">Acesso não autorizado para este setor.</p>
         </div>
       );
   }

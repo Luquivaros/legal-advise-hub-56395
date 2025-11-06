@@ -6,30 +6,31 @@ import SupervisorComercialDashboard from './dashboards/SupervisorComercialDashbo
 import GerenciaDashboard from './dashboards/GerenciaDashboard';
 
 export default function Dashboard() {
-  const { user } = useAuth();
+  const { setor, loading } = useAuth();
 
-  if (!user) {
+  if (loading) {
     return <div>Carregando...</div>;
   }
 
-  // Renderiza o dashboard específico baseado na função do usuário
-  switch (user.role) {
-    case 'consultor-juridico':
+  // Renderiza o dashboard específico baseado no setor do usuário
+  switch (setor) {
+    case 'juridico':
       return <ConsultorJuridicoDashboard />;
     
-    case 'consultor-comercial':
+    case 'comercial':
       return <ConsultorComercialDashboard />;
     
-    case 'supervisor-juridico':
+    case 'supervisao_juridico':
       return <SupervisorJuridicoDashboard />;
     
-    case 'supervisor-comercial':
+    case 'supervisao_comercial':
       return <SupervisorComercialDashboard />;
     
     case 'gerencia':
+    case 'master':
       return <GerenciaDashboard />;
     
     default:
-      return <ConsultorJuridicoDashboard />; // Fallback padrão
+      return <div className="text-center p-8">Acesso não autorizado para este setor.</div>;
   }
 }

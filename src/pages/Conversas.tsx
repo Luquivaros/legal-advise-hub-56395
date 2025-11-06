@@ -5,20 +5,20 @@ import SupervisorComercialConversas from './conversations/SupervisorComercialCon
 import SupervisorJuridicoConversas from './conversations/SupervisorJuridicoConversas';
 
 export default function Conversas() {
-  const { user } = useAuth();
+  const { setor, loading } = useAuth();
 
-  if (!user) return null;
+  if (loading) return <div>Carregando...</div>;
 
-  switch (user.role) {
-    case 'consultor-comercial':
+  switch (setor) {
+    case 'comercial':
       return <ConsultorComercialConversas />;
-    case 'consultor-juridico':
+    case 'juridico':
       return <ConsultorJuridicoConversas />;
-    case 'supervisor-comercial':
+    case 'supervisao_comercial':
       return <SupervisorComercialConversas />;
-    case 'supervisor-juridico':
+    case 'supervisao_juridico':
       return <SupervisorJuridicoConversas />;
     default:
-      return <div>Acesso não autorizado</div>;
+      return <div className="text-center p-8">Acesso não autorizado para este setor.</div>;
   }
 }

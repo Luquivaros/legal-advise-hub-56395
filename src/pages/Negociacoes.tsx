@@ -6,24 +6,25 @@ import SupervisorJuridicoNegotiations from './negotiations/SupervisorJuridicoNeg
 import GerenciaNegotiations from './negotiations/GerenciaNegotiations';
 
 export default function Negociacoes() {
-  const { user } = useAuth();
+  const { setor, loading } = useAuth();
 
-  if (!user) {
+  if (loading) {
     return <div>Carregando...</div>;
   }
 
-  switch (user.role) {
-    case 'consultor-comercial':
+  switch (setor) {
+    case 'comercial':
       return <ConsultorComercialNegotiations />;
-    case 'consultor-juridico':
+    case 'juridico':
       return <ConsultorJuridicoNegotiations />;
-    case 'supervisor-comercial':
+    case 'supervisao_comercial':
       return <SupervisorComercialNegotiations />;
-    case 'supervisor-juridico':
+    case 'supervisao_juridico':
       return <SupervisorJuridicoNegotiations />;
     case 'gerencia':
+    case 'master':
       return <GerenciaNegotiations />;
     default:
-      return <div>Acesso não autorizado</div>;
+      return <div className="text-center p-8">Acesso não autorizado para negociações.</div>;
   }
 }
