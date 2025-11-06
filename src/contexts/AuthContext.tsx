@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { User, UserRole, LoginData } from '@/types';
-import { supabase } from '@/integrations/supabase/client';
+import { AuthService } from '@/api/services/authService';
 import { useToast } from '@/components/ui/use-toast';
 
 interface AuthContextType {
@@ -8,7 +8,6 @@ interface AuthContextType {
   loading: boolean;
   login: (data: LoginData) => Promise<boolean>;
   logout: () => void;
-  signUp: (data: LoginData) => Promise<boolean>;
   isAuthenticated: boolean;
 }
 
@@ -25,35 +24,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const checkAuthStatus = async () => {
     try {
-      const { data: { user: supabaseUser } } = await supabase.auth.getUser();
-      
-      if (supabaseUser) {
-        // Buscar todos os roles do usuário
-        const { data: userRoles } = await supabase
-          .from('user_roles')
-          .select('role')
-          .eq('user_id', supabaseUser.id);
-
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', supabaseUser.id)
-          .single();
-
-        if (profile && userRoles && userRoles.length > 0) {
-          // Se o usuário tem role master, usar esse
-          const hasMasterRole = userRoles.some(r => r.role === 'master');
-          const role = hasMasterRole ? 'master' : userRoles[0].role;
-          
-          setUser({
-            id: profile.id,
-            name: profile.name,
-            email: profile.email,
-            role: role as UserRole,
-            createdAt: profile.created_at,
-            updatedAt: profile.updated_at,
-          });
-        }
+      const response = await AuthService.getCurrentUser();
+      if (response.success && response.data) {
+        setUser(response.data);
       }
     } catch (error) {
       console.error('Erro ao verificar autenticação:', error);
@@ -65,107 +38,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = async (data: LoginData): Promise<boolean> => {
     try {
       setLoading(true);
+      const response = await AuthService.login(data);
       
-      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
-        email: data.email,
-        password: data.password,
-      });
-
-      if (authError) {
+      if (response.success && response.data) {
+        setUser(response.data.user);
+        localStorage.setItem('currentUser', JSON.stringify(response.data.user));
+        localStorage.setItem('authToken', response.data.token);
+        
+        toast({
+          title: "Login realizado com sucesso!",
+          description: `Bem-vindo(a), ${response.data.user.name}`,
+        });
+        
+        return true;
+      } else {
         toast({
           title: "Erro no login",
-          description: authError.message,
+          description: response.error || "Credenciais inválidas",
           variant: "destructive",
         });
         return false;
       }
-
-      if (authData.user) {
-        // Buscar todos os roles do usuário
-        const { data: userRoles } = await supabase
-          .from('user_roles')
-          .select('role')
-          .eq('user_id', authData.user.id);
-
-        // Se o usuário tem role master, permitir acesso direto
-        const hasMasterRole = userRoles?.some(r => r.role === 'master');
-        
-        if (hasMasterRole) {
-          // Master pode acessar qualquer funcionalidade
-          const masterRole = userRoles?.find(r => r.role === 'master');
-          
-          const { data: profile } = await supabase
-            .from('profiles')
-            .select('*')
-            .eq('id', authData.user.id)
-            .single();
-
-          if (profile && masterRole) {
-            const user: User = {
-              id: profile.id,
-              name: profile.name,
-              email: profile.email,
-              role: 'master' as UserRole,
-              createdAt: profile.created_at,
-              updatedAt: profile.updated_at,
-            };
-
-            setUser(user);
-            
-            toast({
-              title: "Login realizado com sucesso!",
-              description: `Bem-vindo(a), ${user.name} (Acesso Master)`,
-            });
-            
-            return true;
-          }
-        }
-
-        // Para usuários não-master, verificar se o role corresponde ao selecionado
-        const selectedRoleExists = userRoles?.some(r => r.role === data.role);
-        
-        if (!selectedRoleExists) {
-          await supabase.auth.signOut();
-          toast({
-            title: "Erro no login",
-            description: "Role selecionado não corresponde ao usuário",
-            variant: "destructive",
-          });
-          return false;
-        }
-
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', authData.user.id)
-          .single();
-
-        if (profile) {
-          const selectedRole = userRoles?.find(r => r.role === data.role);
-          
-          if (selectedRole) {
-            const user: User = {
-              id: profile.id,
-              name: profile.name,
-              email: profile.email,
-              role: selectedRole.role as UserRole,
-              createdAt: profile.created_at,
-              updatedAt: profile.updated_at,
-            };
-
-            setUser(user);
-            
-            toast({
-              title: "Login realizado com sucesso!",
-              description: `Bem-vindo(a), ${user.name}`,
-            });
-            
-            return true;
-          }
-        }
-      }
-
-      return false;
     } catch (error) {
       toast({
         title: "Erro no login",
@@ -180,8 +73,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = async () => {
     try {
-      await supabase.auth.signOut();
+      await AuthService.logout();
       setUser(null);
+      localStorage.removeItem('currentUser');
+      localStorage.removeItem('authToken');
       
       toast({
         title: "Logout realizado com sucesso",
@@ -192,93 +87,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const signUp = async (data: LoginData): Promise<boolean> => {
-    try {
-      setLoading(true);
-      
-      const { data: authData, error: authError } = await supabase.auth.signUp({
-        email: data.email,
-        password: data.password,
-        options: {
-          data: {
-            name: data.email.split('@')[0],
-          }
-        }
-      });
-
-      if (authError) {
-        toast({
-          title: "Erro no cadastro",
-          description: authError.message,
-          variant: "destructive",
-        });
-        return false;
-      }
-
-      if (authData.user) {
-        // Criar o role do usuário
-        const { error: roleError } = await supabase
-          .from('user_roles')
-          .insert([{
-            user_id: authData.user.id,
-            role: data.role,
-          }]);
-
-        if (roleError) {
-          toast({
-            title: "Erro no cadastro",
-            description: "Erro ao atribuir role ao usuário",
-            variant: "destructive",
-          });
-          return false;
-        }
-
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', authData.user.id)
-          .single();
-
-        if (profile) {
-          const user: User = {
-            id: profile.id,
-            name: profile.name,
-            email: profile.email,
-            role: data.role,
-            createdAt: profile.created_at,
-            updatedAt: profile.updated_at,
-          };
-
-          setUser(user);
-          
-          toast({
-            title: "Cadastro realizado com sucesso!",
-            description: `Bem-vindo(a), ${user.name}`,
-          });
-          
-          return true;
-        }
-      }
-
-      return false;
-    } catch (error) {
-      toast({
-        title: "Erro no cadastro",
-        description: "Erro interno do servidor",
-        variant: "destructive",
-      });
-      return false;
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const value = {
     user,
     loading,
     login,
     logout,
-    signUp,
     isAuthenticated: !!user,
   };
 

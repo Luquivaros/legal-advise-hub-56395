@@ -18,7 +18,7 @@ const Login = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   
-  const { login, signUp } = useAuth();
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   const roles: { value: UserRole; label: string; icon: any }[] = [
@@ -28,58 +28,19 @@ const Login = () => {
     { value: "setor-administrativo", label: "Setor Administrativo", icon: Building },
     { value: "consultor-comercial", label: "Consultor Comercial", icon: User },
     { value: "gerencia", label: "Gerência", icon: Crown },
-    { value: "escritorio-processual", label: "Escritório Processual", icon: Building },
-    { value: "escritorio-audiencias", label: "Escritório Audiências", icon: Building },
+    { value: "escritorio", label: "Escritório", icon: Building },
   ];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    setIsLoading(true);
-    
-    // Primeiro, tentar login como master (sem role selecionado)
-    const masterSuccess = await login({
-      email,
-      password,
-      role: 'master' as UserRole,
-      rememberMe
-    });
-    
-    if (masterSuccess) {
-      navigate('/app/dashboard');
-      setIsLoading(false);
-      return;
-    }
-    
-    // Se não for master, verificar se role foi selecionado
     if (!role) {
-      setIsLoading(false);
-      return;
-    }
-    
-    // Tentar login com role selecionado
-    const success = await login({
-      email,
-      password,
-      role: role as UserRole,
-      rememberMe
-    });
-    
-    if (success) {
-      navigate('/app/dashboard');
-    }
-    
-    setIsLoading(false);
-  };
-
-  const handleSignUp = async () => {
-    if (!email || !password || !role) {
       return;
     }
     
     setIsLoading(true);
     
-    const success = await signUp({
+    const success = await login({
       email,
       password,
       role: role as UserRole,
@@ -156,35 +117,33 @@ const Login = () => {
                 />
               </div>
 
-              {/* Role Selection - Esconder para usuários master */}
-              {email !== 'master@empresa.com' && (
-                <div className="space-y-3">
-                  <Label className="text-sm font-medium text-foreground">Função</Label>
-                  <RadioGroup value={role} onValueChange={(value) => setRole(value as UserRole)} className="space-y-3" required>
-                    <div className="grid grid-cols-2 gap-3">
-                      {roles.map((roleOption) => {
-                        const IconComponent = roleOption.icon;
-                        return (
-                          <div key={roleOption.value} className="flex items-center space-x-2">
-                            <RadioGroupItem 
-                              value={roleOption.value} 
-                              id={roleOption.value}
-                              className="text-primary"
-                            />
-                            <Label 
-                              htmlFor={roleOption.value} 
-                              className="text-sm cursor-pointer flex items-center gap-2"
-                            >
-                              <IconComponent className="w-4 h-4" />
-                              {roleOption.label}
-                            </Label>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </RadioGroup>
-                </div>
-              )}
+              {/* Role Selection */}
+              <div className="space-y-3">
+                <Label className="text-sm font-medium text-foreground">Função</Label>
+                <RadioGroup value={role} onValueChange={(value) => setRole(value as UserRole)} className="space-y-3" required>
+                  <div className="grid grid-cols-2 gap-3">
+                    {roles.map((roleOption) => {
+                      const IconComponent = roleOption.icon;
+                      return (
+                        <div key={roleOption.value} className="flex items-center space-x-2">
+                          <RadioGroupItem 
+                            value={roleOption.value} 
+                            id={roleOption.value}
+                            className="text-primary"
+                          />
+                          <Label 
+                            htmlFor={roleOption.value} 
+                            className="text-sm cursor-pointer flex items-center gap-2"
+                          >
+                            <IconComponent className="w-4 h-4" />
+                            {roleOption.label}
+                          </Label>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </RadioGroup>
+              </div>
 
               {/* Remember Me and Forgot Password */}
               <div className="flex items-center justify-between">
@@ -208,19 +167,17 @@ const Login = () => {
 
               {/* Login and Register Buttons */}
               <div className="space-y-3">
-              <Button 
-                type="submit" 
-                className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground"
-                disabled={isLoading || !email || !password}
-              >
-                {isLoading ? "Entrando..." : "Login"}
-              </Button>
+                <Button 
+                  type="submit" 
+                  className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground"
+                  disabled={isLoading || !email || !password || !role}
+                >
+                  {isLoading ? "Entrando..." : "Login"}
+                </Button>
                 <Button 
                   type="button" 
                   variant="outline" 
                   className="w-full h-12 border-primary text-primary hover:bg-primary/5 hover:text-primary"
-                  onClick={handleSignUp}
-                  disabled={isLoading || !email || !password || !role}
                 >
                   Cadastrar-me
                 </Button>
