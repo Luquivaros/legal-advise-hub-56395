@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { User, UserRole, LoginData } from '@/types';
-import { AuthService } from '@/api/services/authService';
+import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
 
 interface AuthContextType {
@@ -25,9 +25,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const checkAuthStatus = async () => {
     try {
-      const response = await AuthService.getCurrentUser();
-      if (response.success && response.data) {
-        setUser(response.data);
+      const { data: { user: supabaseUser } } = await supabase.auth.getUser();
+      
+      if (supabaseUser) {
+        // Buscar o role do usuário
+        const { data: userRoles } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', supabaseUser.id)
+          .single();
+
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', supabaseUser.id)
+          .single();
+
+        if (profile && userRoles) {
+          setUser({
+            id: profile.id,
+            name: profile.name,
+            email: profile.email,
+            role: userRoles.role as UserRole,
+            createdAt: profile.created_at,
+            updatedAt: profile.updated_at,
+          });
+        }
       }
     } catch (error) {
       console.error('Erro ao verificar autenticação:', error);
@@ -39,27 +62,68 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = async (data: LoginData): Promise<boolean> => {
     try {
       setLoading(true);
-      const response = await AuthService.login(data);
       
-      if (response.success && response.data) {
-        setUser(response.data.user);
-        localStorage.setItem('currentUser', JSON.stringify(response.data.user));
-        localStorage.setItem('authToken', response.data.token);
-        
-        toast({
-          title: "Login realizado com sucesso!",
-          description: `Bem-vindo(a), ${response.data.user.name}`,
-        });
-        
-        return true;
-      } else {
+      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+        email: data.email,
+        password: data.password,
+      });
+
+      if (authError) {
         toast({
           title: "Erro no login",
-          description: response.error || "Credenciais inválidas",
+          description: authError.message,
           variant: "destructive",
         });
         return false;
       }
+
+      if (authData.user) {
+        // Buscar o role do usuário
+        const { data: userRoles } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', authData.user.id)
+          .single();
+
+        // Verificar se o role corresponde ao selecionado
+        if (!userRoles || userRoles.role !== data.role) {
+          await supabase.auth.signOut();
+          toast({
+            title: "Erro no login",
+            description: "Role selecionado não corresponde ao usuário",
+            variant: "destructive",
+          });
+          return false;
+        }
+
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', authData.user.id)
+          .single();
+
+        if (profile) {
+          const user: User = {
+            id: profile.id,
+            name: profile.name,
+            email: profile.email,
+            role: userRoles.role as UserRole,
+            createdAt: profile.created_at,
+            updatedAt: profile.updated_at,
+          };
+
+          setUser(user);
+          
+          toast({
+            title: "Login realizado com sucesso!",
+            description: `Bem-vindo(a), ${user.name}`,
+          });
+          
+          return true;
+        }
+      }
+
+      return false;
     } catch (error) {
       toast({
         title: "Erro no login",
@@ -74,10 +138,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = async () => {
     try {
-      await AuthService.logout();
+      await supabase.auth.signOut();
       setUser(null);
-      localStorage.removeItem('currentUser');
-      localStorage.removeItem('authToken');
       
       toast({
         title: "Logout realizado com sucesso",
@@ -91,27 +153,72 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signUp = async (data: LoginData): Promise<boolean> => {
     try {
       setLoading(true);
-      const response = await AuthService.signUp(data);
       
-      if (response.success && response.data) {
-        setUser(response.data.user);
-        localStorage.setItem('currentUser', JSON.stringify(response.data.user));
-        localStorage.setItem('authToken', response.data.token);
-        
-        toast({
-          title: "Cadastro realizado com sucesso!",
-          description: `Bem-vindo(a), ${response.data.user.name}`,
-        });
-        
-        return true;
-      } else {
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email: data.email,
+        password: data.password,
+        options: {
+          data: {
+            name: data.email.split('@')[0],
+          }
+        }
+      });
+
+      if (authError) {
         toast({
           title: "Erro no cadastro",
-          description: response.error || "Não foi possível realizar o cadastro",
+          description: authError.message,
           variant: "destructive",
         });
         return false;
       }
+
+      if (authData.user) {
+        // Criar o role do usuário
+        const { error: roleError } = await supabase
+          .from('user_roles')
+          .insert([{
+            user_id: authData.user.id,
+            role: data.role,
+          }]);
+
+        if (roleError) {
+          toast({
+            title: "Erro no cadastro",
+            description: "Erro ao atribuir role ao usuário",
+            variant: "destructive",
+          });
+          return false;
+        }
+
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', authData.user.id)
+          .single();
+
+        if (profile) {
+          const user: User = {
+            id: profile.id,
+            name: profile.name,
+            email: profile.email,
+            role: data.role,
+            createdAt: profile.created_at,
+            updatedAt: profile.updated_at,
+          };
+
+          setUser(user);
+          
+          toast({
+            title: "Cadastro realizado com sucesso!",
+            description: `Bem-vindo(a), ${user.name}`,
+          });
+          
+          return true;
+        }
+      }
+
+      return false;
     } catch (error) {
       toast({
         title: "Erro no cadastro",

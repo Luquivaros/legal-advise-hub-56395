@@ -65,7 +65,7 @@ export const mockUsers: User[] = [
     id: '7',
     email: 'escritorio@empresa.com',
     name: 'Ricardo Almeida',
-    role: 'escritorio',
+    role: 'escritorio-processual',
     createdAt: '2024-01-01T07:00:00Z',
     updatedAt: '2024-12-01T20:00:00Z'
   }
