@@ -105,29 +105,7 @@ export type Database = {
           tipo_contrato?: Database["public"]["Enums"]["tipo_contrato"]
           updated_at?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "clientes_assigned_by_fkey"
-            columns: ["assigned_by"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "clientes_assigned_to_fkey"
-            columns: ["assigned_to"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "clientes_created_by_fkey"
-            columns: ["created_by"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       negociacoes: {
         Row: {
@@ -169,13 +147,6 @@ export type Database = {
             columns: ["cliente_id"]
             isOneToOne: true
             referencedRelation: "clientes"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "negociacoes_consultor_id_fkey"
-            columns: ["consultor_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -231,7 +202,7 @@ export type Database = {
     }
     Functions: {
       get_user_setor: {
-        Args: { user_id: string }
+        Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["setor_type"]
       }
       has_setor: {

@@ -36,7 +36,6 @@ const Login = () => {
     { value: "juridico", label: "Jurídico", icon: Scale },
     { value: "supervisao_juridico", label: "Supervisão Jurídico", icon: UserCog },
     { value: "gerencia", label: "Gerência", icon: Crown },
-    { value: "processual", label: "Processual", icon: Briefcase },
     { value: "master", label: "Master", icon: ShieldCheck },
   ];
 

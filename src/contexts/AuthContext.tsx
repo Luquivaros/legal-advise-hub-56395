@@ -112,7 +112,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       setLoading(true);
       
-      // 1. Criar o usuário
+      // 1. Criar o usuário com auto-confirm
       const { data: signupData, error: signupError } = await supabase.auth.signUp({
         email,
         password,
@@ -126,27 +126,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       
       if (signupError) throw signupError;
       
-      if (!signupData.user) {
+      if (!signupData.user || !signupData.session) {
         throw new Error('Usuário não foi criado');
       }
       
-      // 2. Fazer login para garantir que auth.uid() está disponível
-      const { data: loginData, error: loginError } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-      
-      if (loginError) throw loginError;
-      
-      if (!loginData.user) {
-        throw new Error('Não foi possível fazer login');
-      }
-      
-      // 3. Agora que estamos autenticados, inserir o setor
+      // 2. Inserir o setor (usuário já está autenticado após signup)
       const { error: roleError } = await supabase
         .from('user_roles')
         .insert({
-          user_id: loginData.user.id,
+          user_id: signupData.user.id,
           setor: setor,
         });
       
@@ -155,11 +143,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         throw new Error(`Não foi possível atribuir o setor: ${roleError.message}`);
       }
       
-      // 4. Verificar se o insert foi bem-sucedido
+      // 3. Buscar o setor inserido
       const { data: roleData, error: roleCheckError } = await supabase
         .from('user_roles')
         .select('setor')
-        .eq('user_id', loginData.user.id)
+        .eq('user_id', signupData.user.id)
         .single();
       
       if (roleCheckError || !roleData) {
@@ -167,8 +155,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         throw new Error('Setor não foi salvo corretamente');
       }
       
-      // 5. Definir estado
-      setUser(loginData.user);
+      // 4. Definir estado
+      setUser(signupData.user);
       setSetor(roleData.setor);
       
       toast({
