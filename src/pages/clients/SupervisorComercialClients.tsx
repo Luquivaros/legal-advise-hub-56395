@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PageHeader from "@/components/PageHeader";
+import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -40,68 +41,75 @@ export default function SupervisorComercialClients() {
   const [newSearchTerm, setNewSearchTerm] = useState('');
   const [showConsultorModal, setShowConsultorModal] = useState(false);
   const [selectedConsultor, setSelectedConsultor] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
 
   // Estado para repiques
-  const [repiqueClients, setRepiqueClients] = useState<RepiqueClient[]>([
-    {
-      id: "1",
-      name: "João Silva",
-      phone: "(11) 99999-9999",
-      lastContact: "15/12/2024 - 14:30",
-      origin: "Repique",
-      observation: "Cliente interessado em renegociação. Aguardando retorno da proposta.",
-      selected: false
-    },
-    {
-      id: "2",
-      name: "Maria Santos",
-      phone: "(11) 88888-8888",
-      lastContact: "14/12/2024 - 16:45",
-      origin: "Repique",
-      observation: "Primeira abordagem realizada. Cliente demonstrou interesse.",
-      selected: false
-    },
-    {
-      id: "3",
-      name: "Carlos Oliveira",
-      phone: "(11) 77777-7777",
-      lastContact: "13/12/2024 - 10:15",
-      origin: "Repique",
-      observation: "Cliente solicitou nova proposta com condições diferenciadas.",
-      selected: false
-    },
-    {
-      id: "4",
-      name: "Ana Costa",
-      phone: "(11) 66666-6666",
-      lastContact: "12/12/2024 - 15:20",
-      origin: "Repique",
-      observation: "Interessada em parcelamento. Aguardando análise de crédito.",
-      selected: false
-    }
-  ]);
+  const [repiqueClients, setRepiqueClients] = useState<RepiqueClient[]>([]);
 
   // Estado para novos clientes
-  const [newClients, setNewClients] = useState<NewClient[]>([
-    {
-      id: "1",
-      name: "Carlos Oliveira",
-      phone: "(11) 77777-7777",
-      origem: "Facebook",
-      tipo: "Financiamento",
-      dataCadastro: "23/09/2024",
-      selected: false
-    },
-    {
-      id: "2",
-      name: "Empresa XYZ Ltda",
-      phone: "(11) 66666-6666",
-      origem: "Google",
-      tipo: "Empréstimo",
-      dataCadastro: "22/09/2024",
-      selected: false
-    }
-  ]);
+  const [newClients, setNewClients] = useState<NewClient[]>([]);
+
+  // Buscar leads recebidos do banco de dados
+  useEffect(() => {
+    const fetchLeads = async () => {
+      try {
+        setIsLoading(true);
+        const { data, error } = await supabase
+          .from('clientes')
+          .select('*')
+          .eq('status', 'lead_recebido')
+          .order('created_at', { ascending: false });
+
+        if (error) {
+          console.error("Erro ao buscar leads:", error);
+          toast.error("Erro ao buscar leads");
+          return;
+        }
+
+        if (data) {
+          // Mapear os dados do banco para o formato esperado
+          const formattedClients: NewClient[] = data.map(client => ({
+            id: client.id,
+            name: client.nome,
+            phone: client.telefone,
+            origem: client.origem,
+            tipo: client.tipo_contrato,
+            dataCadastro: new Date(client.data_cadastro).toLocaleDateString('pt-BR'),
+            selected: false
+          }));
+          
+          setNewClients(formattedClients);
+        }
+      } catch (error) {
+        console.error("Erro ao buscar leads:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchLeads();
+
+    // Subscrever a mudanças na tabela de clientes
+    const subscription = supabase
+      .channel('clientes_changes')
+      .on('postgres_changes', 
+        { 
+          event: '*', 
+          schema: 'public', 
+          table: 'clientes',
+          filter: 'status=eq.lead_recebido'
+        }, 
+        (payload) => {
+          console.log('Mudança detectada:', payload);
+          fetchLeads();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
 
   const repiqueSelectedCount = repiqueClients.filter(c => c.selected).length;
   const newSelectedCount = newClients.filter(c => c.selected).length;

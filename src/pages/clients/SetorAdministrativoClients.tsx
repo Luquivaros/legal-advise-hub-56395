@@ -1,6 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PageHeader from "@/components/PageHeader";
 import { ClientFilterMenu, ClientFilter } from "@/components/ClientFilterMenu";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
+import { toast } from "sonner";
 import { UniversalCard, DocumentList, DataGrid, NotesList } from "@/components/reusable/UniversalCard";
 import { FileText, User, History, Scale, Package, Paperclip, CreditCard, Search, UserPlus, Users, ClipboardCheck, Tag, Phone, Check, X, MessageSquare, Send } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -415,22 +418,54 @@ export default function SetorAdministrativoClients() {
   const [editedOriginLeads, setEditedOriginLeads] = useState("google");
 
   // Leads Recebidos handlers
-  const handleAddClientLeads = () => {
-    console.log("Adicionar cliente leads:", { 
-      newClientNameLeads, 
-      newClientPhoneLeads, 
-      newClientCPFLeads,
-      newClientOriginLeads,
-      newClientContractTypeLeads,
-      newClientRegistrationDateLeads
-    });
-    setIsAddClientLeadsOpen(false);
-    setNewClientNameLeads("");
-    setNewClientPhoneLeads("");
-    setNewClientCPFLeads("");
-    setNewClientContractTypeLeads("");
-    setNewClientRegistrationDateLeads("");
-    setNewClientOriginLeads("");
+  const handleAddClientLeads = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        toast.error("Usuário não autenticado");
+        return;
+      }
+
+      // Validação dos campos
+      if (!newClientNameLeads || !newClientPhoneLeads || !newClientCPFLeads || !newClientContractTypeLeads || !newClientOriginLeads) {
+        toast.error("Preencha todos os campos obrigatórios");
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from('clientes')
+        .insert({
+          cpf: newClientCPFLeads,
+          nome: newClientNameLeads,
+          telefone: newClientPhoneLeads,
+          tipo_contrato: newClientContractTypeLeads as any,
+          origem: newClientOriginLeads as any,
+          data_cadastro: newClientRegistrationDateLeads || new Date().toISOString().split('T')[0],
+          status: 'lead_recebido' as any,
+          created_by: user.id
+        })
+        .select()
+        .single();
+
+      if (error) {
+        console.error("Erro ao adicionar lead:", error);
+        toast.error("Erro ao adicionar lead: " + error.message);
+        return;
+      }
+
+      toast.success("Lead adicionado com sucesso!");
+      setIsAddClientLeadsOpen(false);
+      setNewClientNameLeads("");
+      setNewClientPhoneLeads("");
+      setNewClientCPFLeads("");
+      setNewClientContractTypeLeads("");
+      setNewClientRegistrationDateLeads("");
+      setNewClientOriginLeads("");
+    } catch (error) {
+      console.error("Erro ao adicionar lead:", error);
+      toast.error("Erro ao adicionar lead");
+    }
   };
 
   const handleSavePhoneLeads = () => {
