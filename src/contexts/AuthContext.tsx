@@ -28,12 +28,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const { data: { user: supabaseUser } } = await supabase.auth.getUser();
       
       if (supabaseUser) {
-        // Buscar o role do usuário
+        // Buscar todos os roles do usuário
         const { data: userRoles } = await supabase
           .from('user_roles')
           .select('role')
-          .eq('user_id', supabaseUser.id)
-          .single();
+          .eq('user_id', supabaseUser.id);
 
         const { data: profile } = await supabase
           .from('profiles')
@@ -41,12 +40,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           .eq('id', supabaseUser.id)
           .single();
 
-        if (profile && userRoles) {
+        if (profile && userRoles && userRoles.length > 0) {
+          // Se o usuário tem role master, usar esse
+          const hasMasterRole = userRoles.some(r => r.role === 'master');
+          const role = hasMasterRole ? 'master' : userRoles[0].role;
+          
           setUser({
             id: profile.id,
             name: profile.name,
             email: profile.email,
-            role: userRoles.role as UserRole,
+            role: role as UserRole,
             createdAt: profile.created_at,
             updatedAt: profile.updated_at,
           });
@@ -78,15 +81,50 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
 
       if (authData.user) {
-        // Buscar o role do usuário
+        // Buscar todos os roles do usuário
         const { data: userRoles } = await supabase
           .from('user_roles')
           .select('role')
-          .eq('user_id', authData.user.id)
-          .single();
+          .eq('user_id', authData.user.id);
 
-        // Verificar se o role corresponde ao selecionado
-        if (!userRoles || userRoles.role !== data.role) {
+        // Se o usuário tem role master, permitir acesso direto
+        const hasMasterRole = userRoles?.some(r => r.role === 'master');
+        
+        if (hasMasterRole) {
+          // Master pode acessar qualquer funcionalidade
+          const masterRole = userRoles?.find(r => r.role === 'master');
+          
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', authData.user.id)
+            .single();
+
+          if (profile && masterRole) {
+            const user: User = {
+              id: profile.id,
+              name: profile.name,
+              email: profile.email,
+              role: 'master' as UserRole,
+              createdAt: profile.created_at,
+              updatedAt: profile.updated_at,
+            };
+
+            setUser(user);
+            
+            toast({
+              title: "Login realizado com sucesso!",
+              description: `Bem-vindo(a), ${user.name} (Acesso Master)`,
+            });
+            
+            return true;
+          }
+        }
+
+        // Para usuários não-master, verificar se o role corresponde ao selecionado
+        const selectedRoleExists = userRoles?.some(r => r.role === data.role);
+        
+        if (!selectedRoleExists) {
           await supabase.auth.signOut();
           toast({
             title: "Erro no login",
@@ -103,23 +141,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           .single();
 
         if (profile) {
-          const user: User = {
-            id: profile.id,
-            name: profile.name,
-            email: profile.email,
-            role: userRoles.role as UserRole,
-            createdAt: profile.created_at,
-            updatedAt: profile.updated_at,
-          };
+          const selectedRole = userRoles?.find(r => r.role === data.role);
+          
+          if (selectedRole) {
+            const user: User = {
+              id: profile.id,
+              name: profile.name,
+              email: profile.email,
+              role: selectedRole.role as UserRole,
+              createdAt: profile.created_at,
+              updatedAt: profile.updated_at,
+            };
 
-          setUser(user);
-          
-          toast({
-            title: "Login realizado com sucesso!",
-            description: `Bem-vindo(a), ${user.name}`,
-          });
-          
-          return true;
+            setUser(user);
+            
+            toast({
+              title: "Login realizado com sucesso!",
+              description: `Bem-vindo(a), ${user.name}`,
+            });
+            
+            return true;
+          }
         }
       }
 

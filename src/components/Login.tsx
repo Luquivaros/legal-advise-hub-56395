@@ -35,12 +35,29 @@ const Login = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!role) {
+    setIsLoading(true);
+    
+    // Primeiro, tentar login como master (sem role selecionado)
+    const masterSuccess = await login({
+      email,
+      password,
+      role: 'master' as UserRole,
+      rememberMe
+    });
+    
+    if (masterSuccess) {
+      navigate('/app/dashboard');
+      setIsLoading(false);
       return;
     }
     
-    setIsLoading(true);
+    // Se não for master, verificar se role foi selecionado
+    if (!role) {
+      setIsLoading(false);
+      return;
+    }
     
+    // Tentar login com role selecionado
     const success = await login({
       email,
       password,
@@ -189,13 +206,13 @@ const Login = () => {
 
               {/* Login and Register Buttons */}
               <div className="space-y-3">
-                <Button 
-                  type="submit" 
-                  className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground"
-                  disabled={isLoading || !email || !password || !role}
-                >
-                  {isLoading ? "Entrando..." : "Login"}
-                </Button>
+              <Button 
+                type="submit" 
+                className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground"
+                disabled={isLoading || !email || !password}
+              >
+                {isLoading ? "Entrando..." : "Login"}
+              </Button>
                 <Button 
                   type="button" 
                   variant="outline" 
