@@ -14,16 +14,252 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      calculos_revisionais: {
+        Row: {
+          cliente_id: string
+          created_at: string
+          dados_calculo: Json
+          id: string
+          negociacao_id: string
+          resultado: Json | null
+          updated_at: string
+        }
+        Insert: {
+          cliente_id: string
+          created_at?: string
+          dados_calculo: Json
+          id?: string
+          negociacao_id: string
+          resultado?: Json | null
+          updated_at?: string
+        }
+        Update: {
+          cliente_id?: string
+          created_at?: string
+          dados_calculo?: Json
+          id?: string
+          negociacao_id?: string
+          resultado?: Json | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "calculos_revisionais_cliente_id_fkey"
+            columns: ["cliente_id"]
+            isOneToOne: false
+            referencedRelation: "clientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "calculos_revisionais_negociacao_id_fkey"
+            columns: ["negociacao_id"]
+            isOneToOne: false
+            referencedRelation: "negociacoes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      clientes: {
+        Row: {
+          assigned_by: string | null
+          assigned_to: string | null
+          cpf: string
+          created_at: string
+          created_by: string | null
+          data_cadastro: string
+          id: string
+          nome: string
+          origem: Database["public"]["Enums"]["origem_lead"]
+          status: Database["public"]["Enums"]["status_cliente"]
+          telefone: string
+          tipo_contrato: Database["public"]["Enums"]["tipo_contrato"]
+          updated_at: string
+        }
+        Insert: {
+          assigned_by?: string | null
+          assigned_to?: string | null
+          cpf: string
+          created_at?: string
+          created_by?: string | null
+          data_cadastro?: string
+          id?: string
+          nome: string
+          origem: Database["public"]["Enums"]["origem_lead"]
+          status?: Database["public"]["Enums"]["status_cliente"]
+          telefone: string
+          tipo_contrato: Database["public"]["Enums"]["tipo_contrato"]
+          updated_at?: string
+        }
+        Update: {
+          assigned_by?: string | null
+          assigned_to?: string | null
+          cpf?: string
+          created_at?: string
+          created_by?: string | null
+          data_cadastro?: string
+          id?: string
+          nome?: string
+          origem?: Database["public"]["Enums"]["origem_lead"]
+          status?: Database["public"]["Enums"]["status_cliente"]
+          telefone?: string
+          tipo_contrato?: Database["public"]["Enums"]["tipo_contrato"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clientes_assigned_by_fkey"
+            columns: ["assigned_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clientes_assigned_to_fkey"
+            columns: ["assigned_to"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clientes_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      negociacoes: {
+        Row: {
+          cliente_id: string
+          consultor_id: string
+          created_at: string
+          horario_agendado: string | null
+          id: string
+          observacoes: string | null
+          status: string
+          updated_at: string
+          valor_cobrado: number | null
+        }
+        Insert: {
+          cliente_id: string
+          consultor_id: string
+          created_at?: string
+          horario_agendado?: string | null
+          id?: string
+          observacoes?: string | null
+          status?: string
+          updated_at?: string
+          valor_cobrado?: number | null
+        }
+        Update: {
+          cliente_id?: string
+          consultor_id?: string
+          created_at?: string
+          horario_agendado?: string | null
+          id?: string
+          observacoes?: string | null
+          status?: string
+          updated_at?: string
+          valor_cobrado?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "negociacoes_cliente_id_fkey"
+            columns: ["cliente_id"]
+            isOneToOne: true
+            referencedRelation: "clientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "negociacoes_consultor_id_fkey"
+            columns: ["consultor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id: string
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role:
+        | "setor-administrativo"
+        | "supervisor-comercial"
+        | "consultor-comercial"
+        | "consultor-juridico"
+        | "supervisor-juridico"
+        | "gerencia"
+        | "escritorio-processual"
+        | "escritorio-audiencias"
+      origem_lead: "facebook" | "google" | "instagram" | "tv" | "outros"
+      status_cliente:
+        | "lead_recebido"
+        | "aguardando_designacao"
+        | "designado"
+        | "em_negociacao"
+        | "contrato_assinado"
+        | "cancelado"
+      tipo_contrato:
+        | "financiamento_veiculo"
+        | "financiamento_imovel"
+        | "emprestimo"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +386,31 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: [
+        "setor-administrativo",
+        "supervisor-comercial",
+        "consultor-comercial",
+        "consultor-juridico",
+        "supervisor-juridico",
+        "gerencia",
+        "escritorio-processual",
+        "escritorio-audiencias",
+      ],
+      origem_lead: ["facebook", "google", "instagram", "tv", "outros"],
+      status_cliente: [
+        "lead_recebido",
+        "aguardando_designacao",
+        "designado",
+        "em_negociacao",
+        "contrato_assinado",
+        "cancelado",
+      ],
+      tipo_contrato: [
+        "financiamento_veiculo",
+        "financiamento_imovel",
+        "emprestimo",
+      ],
+    },
   },
 } as const
