@@ -248,6 +248,7 @@ export type Database = {
         | "gerencia"
         | "escritorio-processual"
         | "escritorio-audiencias"
+        | "master"
       origem_lead: "facebook" | "google" | "instagram" | "tv" | "outros"
       status_cliente:
         | "lead_recebido"
@@ -396,6 +397,7 @@ export const Constants = {
         "gerencia",
         "escritorio-processual",
         "escritorio-audiencias",
+        "master",
       ],
       origem_lead: ["facebook", "google", "instagram", "tv", "outros"],
       status_cliente: [
