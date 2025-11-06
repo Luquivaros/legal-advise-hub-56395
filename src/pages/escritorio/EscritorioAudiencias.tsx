@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
 import { Users, Calendar, CheckCircle2, Download, X, Check, FileText } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -61,16 +63,38 @@ const mockClientes = [
 export default function EscritorioAudiencias() {
   const { toast } = useToast();
   const [clientes, setClientes] = useState(mockClientes);
-  const [observacoes, setObservacoes] = useState<{ [key: string]: string }>({});
-  const [modalOpen, setModalOpen] = useState<{ [key: string]: boolean }>({});
+  const [verificarModalOpen, setVerificarModalOpen] = useState<{ clienteId: string; docId: string; tipo: 'ok' | 'x' } | null>(null);
+  const [motivoRejeicao, setMotivoRejeicao] = useState<string>("");
+  const [aceitarModalOpen, setAceitarModalOpen] = useState<string | null>(null);
+  const [recusarModalOpen, setRecusarModalOpen] = useState<string | null>(null);
+  const [prazoRetorno, setPrazoRetorno] = useState<string>("");
+  const [observacoesRejeicao, setObservacoesRejeicao] = useState<string>("");
 
-  const handleVerificarDocumento = (clienteId: string, docId: string) => {
+  const handleAbrirModalVerificacao = (clienteId: string, docId: string, tipo: 'ok' | 'x') => {
+    setVerificarModalOpen({ clienteId, docId, tipo });
+    setMotivoRejeicao("");
+  };
+
+  const handleConfirmarVerificacao = () => {
+    if (!verificarModalOpen) return;
+    
+    if (verificarModalOpen.tipo === 'x' && !motivoRejeicao) {
+      toast({
+        title: "Atenção",
+        description: "Por favor, selecione o motivo da rejeição.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const { clienteId, docId, tipo } = verificarModalOpen;
+    
     setClientes(prev => prev.map(cliente => {
       if (cliente.id === clienteId) {
         return {
           ...cliente,
           documentos: cliente.documentos.map(doc => 
-            doc.id === docId ? { ...doc, verificado: !doc.verificado } : doc
+            doc.id === docId ? { ...doc, verificado: tipo === 'ok' } : doc
           )
         };
       }
@@ -78,9 +102,14 @@ export default function EscritorioAudiencias() {
     }));
     
     toast({
-      title: "Documento verificado",
-      description: "Status do documento atualizado com sucesso.",
+      title: tipo === 'ok' ? "Documento aprovado" : "Documento rejeitado",
+      description: tipo === 'ok' 
+        ? "Documento verificado com sucesso." 
+        : `Documento rejeitado: ${motivoRejeicao}`,
     });
+    
+    setVerificarModalOpen(null);
+    setMotivoRejeicao("");
   };
 
   const handleDownloadDocumento = (nomeDoc: string) => {
@@ -90,18 +119,37 @@ export default function EscritorioAudiencias() {
     });
   };
 
-  const handleSalvarObservacao = (clienteId: string) => {
+  const handleAceitarSolicitacao = () => {
+    if (!aceitarModalOpen) return;
+    
+    if (!prazoRetorno || parseInt(prazoRetorno) <= 0) {
+      toast({
+        title: "Atenção",
+        description: "Por favor, informe um prazo válido.",
+        variant: "destructive"
+      });
+      return;
+    }
+
     toast({
-      title: "Observação salva",
-      description: "A observação foi registrada com sucesso.",
+      title: "Solicitação aceita",
+      description: `Prazo de retorno: ${prazoRetorno} dias`,
     });
-    setModalOpen(prev => ({ ...prev, [clienteId]: false }));
+    
+    setAceitarModalOpen(null);
+    setPrazoRetorno("");
   };
 
-  const handleDataChange = (clienteId: string, novaData: string) => {
-    setClientes(prev => prev.map(cliente => 
-      cliente.id === clienteId ? { ...cliente, dataAudiencia: novaData } : cliente
-    ));
+  const handleRecusarSolicitacao = () => {
+    if (!recusarModalOpen) return;
+
+    toast({
+      title: "Solicitação recusada",
+      description: observacoesRejeicao ? "Observações registradas." : "Solicitação recusada.",
+    });
+    
+    setRecusarModalOpen(null);
+    setObservacoesRejeicao("");
   };
 
   return (
@@ -113,42 +161,42 @@ export default function EscritorioAudiencias() {
 
       {/* Cards de Métricas */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
+        <Card className="bg-white border-gray-200">
           <CardHeader className="pb-3">
-            <CardTitle className="flex items-center gap-2 text-blue-700">
-              <Users className="w-5 h-5" />
+            <CardTitle className="flex items-center gap-2 text-black">
+              <Users className="w-5 h-5 text-orange-500" />
               Clientes Recebidos
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-bold text-blue-900">12</p>
-            <p className="text-sm text-blue-600 mt-1">Neste mês</p>
+            <p className="text-3xl font-bold text-black">12</p>
+            <p className="text-sm text-gray-400 mt-1">Neste mês</p>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-green-50 to-green-100 border-green-200">
+        <Card className="bg-white border-gray-200">
           <CardHeader className="pb-3">
-            <CardTitle className="flex items-center gap-2 text-green-700">
-              <CheckCircle2 className="w-5 h-5" />
+            <CardTitle className="flex items-center gap-2 text-black">
+              <CheckCircle2 className="w-5 h-5 text-orange-500" />
               Audiências Realizadas
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-bold text-green-900">8</p>
-            <p className="text-sm text-green-600 mt-1">Concluídas</p>
+            <p className="text-3xl font-bold text-black">8</p>
+            <p className="text-sm text-gray-400 mt-1">Concluídas</p>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-orange-50 to-orange-100 border-orange-200">
+        <Card className="bg-white border-gray-200">
           <CardHeader className="pb-3">
-            <CardTitle className="flex items-center gap-2 text-orange-700">
-              <Calendar className="w-5 h-5" />
+            <CardTitle className="flex items-center gap-2 text-black">
+              <Calendar className="w-5 h-5 text-orange-500" />
               Audiências Pendentes
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-bold text-orange-900">4</p>
-            <p className="text-sm text-orange-600 mt-1">Aguardando agendamento</p>
+            <p className="text-3xl font-bold text-black">4</p>
+            <p className="text-sm text-gray-400 mt-1">Aguardando agendamento</p>
           </CardContent>
         </Card>
       </div>
@@ -162,15 +210,19 @@ export default function EscritorioAudiencias() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <Accordion type="single" collapsible className="w-full space-y-2">
-            {clientes.map((cliente) => (
-              <AccordionItem key={cliente.id} value={cliente.id} className="border rounded-lg px-4">
-                <AccordionTrigger className="hover:no-underline hover:scale-[1.02] transition-transform duration-200">
+          <Accordion type="single" collapsible className="w-full">
+            {clientes.map((cliente, index) => (
+              <AccordionItem 
+                key={cliente.id} 
+                value={cliente.id} 
+                className={`border-0 ${index !== clientes.length - 1 ? 'border-b border-gray-200' : ''}`}
+              >
+                <AccordionTrigger className="hover:no-underline hover:scale-[1.01] transition-transform duration-150 py-4">
                   <div className="flex items-center gap-2">
                     <span className="font-semibold">{cliente.nome}</span>
                   </div>
                 </AccordionTrigger>
-                <AccordionContent className="space-y-4 pt-4">
+                <AccordionContent className="space-y-4 pt-4 pb-4">
                   {/* Informações do Cliente */}
                   <div className="bg-muted/50 rounded-lg p-4 space-y-2">
                     <h4 className="font-semibold text-sm mb-3">Informações do Cliente</h4>
@@ -204,21 +256,21 @@ export default function EscritorioAudiencias() {
                           <div className="flex items-center gap-2">
                             <Button
                               size="sm"
-                              variant={doc.verificado ? "default" : "outline"}
-                              onClick={() => handleVerificarDocumento(cliente.id, doc.id)}
+                              variant="outline"
+                              onClick={() => handleAbrirModalVerificacao(cliente.id, doc.id, 'ok')}
                               className="h-8"
                             >
-                              {doc.verificado ? (
-                                <>
-                                  <Check className="w-4 h-4 mr-1" />
-                                  Verificado
-                                </>
-                              ) : (
-                                <>
-                                  <X className="w-4 h-4 mr-1" />
-                                  Não verificado
-                                </>
-                              )}
+                              <Check className="w-4 h-4 mr-1" />
+                              Ok
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleAbrirModalVerificacao(cliente.id, doc.id, 'x')}
+                              className="h-8"
+                            >
+                              <X className="w-4 h-4 mr-1" />
+                              X
                             </Button>
                             <Button
                               size="sm"
@@ -234,47 +286,152 @@ export default function EscritorioAudiencias() {
                     </div>
                   </div>
 
-                  {/* Data da Audiência */}
-                  <div>
-                    <label className="text-sm font-semibold mb-2 block">Data da Audiência</label>
-                    <Input
-                      type="date"
-                      value={cliente.dataAudiencia}
-                      onChange={(e) => handleDataChange(cliente.id, e.target.value)}
-                      className="max-w-xs"
-                    />
+                  {/* Botões de Ação */}
+                  <div className="flex gap-3">
+                    <Button 
+                      variant="default" 
+                      className="flex-1"
+                      onClick={() => setAceitarModalOpen(cliente.id)}
+                    >
+                      Aceitar Solicitação
+                    </Button>
+                    <Button 
+                      variant="destructive" 
+                      className="flex-1"
+                      onClick={() => setRecusarModalOpen(cliente.id)}
+                    >
+                      Recusar Solicitação
+                    </Button>
                   </div>
-
-                  {/* Observações do Escritório */}
-                  <Dialog open={modalOpen[cliente.id]} onOpenChange={(open) => setModalOpen(prev => ({ ...prev, [cliente.id]: open }))}>
-                    <DialogTrigger asChild>
-                      <Button variant="outline" className="w-full">
-                        Observações do Escritório
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="sm:max-w-[500px]">
-                      <DialogHeader>
-                        <DialogTitle>Observações do Escritório - {cliente.nome}</DialogTitle>
-                      </DialogHeader>
-                      <div className="space-y-4 py-4">
-                        <Textarea
-                          placeholder="Digite aqui as observações, comentários ou informações relevantes sobre este cliente..."
-                          value={observacoes[cliente.id] || ""}
-                          onChange={(e) => setObservacoes(prev => ({ ...prev, [cliente.id]: e.target.value }))}
-                          rows={6}
-                        />
-                        <Button onClick={() => handleSalvarObservacao(cliente.id)} className="w-full">
-                          Salvar Observação
-                        </Button>
-                      </div>
-                    </DialogContent>
-                  </Dialog>
                 </AccordionContent>
               </AccordionItem>
             ))}
           </Accordion>
         </CardContent>
       </Card>
+
+      {/* Modal de Verificação de Documento */}
+      <Dialog open={!!verificarModalOpen} onOpenChange={(open) => !open && setVerificarModalOpen(null)}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>
+              {verificarModalOpen?.tipo === 'ok' ? 'Confirmar Aprovação' : 'Confirmar Rejeição'}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            {verificarModalOpen?.tipo === 'x' && (
+              <div className="space-y-2">
+                <Label htmlFor="motivo">Motivo da Rejeição *</Label>
+                <Select value={motivoRejeicao} onValueChange={setMotivoRejeicao}>
+                  <SelectTrigger id="motivo">
+                    <SelectValue placeholder="Selecione o motivo" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Documento Errado">Documento Errado</SelectItem>
+                    <SelectItem value="Documento corrompido">Documento corrompido</SelectItem>
+                    <SelectItem value="Documento Ilegível">Documento Ilegível</SelectItem>
+                    <SelectItem value="Documento Falso">Documento Falso</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+            <p className="text-sm text-muted-foreground">
+              {verificarModalOpen?.tipo === 'ok' 
+                ? 'Deseja confirmar que este documento está correto?' 
+                : 'Deseja confirmar a rejeição deste documento?'}
+            </p>
+            <div className="flex gap-3">
+              <Button 
+                variant="outline" 
+                className="flex-1"
+                onClick={() => setVerificarModalOpen(null)}
+              >
+                Cancelar
+              </Button>
+              <Button 
+                className="flex-1"
+                onClick={handleConfirmarVerificacao}
+              >
+                Confirmar
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Modal de Aceitar Solicitação */}
+      <Dialog open={!!aceitarModalOpen} onOpenChange={(open) => !open && setAceitarModalOpen(null)}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Aceitar Solicitação</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="prazo">Prazo para Retorno (dias) *</Label>
+              <Input
+                id="prazo"
+                type="number"
+                min="1"
+                placeholder="Ex: 30"
+                value={prazoRetorno}
+                onChange={(e) => setPrazoRetorno(e.target.value)}
+              />
+            </div>
+            <div className="flex gap-3">
+              <Button 
+                variant="outline" 
+                className="flex-1"
+                onClick={() => setAceitarModalOpen(null)}
+              >
+                Cancelar
+              </Button>
+              <Button 
+                className="flex-1"
+                onClick={handleAceitarSolicitacao}
+              >
+                Confirmar
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Modal de Recusar Solicitação */}
+      <Dialog open={!!recusarModalOpen} onOpenChange={(open) => !open && setRecusarModalOpen(null)}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Recusar Solicitação</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="observacoes">Observações do Escritório</Label>
+              <Textarea
+                id="observacoes"
+                placeholder="Digite aqui as observações sobre a recusa (opcional)..."
+                value={observacoesRejeicao}
+                onChange={(e) => setObservacoesRejeicao(e.target.value)}
+                rows={4}
+              />
+            </div>
+            <div className="flex gap-3">
+              <Button 
+                variant="outline" 
+                className="flex-1"
+                onClick={() => setRecusarModalOpen(null)}
+              >
+                Cancelar
+              </Button>
+              <Button 
+                variant="destructive"
+                className="flex-1"
+                onClick={handleRecusarSolicitacao}
+              >
+                Confirmar Recusa
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
