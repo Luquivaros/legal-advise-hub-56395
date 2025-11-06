@@ -83,7 +83,7 @@ export class DashboardService {
           id: supervisorId,
           email: 'supervisor@empresa.com',
           name: 'Supervisor',
-          role: 'supervisor-comercial',
+          role: 'supervisao_comercial',
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString()
         },

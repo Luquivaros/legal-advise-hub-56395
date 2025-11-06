@@ -1,4 +1,5 @@
 import { useLocation, Link } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { 
   BarChart3, 
   Users, 
@@ -14,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useAuth } from '@/contexts/AuthContext';
 import { UserRole } from '@/types';
+import { supabase } from '@/integrations/supabase/client';
 
 
 interface MenuItem {
@@ -28,61 +30,61 @@ const menuItems: MenuItem[] = [
     icon: BarChart3,
     label: "Dashboard",
     path: "/app/dashboard",
-    roles: ['consultor-comercial', 'consultor-juridico', 'supervisor-comercial', 'supervisor-juridico', 'gerencia']
+    roles: ['comercial', 'juridico', 'supervisao_comercial', 'supervisao_juridico', 'gerencia', 'master']
   },
   {
     icon: Briefcase,
     label: "Negociações",
     path: "/app/negociacoes",
-    roles: ['consultor-comercial', 'consultor-juridico', 'supervisor-comercial', 'supervisor-juridico', 'gerencia']
+    roles: ['comercial', 'juridico', 'supervisao_comercial', 'supervisao_juridico', 'gerencia', 'master']
   },
   {
     icon: Users,
     label: "Clientes",
     path: "/app/clientes",
-    roles: ['consultor-comercial', 'consultor-juridico', 'supervisor-comercial', 'supervisor-juridico', 'setor-administrativo']
+    roles: ['comercial', 'juridico', 'supervisao_comercial', 'supervisao_juridico', 'administrativo', 'master']
   },
   {
     icon: AlertTriangle,
     label: "Chargebacks",
     path: "/app/chargebacks",
-    roles: ['supervisor-comercial', 'supervisor-juridico', 'setor-administrativo', 'gerencia']
+    roles: ['supervisao_comercial', 'supervisao_juridico', 'administrativo', 'gerencia', 'master']
   },
   {
     icon: MessagesSquare,
     label: "Conversas",
     path: "/app/conversas",
-    roles: ['consultor-comercial', 'consultor-juridico', 'supervisor-comercial', 'supervisor-juridico']
+    roles: ['comercial', 'juridico', 'supervisao_comercial', 'supervisao_juridico', 'master']
   },
   {
     icon: MessageSquare,
     label: "Feedback",
     path: "/app/feedback",
-    roles: ['consultor-comercial', 'consultor-juridico', 'supervisor-comercial', 'supervisor-juridico', 'setor-administrativo', 'gerencia']
+    roles: ['comercial', 'juridico', 'supervisao_comercial', 'supervisao_juridico', 'administrativo', 'gerencia', 'master']
   },
   {
     icon: Building2,
     label: "GOV",
     path: "/app/gov",
-    roles: ['setor-administrativo']
+    roles: ['administrativo', 'master']
   },
   {
     icon: Scale,
     label: "Audiências",
     path: "/app/escritorio/audiencias",
-    roles: ['escritorio']
+    roles: ['processual', 'master']
   },
   {
     icon: Briefcase,
     label: "Processual",
     path: "/app/escritorio/processual",
-    roles: ['escritorio']
+    roles: ['processual', 'master']
   },
   {
     icon: MessageSquare,
     label: "Feedback",
     path: "/app/escritorio/feedback",
-    roles: ['escritorio']
+    roles: ['processual', 'master']
   }
 ];
 
@@ -95,6 +97,27 @@ export function Sidebar({
 }: SidebarProps) {
   const location = useLocation();
   const { user, logout } = useAuth();
+  const [userName, setUserName] = useState<string>('Usuário');
+  
+  useEffect(() => {
+    const fetchUserName = async () => {
+      if (user?.id) {
+        const { data } = await supabase
+          .from('profiles')
+          .select('nome')
+          .eq('id', user.id)
+          .single();
+        
+        if (data?.nome) {
+          setUserName(data.nome);
+        } else {
+          setUserName(user.email || 'Usuário');
+        }
+      }
+    };
+    
+    fetchUserName();
+  }, [user]);
   
   const filteredMenuItems = menuItems.filter(item => 
     item.roles.includes(userRole)
@@ -140,10 +163,10 @@ export function Sidebar({
         <div className="bg-white/10 rounded-lg p-3 mb-3">
           <div className="text-white">
             <p className="text-xs text-orange-50">Usuário:</p>
-            <p className="font-semibold text-sm">{user?.name}</p>
+            <p className="font-semibold text-sm">{userName}</p>
             <p className="text-xs text-orange-50 mt-1">Função:</p>
             <p className="font-medium text-xs capitalize">
-              {userRole.replace('-', ' ')}
+              {userRole.replace(/_/g, ' ')}
             </p>
           </div>
         </div>

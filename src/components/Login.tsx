@@ -12,9 +12,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Crown, User, Users, Building, ShieldCheck, UserCog } from "lucide-react";
+import { Crown, User, Users, Building, ShieldCheck, UserCog, Scale, Briefcase } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
-import { UserRole } from "@/types";
+import { SetorType } from "@/types";
 
 
 const Login = () => {
@@ -22,21 +22,22 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
-  const [role, setRole] = useState<UserRole | "">("");
+  const [setor, setSetor] = useState<SetorType | "">("");
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   
   const { login, signup } = useAuth();
   const navigate = useNavigate();
 
-  const roles: { value: UserRole; label: string; icon: any }[] = [
-    { value: "consultor-juridico", label: "Consultor Jurídico", icon: ShieldCheck },
-    { value: "supervisor-juridico", label: "Supervisor Jurídico", icon: UserCog },
-    { value: "supervisor-comercial", label: "Supervisor Comercial", icon: Users },
-    { value: "setor-administrativo", label: "Setor Administrativo", icon: Building },
-    { value: "consultor-comercial", label: "Consultor Comercial", icon: User },
+  const setores: { value: SetorType; label: string; icon: any }[] = [
+    { value: "administrativo", label: "Setor Administrativo", icon: Building },
+    { value: "comercial", label: "Comercial", icon: User },
+    { value: "supervisao_comercial", label: "Supervisão Comercial", icon: Users },
+    { value: "juridico", label: "Jurídico", icon: Scale },
+    { value: "supervisao_juridico", label: "Supervisão Jurídico", icon: UserCog },
     { value: "gerencia", label: "Gerência", icon: Crown },
-    { value: "escritorio", label: "Escritório", icon: Building },
+    { value: "processual", label: "Processual", icon: Briefcase },
+    { value: "master", label: "Master", icon: ShieldCheck },
   ];
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -45,26 +46,22 @@ const Login = () => {
     setIsLoading(true);
     
     if (isSignup) {
-      if (!role) {
+      if (!setor) {
+        setIsLoading(false);
         return;
       }
       
-      const success = await signup(email, password, name, role as UserRole);
+      const success = await signup(email, password, name, setor as SetorType);
       
       if (success) {
         setIsSignup(false);
         setEmail("");
         setPassword("");
         setName("");
-        setRole("");
+        setSetor("");
       }
     } else {
-      const success = await login({
-        email,
-        password,
-        role: "" as any, // Role será obtido do backend
-        rememberMe
-      });
+      const success = await login(email, password);
       
       if (success) {
         navigate('/app/dashboard');
@@ -166,24 +163,24 @@ const Login = () => {
                 />
               </div>
 
-              {/* Role Selection (only for signup) */}
+              {/* Setor Selection (only for signup) */}
               {isSignup && (
                 <div className="space-y-2">
-                  <Label htmlFor="role" className="text-sm font-medium text-foreground">
-                    Função
+                  <Label htmlFor="setor" className="text-sm font-medium text-foreground">
+                    Setor/Função
                   </Label>
-                  <Select value={role} onValueChange={(value) => setRole(value as UserRole)} required>
+                  <Select value={setor} onValueChange={(value) => setSetor(value as SetorType)} required>
                     <SelectTrigger className="h-12">
-                      <SelectValue placeholder="Selecione sua função" />
+                      <SelectValue placeholder="Selecione seu setor" />
                     </SelectTrigger>
                     <SelectContent>
-                      {roles.map((roleOption) => {
-                        const IconComponent = roleOption.icon;
+                      {setores.map((setorOption) => {
+                        const IconComponent = setorOption.icon;
                         return (
-                          <SelectItem key={roleOption.value} value={roleOption.value}>
+                          <SelectItem key={setorOption.value} value={setorOption.value}>
                             <div className="flex items-center gap-2">
                               <IconComponent className="w-4 h-4" />
-                              {roleOption.label}
+                              {setorOption.label}
                             </div>
                           </SelectItem>
                         );
@@ -220,7 +217,7 @@ const Login = () => {
                 <Button 
                   type="submit" 
                   className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground"
-                  disabled={isLoading || !email || !password || (isSignup && (!name || !role))}
+                  disabled={isLoading || !email || !password || (isSignup && (!name || !setor))}
                 >
                   {isLoading 
                     ? (isSignup ? "Cadastrando..." : "Entrando...") 
@@ -235,7 +232,7 @@ const Login = () => {
                     setEmail("");
                     setPassword("");
                     setName("");
-                    setRole("");
+                    setSetor("");
                   }}
                 >
                   {isSignup ? "Já tenho conta" : "Cadastrar-me"}

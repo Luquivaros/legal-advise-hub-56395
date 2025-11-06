@@ -1,13 +1,15 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { User, UserRole, LoginData } from '@/types';
-import { AuthService } from '@/api/services/authService';
+import { User } from '@supabase/supabase-js';
+import { SetorType } from '@/types';
+import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
 
 interface AuthContextType {
   user: User | null;
+  setor: SetorType | null;
   loading: boolean;
-  login: (data: LoginData) => Promise<boolean>;
-  signup: (email: string, password: string, name: string, role: UserRole) => Promise<boolean>;
+  login: (email: string, password: string) => Promise<boolean>;
+  signup: (email: string, password: string, name: string, setor: SetorType) => Promise<boolean>;
   logout: () => void;
   isAuthenticated: boolean;
 }
@@ -16,54 +18,88 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  const [setor, setSetor] = useState<SetorType | null>(null);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
   useEffect(() => {
-    checkAuthStatus();
+    // Setup auth listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        setUser(session?.user ?? null);
+        
+        if (session?.user) {
+          // Fetch user setor
+          const { data } = await supabase
+            .from('user_roles')
+            .select('setor')
+            .eq('user_id', session.user.id)
+            .single();
+          
+          setSetor(data?.setor || null);
+        } else {
+          setSetor(null);
+        }
+        
+        setLoading(false);
+      }
+    );
+
+    // Check for existing session
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      setUser(session?.user ?? null);
+      
+      if (session?.user) {
+        const { data } = await supabase
+          .from('user_roles')
+          .select('setor')
+          .eq('user_id', session.user.id)
+          .single();
+        
+        setSetor(data?.setor || null);
+      }
+      
+      setLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
-  const checkAuthStatus = async () => {
-    try {
-      const response = await AuthService.getCurrentUser();
-      if (response.success && response.data) {
-        setUser(response.data);
-      }
-    } catch (error) {
-      console.error('Erro ao verificar autenticação:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const login = async (data: LoginData): Promise<boolean> => {
+  const login = async (email: string, password: string): Promise<boolean> => {
     try {
       setLoading(true);
-      const response = await AuthService.login(data);
       
-      if (response.success && response.data) {
-        setUser(response.data.user);
-        localStorage.setItem('currentUser', JSON.stringify(response.data.user));
-        localStorage.setItem('authToken', response.data.token);
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      
+      if (error) throw error;
+      
+      if (data.user) {
+        // Fetch user setor
+        const { data: roleData } = await supabase
+          .from('user_roles')
+          .select('setor')
+          .eq('user_id', data.user.id)
+          .single();
+        
+        setUser(data.user);
+        setSetor(roleData?.setor || null);
         
         toast({
           title: "Login realizado com sucesso!",
-          description: `Bem-vindo(a), ${response.data.user.name}`,
+          description: `Bem-vindo(a)!`,
         });
         
         return true;
-      } else {
-        toast({
-          title: "Erro no login",
-          description: response.error || "Credenciais inválidas",
-          variant: "destructive",
-        });
-        return false;
       }
-    } catch (error) {
+      
+      return false;
+    } catch (error: any) {
       toast({
         title: "Erro no login",
-        description: "Erro interno do servidor",
+        description: error.message || "Credenciais inválidas",
         variant: "destructive",
       });
       return false;
@@ -72,22 +108,47 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const signup = async (email: string, password: string, name: string, role: UserRole): Promise<boolean> => {
+  const signup = async (email: string, password: string, name: string, setor: SetorType): Promise<boolean> => {
     try {
       setLoading(true);
       
-      // Aqui você implementaria a chamada ao backend para criar o usuário
-      // Por enquanto, vamos simular um cadastro bem-sucedido
-      toast({
-        title: "Cadastro realizado com sucesso!",
-        description: "Você já pode fazer login com suas credenciais",
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            name: name,
+          },
+          emailRedirectTo: `${window.location.origin}/`,
+        },
       });
       
-      return true;
-    } catch (error) {
+      if (error) throw error;
+      
+      if (data.user) {
+        // Insert user role
+        const { error: roleError } = await supabase
+          .from('user_roles')
+          .insert({
+            user_id: data.user.id,
+            setor: setor,
+          });
+        
+        if (roleError) throw roleError;
+        
+        toast({
+          title: "Cadastro realizado com sucesso!",
+          description: "Você já pode fazer login com suas credenciais",
+        });
+        
+        return true;
+      }
+      
+      return false;
+    } catch (error: any) {
       toast({
         title: "Erro no cadastro",
-        description: "Não foi possível criar sua conta",
+        description: error.message || "Não foi possível criar sua conta",
         variant: "destructive",
       });
       return false;
@@ -98,10 +159,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = async () => {
     try {
-      await AuthService.logout();
+      await supabase.auth.signOut();
       setUser(null);
-      localStorage.removeItem('currentUser');
-      localStorage.removeItem('authToken');
+      setSetor(null);
       
       toast({
         title: "Logout realizado com sucesso",
@@ -114,6 +174,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const value = {
     user,
+    setor,
     loading,
     login,
     signup,

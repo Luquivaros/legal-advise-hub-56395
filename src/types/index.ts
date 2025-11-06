@@ -8,14 +8,18 @@ export interface User {
   updatedAt: string;
 }
 
-export type UserRole = 
-  | 'consultor-comercial'
-  | 'consultor-juridico' 
-  | 'supervisor-comercial'
-  | 'supervisor-juridico'
-  | 'setor-administrativo'
+export type SetorType = 
+  | 'administrativo'
+  | 'comercial'
+  | 'supervisao_comercial'
+  | 'juridico'
+  | 'supervisao_juridico'
   | 'gerencia'
-  | 'escritorio';
+  | 'processual'
+  | 'master';
+
+// Manter UserRole por compatibilidade
+export type UserRole = SetorType;
 
 export interface LoginData {
   email: string;

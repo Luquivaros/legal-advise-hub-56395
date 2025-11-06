@@ -185,21 +185,21 @@ export type Database = {
           created_at: string
           email: string
           id: string
-          name: string
+          nome: string
           updated_at: string
         }
         Insert: {
           created_at?: string
           email: string
           id: string
-          name: string
+          nome: string
           updated_at?: string
         }
         Update: {
           created_at?: string
           email?: string
           id?: string
-          name?: string
+          nome?: string
           updated_at?: string
         }
         Relationships: []
@@ -208,19 +208,19 @@ export type Database = {
         Row: {
           created_at: string
           id: string
-          role: Database["public"]["Enums"]["app_role"]
+          setor: Database["public"]["Enums"]["setor_type"]
           user_id: string
         }
         Insert: {
           created_at?: string
           id?: string
-          role: Database["public"]["Enums"]["app_role"]
+          setor: Database["public"]["Enums"]["setor_type"]
           user_id: string
         }
         Update: {
           created_at?: string
           id?: string
-          role?: Database["public"]["Enums"]["app_role"]
+          setor?: Database["public"]["Enums"]["setor_type"]
           user_id?: string
         }
         Relationships: []
@@ -230,25 +230,30 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      has_role: {
+      get_user_setor: {
+        Args: { user_id: string }
+        Returns: Database["public"]["Enums"]["setor_type"]
+      }
+      has_setor: {
         Args: {
-          _role: Database["public"]["Enums"]["app_role"]
+          _setor: Database["public"]["Enums"]["setor_type"]
           _user_id: string
         }
         Returns: boolean
       }
+      is_master: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
-      app_role:
-        | "setor-administrativo"
-        | "supervisor-comercial"
-        | "consultor-comercial"
-        | "consultor-juridico"
-        | "supervisor-juridico"
-        | "gerencia"
-        | "escritorio-processual"
-        | "escritorio-audiencias"
       origem_lead: "facebook" | "google" | "instagram" | "tv" | "outros"
+      setor_type:
+        | "administrativo"
+        | "comercial"
+        | "supervisao_comercial"
+        | "juridico"
+        | "supervisao_juridico"
+        | "gerencia"
+        | "processual"
+        | "master"
       status_cliente:
         | "lead_recebido"
         | "aguardando_designacao"
@@ -387,17 +392,17 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: [
-        "setor-administrativo",
-        "supervisor-comercial",
-        "consultor-comercial",
-        "consultor-juridico",
-        "supervisor-juridico",
-        "gerencia",
-        "escritorio-processual",
-        "escritorio-audiencias",
-      ],
       origem_lead: ["facebook", "google", "instagram", "tv", "outros"],
+      setor_type: [
+        "administrativo",
+        "comercial",
+        "supervisao_comercial",
+        "juridico",
+        "supervisao_juridico",
+        "gerencia",
+        "processual",
+        "master",
+      ],
       status_cliente: [
         "lead_recebido",
         "aguardando_designacao",

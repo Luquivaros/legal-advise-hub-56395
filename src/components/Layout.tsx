@@ -5,7 +5,7 @@ import { useAuth } from '@/contexts/AuthContext';
 
 const Layout = () => {
   
-  const { user } = useAuth();
+  const { user, setor } = useAuth();
 
   if (!user) {
     return null;
@@ -14,7 +14,7 @@ const Layout = () => {
   return (
     <div className="flex min-h-screen w-full bg-gray-50">
       <Sidebar 
-        userRole={user.role}
+        userRole={setor || 'comercial'}
       />
       
       <main className="flex-1 transition-all duration-300 ease-in-out ml-52">

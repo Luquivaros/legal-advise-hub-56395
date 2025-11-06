@@ -17,7 +17,7 @@ export const mockUsers: User[] = [
     id: '1',
     email: 'consultor.comercial@empresa.com',
     name: 'João Silva',
-    role: 'consultor-comercial',
+    role: 'comercial',
     createdAt: '2024-01-15T10:00:00Z',
     updatedAt: '2024-12-01T15:30:00Z'
   },
@@ -25,7 +25,7 @@ export const mockUsers: User[] = [
     id: '2',
     email: 'consultor.juridico@empresa.com',
     name: 'Maria Santos',
-    role: 'consultor-juridico',
+    role: 'juridico',
     createdAt: '2024-01-10T09:00:00Z',
     updatedAt: '2024-12-01T14:20:00Z'
   },
@@ -33,7 +33,7 @@ export const mockUsers: User[] = [
     id: '3',
     email: 'supervisor.comercial@empresa.com',
     name: 'Carlos Oliveira',
-    role: 'supervisor-comercial',
+    role: 'supervisao_comercial',
     createdAt: '2024-01-05T08:00:00Z',
     updatedAt: '2024-12-01T16:45:00Z'
   },
@@ -41,7 +41,7 @@ export const mockUsers: User[] = [
     id: '4',
     email: 'supervisor.juridico@empresa.com',
     name: 'Ana Costa',
-    role: 'supervisor-juridico',
+    role: 'supervisao_juridico',
     createdAt: '2024-01-05T08:00:00Z',
     updatedAt: '2024-12-01T17:10:00Z'
   },
@@ -49,7 +49,7 @@ export const mockUsers: User[] = [
     id: '5',
     email: 'administrativo@empresa.com',
     name: 'Pedro Ferreira',
-    role: 'setor-administrativo',
+    role: 'administrativo',
     createdAt: '2024-01-01T07:00:00Z',
     updatedAt: '2024-12-01T18:00:00Z'
   },
@@ -65,7 +65,7 @@ export const mockUsers: User[] = [
     id: '7',
     email: 'escritorio@empresa.com',
     name: 'Ricardo Almeida',
-    role: 'escritorio',
+    role: 'processual',
     createdAt: '2024-01-01T07:00:00Z',
     updatedAt: '2024-12-01T20:00:00Z'
   }
