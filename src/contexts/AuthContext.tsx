@@ -7,6 +7,7 @@ interface AuthContextType {
   user: User | null;
   loading: boolean;
   login: (data: LoginData) => Promise<boolean>;
+  signup: (email: string, password: string, name: string, role: UserRole) => Promise<boolean>;
   logout: () => void;
   isAuthenticated: boolean;
 }
@@ -71,6 +72,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const signup = async (email: string, password: string, name: string, role: UserRole): Promise<boolean> => {
+    try {
+      setLoading(true);
+      
+      // Aqui você implementaria a chamada ao backend para criar o usuário
+      // Por enquanto, vamos simular um cadastro bem-sucedido
+      toast({
+        title: "Cadastro realizado com sucesso!",
+        description: "Você já pode fazer login com suas credenciais",
+      });
+      
+      return true;
+    } catch (error) {
+      toast({
+        title: "Erro no cadastro",
+        description: "Não foi possível criar sua conta",
+        variant: "destructive",
+      });
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const logout = async () => {
     try {
       await AuthService.logout();
@@ -91,6 +116,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     user,
     loading,
     login,
+    signup,
     logout,
     isAuthenticated: !!user,
   };

@@ -4,7 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Crown, User, Users, Building, ShieldCheck, UserCog } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
@@ -12,13 +18,15 @@ import { UserRole } from "@/types";
 
 
 const Login = () => {
+  const [isSignup, setIsSignup] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
   const [role, setRole] = useState<UserRole | "">("");
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   
-  const { login } = useAuth();
+  const { login, signup } = useAuth();
   const navigate = useNavigate();
 
   const roles: { value: UserRole; label: string; icon: any }[] = [
@@ -34,21 +42,33 @@ const Login = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!role) {
-      return;
-    }
-    
     setIsLoading(true);
     
-    const success = await login({
-      email,
-      password,
-      role: role as UserRole,
-      rememberMe
-    });
-    
-    if (success) {
-      navigate('/app/dashboard');
+    if (isSignup) {
+      if (!role) {
+        return;
+      }
+      
+      const success = await signup(email, password, name, role as UserRole);
+      
+      if (success) {
+        setIsSignup(false);
+        setEmail("");
+        setPassword("");
+        setName("");
+        setRole("");
+      }
+    } else {
+      const success = await login({
+        email,
+        password,
+        role: "" as any, // Role será obtido do backend
+        rememberMe
+      });
+      
+      if (success) {
+        navigate('/app/dashboard');
+      }
     }
     
     setIsLoading(false);
@@ -80,11 +100,40 @@ const Login = () => {
         </div>
       </div>
 
-      {/* Right Panel - Login Form */}
+      {/* Right Panel - Login/Signup Form */}
       <div className="flex-1 flex items-center justify-center p-8 bg-background">
         <Card className="w-full max-w-md border-0 shadow-none">
           <CardContent className="p-8 space-y-6">
+            <div className="text-center mb-6">
+              <h2 className="text-2xl font-bold">
+                {isSignup ? "Criar Conta" : "Entrar"}
+              </h2>
+              <p className="text-sm text-muted-foreground mt-2">
+                {isSignup 
+                  ? "Preencha os dados para criar sua conta" 
+                  : "Entre com suas credenciais"}
+              </p>
+            </div>
+            
             <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Name Field (only for signup) */}
+              {isSignup && (
+                <div className="space-y-2">
+                  <Label htmlFor="name" className="text-sm font-medium text-foreground">
+                    Nome Completo
+                  </Label>
+                  <Input
+                    id="name"
+                    type="text"
+                    placeholder="Seu nome completo"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="h-12"
+                    required
+                  />
+                </div>
+              )}
+
               {/* Email Field */}
               <div className="space-y-2">
                 <Label htmlFor="email" className="text-sm font-medium text-foreground">
@@ -117,69 +166,79 @@ const Login = () => {
                 />
               </div>
 
-              {/* Role Selection */}
-              <div className="space-y-3">
-                <Label className="text-sm font-medium text-foreground">Função</Label>
-                <RadioGroup value={role} onValueChange={(value) => setRole(value as UserRole)} className="space-y-3" required>
-                  <div className="grid grid-cols-2 gap-3">
-                    {roles.map((roleOption) => {
-                      const IconComponent = roleOption.icon;
-                      return (
-                        <div key={roleOption.value} className="flex items-center space-x-2">
-                          <RadioGroupItem 
-                            value={roleOption.value} 
-                            id={roleOption.value}
-                            className="text-primary"
-                          />
-                          <Label 
-                            htmlFor={roleOption.value} 
-                            className="text-sm cursor-pointer flex items-center gap-2"
-                          >
-                            <IconComponent className="w-4 h-4" />
-                            {roleOption.label}
-                          </Label>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </RadioGroup>
-              </div>
-
-              {/* Remember Me and Forgot Password */}
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <Checkbox 
-                    id="remember"
-                    checked={rememberMe}
-                    onCheckedChange={(checked) => setRememberMe(checked === true)}
-                  />
-                  <Label htmlFor="remember" className="text-sm cursor-pointer">
-                    Lembre-se
+              {/* Role Selection (only for signup) */}
+              {isSignup && (
+                <div className="space-y-2">
+                  <Label htmlFor="role" className="text-sm font-medium text-foreground">
+                    Função
                   </Label>
+                  <Select value={role} onValueChange={(value) => setRole(value as UserRole)} required>
+                    <SelectTrigger className="h-12">
+                      <SelectValue placeholder="Selecione sua função" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {roles.map((roleOption) => {
+                        const IconComponent = roleOption.icon;
+                        return (
+                          <SelectItem key={roleOption.value} value={roleOption.value}>
+                            <div className="flex items-center gap-2">
+                              <IconComponent className="w-4 h-4" />
+                              {roleOption.label}
+                            </div>
+                          </SelectItem>
+                        );
+                      })}
+                    </SelectContent>
+                  </Select>
                 </div>
-                <a 
-                  href="#" 
-                  className="text-sm text-primary hover:underline"
-                >
-                  Esqueci minha senha?
-                </a>
-              </div>
+              )}
 
-              {/* Login and Register Buttons */}
+              {/* Remember Me and Forgot Password (only for login) */}
+              {!isSignup && (
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <Checkbox 
+                      id="remember"
+                      checked={rememberMe}
+                      onCheckedChange={(checked) => setRememberMe(checked === true)}
+                    />
+                    <Label htmlFor="remember" className="text-sm cursor-pointer">
+                      Lembre-se
+                    </Label>
+                  </div>
+                  <a 
+                    href="#" 
+                    className="text-sm text-primary hover:underline"
+                  >
+                    Esqueci minha senha?
+                  </a>
+                </div>
+              )}
+
+              {/* Submit and Toggle Buttons */}
               <div className="space-y-3">
                 <Button 
                   type="submit" 
                   className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground"
-                  disabled={isLoading || !email || !password || !role}
+                  disabled={isLoading || !email || !password || (isSignup && (!name || !role))}
                 >
-                  {isLoading ? "Entrando..." : "Login"}
+                  {isLoading 
+                    ? (isSignup ? "Cadastrando..." : "Entrando...") 
+                    : (isSignup ? "Cadastrar" : "Login")}
                 </Button>
                 <Button 
                   type="button" 
                   variant="outline" 
                   className="w-full h-12 border-primary text-primary hover:bg-primary/5 hover:text-primary"
+                  onClick={() => {
+                    setIsSignup(!isSignup);
+                    setEmail("");
+                    setPassword("");
+                    setName("");
+                    setRole("");
+                  }}
                 >
-                  Cadastrar-me
+                  {isSignup ? "Já tenho conta" : "Cadastrar-me"}
                 </Button>
               </div>
             </form>
