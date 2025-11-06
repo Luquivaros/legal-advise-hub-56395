@@ -15,7 +15,8 @@ export type UserRole =
   | 'supervisor-juridico'
   | 'setor-administrativo'
   | 'gerencia'
-  | 'escritorio';
+  | 'escritorio-processual'
+  | 'escritorio-audiencias';
 
 export interface LoginData {
   email: string;

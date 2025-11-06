@@ -6,20 +6,24 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Crown, User, Users, Building, ShieldCheck, UserCog } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { UserRole } from "@/types";
+import { useToast } from "@/components/ui/use-toast";
 
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
   const [role, setRole] = useState<UserRole | "">("");
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   
-  const { login } = useAuth();
+  const { signIn, signUp } = useAuth();
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   const roles: { value: UserRole; label: string; icon: any }[] = [
     { value: "consultor-juridico", label: "Consultor Jurídico", icon: ShieldCheck },
@@ -28,27 +32,70 @@ const Login = () => {
     { value: "setor-administrativo", label: "Setor Administrativo", icon: Building },
     { value: "consultor-comercial", label: "Consultor Comercial", icon: User },
     { value: "gerencia", label: "Gerência", icon: Crown },
-    { value: "escritorio", label: "Escritório", icon: Building },
+    { value: "escritorio-processual", label: "Escritório Processual", icon: Building },
+    { value: "escritorio-audiencias", label: "Escritório Audiências", icon: Building },
   ];
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!role) {
+      toast({
+        title: "Erro",
+        description: "Por favor, selecione uma função",
+        variant: "destructive",
+      });
       return;
     }
     
     setIsLoading(true);
     
-    const success = await login({
-      email,
-      password,
-      role: role as UserRole,
-      rememberMe
-    });
+    const { error } = await signIn(email, password);
     
-    if (success) {
+    if (!error) {
       navigate('/app/dashboard');
+    } else {
+      toast({
+        title: "Erro no login",
+        description: error,
+        variant: "destructive",
+      });
+    }
+    
+    setIsLoading(false);
+  };
+
+  const handleSignUp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!role) {
+      toast({
+        title: "Erro",
+        description: "Por favor, selecione uma função",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!name) {
+      toast({
+        title: "Erro",
+        description: "Por favor, insira seu nome",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    setIsLoading(true);
+    
+    const { error } = await signUp(email, password, name, role as UserRole);
+    
+    if (error) {
+      toast({
+        title: "Erro no cadastro",
+        description: error,
+        variant: "destructive",
+      });
     }
     
     setIsLoading(false);
@@ -80,109 +127,158 @@ const Login = () => {
         </div>
       </div>
 
-      {/* Right Panel - Login Form */}
+      {/* Right Panel - Login/Register Forms */}
       <div className="flex-1 flex items-center justify-center p-8 bg-background">
         <Card className="w-full max-w-md border-0 shadow-none">
-          <CardContent className="p-8 space-y-6">
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Email Field */}
-              <div className="space-y-2">
-                <Label htmlFor="email" className="text-sm font-medium text-foreground">
-                  Email
-                </Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="nome@mail.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="h-12"
-                  required
-                />
-              </div>
-
-              {/* Password Field */}
-              <div className="space-y-2">
-                <Label htmlFor="password" className="text-sm font-medium text-foreground">
-                  Senha
-                </Label>
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="h-12"
-                  required
-                />
-              </div>
-
-              {/* Role Selection */}
-              <div className="space-y-3">
-                <Label className="text-sm font-medium text-foreground">Função</Label>
-                <RadioGroup value={role} onValueChange={(value) => setRole(value as UserRole)} className="space-y-3" required>
-                  <div className="grid grid-cols-2 gap-3">
-                    {roles.map((roleOption) => {
-                      const IconComponent = roleOption.icon;
-                      return (
-                        <div key={roleOption.value} className="flex items-center space-x-2">
-                          <RadioGroupItem 
-                            value={roleOption.value} 
-                            id={roleOption.value}
-                            className="text-primary"
-                          />
-                          <Label 
-                            htmlFor={roleOption.value} 
-                            className="text-sm cursor-pointer flex items-center gap-2"
-                          >
-                            <IconComponent className="w-4 h-4" />
-                            {roleOption.label}
-                          </Label>
-                        </div>
-                      );
-                    })}
+          <CardContent className="p-8">
+            <Tabs defaultValue="login" className="w-full">
+              <TabsList className="grid w-full grid-cols-2 mb-6">
+                <TabsTrigger value="login">Login</TabsTrigger>
+                <TabsTrigger value="register">Cadastrar</TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="login">
+                <form onSubmit={handleSignIn} className="space-y-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="login-email">Email</Label>
+                    <Input
+                      id="login-email"
+                      type="email"
+                      placeholder="nome@mail.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="h-12"
+                      required
+                    />
                   </div>
-                </RadioGroup>
-              </div>
 
-              {/* Remember Me and Forgot Password */}
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <Checkbox 
-                    id="remember"
-                    checked={rememberMe}
-                    onCheckedChange={(checked) => setRememberMe(checked === true)}
-                  />
-                  <Label htmlFor="remember" className="text-sm cursor-pointer">
-                    Lembre-se
-                  </Label>
-                </div>
-                <a 
-                  href="#" 
-                  className="text-sm text-primary hover:underline"
-                >
-                  Esqueci minha senha?
-                </a>
-              </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="login-password">Senha</Label>
+                    <Input
+                      id="login-password"
+                      type="password"
+                      placeholder="••••••••"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="h-12"
+                      required
+                    />
+                  </div>
 
-              {/* Login and Register Buttons */}
-              <div className="space-y-3">
-                <Button 
-                  type="submit" 
-                  className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground"
-                  disabled={isLoading || !email || !password || !role}
-                >
-                  {isLoading ? "Entrando..." : "Login"}
-                </Button>
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  className="w-full h-12 border-primary text-primary hover:bg-primary/5 hover:text-primary"
-                >
-                  Cadastrar-me
-                </Button>
-              </div>
-            </form>
+                  <div className="space-y-3">
+                    <Label>Função</Label>
+                    <RadioGroup value={role} onValueChange={(value) => setRole(value as UserRole)} className="space-y-3">
+                      <div className="grid grid-cols-2 gap-3">
+                        {roles.map((roleOption) => {
+                          const IconComponent = roleOption.icon;
+                          return (
+                            <div key={roleOption.value} className="flex items-center space-x-2">
+                              <RadioGroupItem value={roleOption.value} id={`login-${roleOption.value}`} />
+                              <Label htmlFor={`login-${roleOption.value}`} className="text-sm cursor-pointer flex items-center gap-2">
+                                <IconComponent className="w-4 h-4" />
+                                {roleOption.label}
+                              </Label>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </RadioGroup>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        id="remember"
+                        checked={rememberMe}
+                        onCheckedChange={(checked) => setRememberMe(checked === true)}
+                      />
+                      <Label htmlFor="remember" className="text-sm cursor-pointer">
+                        Lembre-se
+                      </Label>
+                    </div>
+                  </div>
+
+                  <Button 
+                    type="submit" 
+                    className="w-full h-12"
+                    disabled={isLoading || !email || !password || !role}
+                  >
+                    {isLoading ? "Entrando..." : "Entrar"}
+                  </Button>
+                </form>
+              </TabsContent>
+
+              <TabsContent value="register">
+                <form onSubmit={handleSignUp} className="space-y-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="register-name">Nome Completo</Label>
+                    <Input
+                      id="register-name"
+                      type="text"
+                      placeholder="Seu nome"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      className="h-12"
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="register-email">Email</Label>
+                    <Input
+                      id="register-email"
+                      type="email"
+                      placeholder="nome@mail.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="h-12"
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="register-password">Senha</Label>
+                    <Input
+                      id="register-password"
+                      type="password"
+                      placeholder="••••••••"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="h-12"
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-3">
+                    <Label>Função</Label>
+                    <RadioGroup value={role} onValueChange={(value) => setRole(value as UserRole)} className="space-y-3">
+                      <div className="grid grid-cols-2 gap-3">
+                        {roles.map((roleOption) => {
+                          const IconComponent = roleOption.icon;
+                          return (
+                            <div key={roleOption.value} className="flex items-center space-x-2">
+                              <RadioGroupItem value={roleOption.value} id={`register-${roleOption.value}`} />
+                              <Label htmlFor={`register-${roleOption.value}`} className="text-sm cursor-pointer flex items-center gap-2">
+                                <IconComponent className="w-4 h-4" />
+                                {roleOption.label}
+                              </Label>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </RadioGroup>
+                  </div>
+
+                  <Button 
+                    type="submit" 
+                    className="w-full h-12"
+                    disabled={isLoading || !email || !password || !name || !role}
+                  >
+                    {isLoading ? "Cadastrando..." : "Cadastrar"}
+                  </Button>
+                </form>
+              </TabsContent>
+            </Tabs>
           </CardContent>
         </Card>
       </div>
