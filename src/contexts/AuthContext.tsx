@@ -23,6 +23,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const { toast } = useToast();
 
   useEffect(() => {
+    // Check for existing session first
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      setUser(session?.user ?? null);
+      
+      if (session?.user) {
+        const { data } = await supabase
+          .from('user_roles')
+          .select('setor')
+          .eq('user_id', session.user.id)
+          .single();
+        
+        setSetor(data?.setor || null);
+      }
+      
+      setLoading(false);
+    });
+
     // Setup auth listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
@@ -40,27 +57,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         } else {
           setSetor(null);
         }
-        
-        setLoading(false);
       }
     );
-
-    // Check for existing session
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
-      setUser(session?.user ?? null);
-      
-      if (session?.user) {
-        const { data } = await supabase
-          .from('user_roles')
-          .select('setor')
-          .eq('user_id', session.user.id)
-          .single();
-        
-        setSetor(data?.setor || null);
-      }
-      
-      setLoading(false);
-    });
 
     return () => subscription.unsubscribe();
   }, []);
